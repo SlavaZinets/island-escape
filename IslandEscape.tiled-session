@@ -3,10 +3,35 @@
     "expandedProjectPaths": [
     ],
     "fileStates": {
+        "src/resources/maps/IslandMap.tmx": {
+            "scale": 0.33,
+            "selectedLayer": -1,
+            "viewCenter": {
+                "x": -36.36363636363626,
+                "y": 813.6363636363637
+            }
+        },
+        "src/resources/tilesets/Pixel.tsx": {
+            "scaleInDock": 0.5,
+            "scaleInEditor": 1
+        },
+        "src/resources/tilesets/islandTileset.tsx": {
+            "scaleInDock": 1,
+            "scaleInEditor": 1
+        }
     },
+    "frame.defaultDuration": 210,
+    "last.imagePath": "G:/SoftwareDevelopmentGame/islnad-escape/src/resources/tilesets",
+    "map.height": 64,
+    "map.lastUsedFormat": "tmx",
+    "map.width": 64,
     "openFiles": [
     ],
     "project": "IslandEscape.tiled-project",
     "recentFiles": [
-    ]
+        "src/resources/maps/IslandMap.tmx",
+        "src/resources/tilesets/Pixel.tsx",
+        "src/resources/tilesets/islandTileset.tsx"
+    ],
+    "tileset.lastUsedFormat": "tsx"
 }
