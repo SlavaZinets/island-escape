@@ -1,16 +1,38 @@
 package com.islandescape.map;
 
-public class TileMap {
-    public TileMap(int width, int height, int tuleSize){
+import java.util.HashMap;
+import java.util.Map;
 
+public class TileMap {
+
+    private final int width;
+    private final int height;
+    private final int tileSize;
+    private final Map<String, TileLayer> layers = new HashMap<>();
+
+    public TileMap(int width, int height, int tileSize) {
+        this.width = width;
+        this.height = height;
+        this.tileSize = tileSize;
     }
-    public int getWidth(){
-        return 0;
+
+    public int getWidth() {
+        return width;
     }
-    public int getHeight(){
-        return 0;
+
+    public int getHeight() {
+        return height;
     }
-    public int getTileSize(){
-        return 0;
+
+    public int getTileSize() {
+        return tileSize;
+    }
+
+    public void addLayer(TileLayer layer) {
+        layers.put(layer.getName(), layer);
+    }
+
+    public TileLayer getLayer(String name) {
+        return layers.get(name);
     }
 }

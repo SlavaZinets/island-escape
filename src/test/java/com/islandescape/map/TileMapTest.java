@@ -18,4 +18,6 @@ public class TileMapTest {
         TileMap map = new TileMap(14,10,21);
         assertEquals(21,map.getTileSize());
     }
+
+
 }
