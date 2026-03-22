@@ -3,6 +3,9 @@ package com.islandescape.map;
 import java.util.HashMap;
 import java.util.Map;
 
+/*
+    TileMap holds map dimensions, tile size and a collection of layers
+ */
 public class TileMap {
 
     private final int width;

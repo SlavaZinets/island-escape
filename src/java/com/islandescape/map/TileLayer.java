@@ -1,5 +1,9 @@
 package com.islandescape.map;
 
+/*
+    TileLayer stores a 64x64 grid of Integers where each number represents a tile
+     Also, it stores a name for the layer
+ */
 public class TileLayer {
 
     private final String name;
