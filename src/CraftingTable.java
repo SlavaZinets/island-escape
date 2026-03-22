@@ -13,4 +13,31 @@ public class CraftingTable extends WorldStructure {
         super(x, y, "Crafting Table");
         this.interactionRange = 100.0; //standard interaction distance
     }
+    //stub methods
+    
+  //method when a player interacts with rafting table
+    @Override
+    public void interact(Player player) {
+        
+    }
+
+     //nternal helper to check wether player is physically near the table
+    public boolean isPlayerNearby(Player player) {
+     
+        return false;
+    }
+   
+     //method to check if player is within range to use the crafting table
+    @Override
+    public boolean isPlayerInRange(Player player) {
+        return isPlayerNearby(player);
+    }
+
+    
+     //drawing the crafting table sprite on screen
+       @Override
+    public void render(Graphics2D g2) {
+    
+    }
+ 
 }
