@@ -16,4 +16,21 @@ public abstract class WorldStructure {
         this.y = y;
         this.name = name;
     }
+ //now for methods off abstract class with stub methods yet
+    
+    
+    public void interact(Player player) {
+     //methos when a player interacts with this structure
+    }
+
+  //checks if the layer is within valid interaction distance
+    public boolean isPlayerInRange(Player player) {
+        return false;
+    }
+
+   
+    // handles the visual representation of the structure.
+    public void render(Graphics2D g2) {
+    
+    }
 }
