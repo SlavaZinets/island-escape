@@ -34,6 +34,7 @@
             "scaleInEditor": 1
         },
         "src/resources/tilesets/IslandTileSet.tsx": {
+            "dynamicWrapping": false,
             "scaleInDock": 1,
             "scaleInEditor": 1
         },
