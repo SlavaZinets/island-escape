@@ -9,7 +9,7 @@ import java.io.IOException;
 
 public class MapRenderer {
 
-    private TileMap map;
+
     private final int offset;
     private final int columns;
     private final int tileSize;
@@ -39,5 +39,29 @@ public class MapRenderer {
     public int getTileSourceY(int tileId){
         return (tileId - offset) / columns * tileSize;
     }
+    // render the map
+    public void render(Graphics2D g, TileMap map){
+        String[] layers = {"DeepWater", "Water", "Sand", "Jungle", "Trees", "Lake", "StoneLand"};
+        for(String layer: layers){
+            TileLayer tileLayer = map.getLayer(layer);
+            renderLayer(g, map, tileLayer);
+        }
+    }
+    // draw the layer on the screen
+    private void renderLayer(Graphics2D g, TileMap map, TileLayer layer) {
+        for (int row = 0; row < map.getHeight(); row++) {
+            for(int col = 0; col < map.getWidth(); col++){
+                int tileId = layer.getTileAt(col, row);
+                if(isEmpty(tileId)) continue;
+                int descX = row * tileSize;
+                int descY = col * tileSize;
+                int srcX = getTileSourceX(tileId);
+                int srcY = getTileSourceY(tileId);
+                g.drawImage(tilesetImage, descX, descY, descX + tileSize, descY + tileSize, srcX, srcY, srcX + tileSize, srcY + tileSize, null);
+            }
+
+        }
+    }
+
 
 }
