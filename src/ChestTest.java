@@ -5,7 +5,11 @@ public class ChestTest {
 
     @Test
     public void interact() {
-      
+        Chest chest = new Chest(10.0, 10.0);
+        chest.interact(5.0, 5.0);
+
+
+        assertTrue(chest.opened, "chest had to open");
 
     }
     @Test
