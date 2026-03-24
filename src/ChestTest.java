@@ -15,11 +15,7 @@ public class ChestTest {
     @Test
     public void takeItem() {
         Chest chest = new Chest(10.0, 10.0);
-        double slotX = 1.0;
-        double slotY = 1.0;
-
-
-        assertTrue(chest.takeItem(slotX, slotY) != null, "not null");
+        assertNotNull(chest.takeItem(5.0, 5.0));
 
     }
 
