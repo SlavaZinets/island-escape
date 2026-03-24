@@ -7,13 +7,15 @@ public class Chest extends WorldStructure {
     private Item[] contents; //storage for items as an array
     private boolean opened;  //open/closed state
     //own attributes except for based ones
+
     
     
     //constructor
     public Chest(double x, double y) {
         super(x, y, "Chest");
         this.contents = new Item[10]; //it will default storage capacity
-        this.opened = false; //also close by defaut 
+        this.opened = false; //also close by defaut
+        this.contents[0] = new Item("stone");//put the element into chest to test
     }//methods with stubs
     
     //method  when a player interacts with the chest.
@@ -28,7 +30,7 @@ public class Chest extends WorldStructure {
 
    // method that toggles the chest state to opened.
   public void open(double x, double y) {
-   
+      this.opened = true;
   }
 
 
