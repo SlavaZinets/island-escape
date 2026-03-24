@@ -2,7 +2,7 @@ import java.awt.Graphics2D;
 
 
  //this is a subclass called crafting table that is used to enables professional item creation procceses in the game
-   //providing ability for  players as a working palce to combine raw resources into something useful as tools  or gear
+   //providing ability for  players as a working place to combine raw resources into something useful as tools  or gear
 
 
 
@@ -15,22 +15,24 @@ public class CraftingTable extends WorldStructure {
     }
     //stub methods
     
-  //method when a player interacts with rafting table
+  //method when a player interacts with crafting table
+
+
     @Override
-    public void interact(Player player) {
-        
+    public void interact(boolean x, boolean y) {
+
     }
 
-     //nternal helper to check wether player is physically near the table
-    public boolean isPlayerNearby(Player player) {
+    //nternal helper to check wether player is physically near the table
+    public boolean isPlayerNearby(double x, double y) {
      
         return false;
     }
    
      //method to check if player is within range to use the crafting table
     @Override
-    public boolean isPlayerInRange(Player player) {
-        return isPlayerNearby(player);
+    public boolean isPlayerInRange(double x, double y) {
+        return isPlayerNearby(0,0);
     }
 
     

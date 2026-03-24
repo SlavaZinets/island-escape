@@ -11,24 +11,26 @@ public abstract class WorldStructure {
     protected String name;   // Display name of structure
 
     //constructor for/classes
-    public WorldStructure(doub le x, double y, String name) {
+    public WorldStructure(double x, double y, String name) {
         this.x = x;
         this.y = y;
         this.name = name;
     }
- //now for methods off abstract class with stub methods yet
+ //now for methods of abstract class with stub methods yet
     
     
-    public void interact(Player player) {
+    public void interact(double x, double y) {
      //methos when a player interacts with this structure
     }
 
-  //checks if the layer is within valid interaction distance
-    public boolean isPlayerInRange(Player player) {
+    public abstract void interact(boolean x, boolean y);
+
+    //checks if the layer is within valid interaction distance
+    public boolean isPlayerInRange(double x, double y) {
         return false;
     }
 
-   
+
     // handles the visual representation of the structure.
     public void render(Graphics2D g2) {
     

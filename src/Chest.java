@@ -18,40 +18,34 @@ public class Chest extends WorldStructure {
     
     //method  when a player interacts with the chest.
 
-  @Override
-  public void interact(Player player) {
-   
-      open(player);
-  }
+    @Override
+    public void interact(boolean x, boolean y) {
+
+    }
+
+
 
 
    // method that toggles the chest state to opened.
-  public void open(Player player) {
+  public void open(double x, double y) {
    
   }
 
 
-   //metjod to remove item from a specific slot in the chest
+   //method to remove item from a specific slot in the chest
  
-  public Item takeItem(int index, Player player) {
+  public Item takeItem(double x, double y) {
 
       return null;
   }
 
+  //ITEM class
+    class Item {
+        private String name;
 
-   //method thatchecks if the player is close enough to interact with chest
- 
-  @Override
-  public boolean isPlayerInRange(Player player) {
+        public Item(String name) {
+            this.name = name;
+        }
+    }
 
-      return false;
-  }
-
- 
-   //method -draws chest sprite on the screen
-  @Override
-  public void render(Graphics2D g2) {
-     
-  }
-}
 }

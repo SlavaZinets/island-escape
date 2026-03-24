@@ -20,28 +20,29 @@ public class FirePlace extends WorldStructure {
     }
   //stub methids for this class
     //method interacting with the fireplace (e.g lighting it)
-   @Override
-   public void interact(Player player) {
-       
-       light(player);
-   }
 
-   
-    //attempting to ignite the fireplace.
-   public boolean light(Player player) {
+
+    @Override
+    public void interact(boolean x, boolean y) {
+
+    }
+
+
+    //attempting to ignite the fireplace
+   public boolean light(double x, double y) {
       
        return false;
    }
 
    
-     //eturns the current status of the fire
+     //returns the current status of the fire
     public boolean isLit() {
        return lit;
    }
 
    
       //increases the burn timer by adding fuel items
-   public void addFuel(Item item) {
+   public void addFuel(Chest.Item item) {
   
    }
 
@@ -59,16 +60,5 @@ public class FirePlace extends WorldStructure {
    }
 
    
-   //methid checks if the player is within range to interact with the fireplace
-   @Override
-   public boolean isPlayerInRange(Player player) {
-       
-       return false;
-   }
 
-   //drawing the fireplace and fire animations
-   @Override
-   public void render(Graphics2D g2) {
-    
-   }
 }
