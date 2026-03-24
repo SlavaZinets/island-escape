@@ -35,8 +35,19 @@ public class Chest extends WorldStructure {
    //method to remove item from a specific slot in the chest
  
   public Item takeItem(double x, double y) {
-
-      return null;
+      //player cant take items if the chest is curently closed
+        if (!opened) {
+          return null;
+      }
+      //get  through the array to find first non-null item to take it
+      for(int i = 0; i < contents.length; i++) {
+            if (contents[i] != null) {
+                 Item itemToReturn = contents[i];
+               contents[i] = null; //remove the item from the chest slot - signigy is taken
+                return itemToReturn;
+          }
+      }
+      return null; //return null if no items remaining
   }
 
   //ITEM class
