@@ -5,7 +5,7 @@ import java.awt.Graphics2D;
  
 public class Chest extends WorldStructure {
     private Item[] contents; //storage for items as an array
-    private boolean opened;  //open/closed state
+    public  boolean opened;  //open/closed state
     //own attributes except for based ones
 
     
@@ -21,7 +21,7 @@ public class Chest extends WorldStructure {
     //method  when a player interacts with the chest.
 
     @Override
-    public void interact(boolean x, boolean y) {
+    public void interact(double x, double y) {
 
     }
 

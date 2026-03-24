@@ -23,7 +23,7 @@ public class FirePlace extends WorldStructure {
 
 
     @Override
-    public void interact(boolean x, boolean y) {
+    public void interact(double x, double y) {
 
     }
 

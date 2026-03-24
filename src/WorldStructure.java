@@ -23,7 +23,7 @@ public abstract class WorldStructure {
      //methos when a player interacts with this structure
     }
 
-    public abstract void interact(boolean x, boolean y);
+
 
     //checks if the layer is within valid interaction distance
     public boolean isPlayerInRange(double x, double y) {
