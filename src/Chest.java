@@ -22,7 +22,13 @@ public class Chest extends WorldStructure {
 
     @Override
     public void interact(double x, double y) {
+        if (this.opened == true) {
 
+            this.opened = false;
+        } else {
+
+            this.opened = true;
+        }
     }
 
 
