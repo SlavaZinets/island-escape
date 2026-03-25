@@ -18,7 +18,11 @@ public class CraftingTable extends WorldStructure {
   //method when a player interacts with crafting table
     @Override
     public void interact(double x, double y) {
-
+        if (isPlayerNearby(x, y)) {
+            System.out.println("Opening crafting table");
+        } else {
+            System.out.println("player is too far");
+        }
     }
 
     //internal helper to check wether the player is physically near the table
