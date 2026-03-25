@@ -22,7 +22,10 @@ public class FIrePlaceTest {
     }
     @Test
     public void update() {
-
+        FirePlace fire = new FirePlace(100, 100);
+        fire.light(100, 100);
+        fire.update(10.0);
+        assertEquals(40.0, fire.burnTimer, 0.1);
     }
 
 
