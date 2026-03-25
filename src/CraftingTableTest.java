@@ -6,16 +6,12 @@ public class CraftingTableTest {
     }
 @Test
     public void isPlayerNearby() {
-
-
-    }
-
-
-    @Test
-    public void isPlayerInRange() {
-        CraftingTable table = new CraftingTable(100, 100);
-        boolean result = table.isPlayerInRange(100, 100);
-          assertTrue(result, "Fail: player at table");
+    CraftingTable table = new CraftingTable(100.0, 100.0);
+    boolean result = table.isPlayerNearby(100.0, 100.0);
+    assertTrue(result, "true when player is on top of table");
 
     }
+
+
+
 }

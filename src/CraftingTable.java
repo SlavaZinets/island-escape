@@ -25,13 +25,10 @@ public class CraftingTable extends WorldStructure {
 
     //internal helper to check wether the player is physically near the table
     public boolean isPlayerNearby(double x, double y) {
-     
+
         return false;
     }
-    
 
-
-    
      //drawing the crafting table sprite on screen
        @Override
     public void render(Graphics2D g2) {
