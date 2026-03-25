@@ -18,11 +18,23 @@ public class FirePlace extends WorldStructure {
         this.burnTimer = 0.0; //0.0 as default value 
         this.warmthRadius = 150.0; //default radius for heat radiation
     }
-  //stub methods for this class
+
     //method interacting with the fireplace (e.g lighting it)
     @Override
     public void interact(double x, double y) {
+        if (isPlayerNearby(x, y)) {
+            this.lit = true; //works only if disnace is less then 100
+        } else {
 
+            System.out.println("come closer");
+        }
+    }
+
+    private boolean isPlayerNearby(double x, double y) {
+        double a = this.x - x;
+           double b = this.y - y;
+        double distance = Math.sqrt(a * a + b * b);
+         return distance <= 100.0;
     }
 
 

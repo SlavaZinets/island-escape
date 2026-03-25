@@ -11,10 +11,6 @@ public class FIrePlaceTest {
     public void light() {
     }
     @Test
-    public void isLit() {
-
-    }
-    @Test
     public void addFuel() {
 
     }
