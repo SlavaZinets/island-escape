@@ -9,6 +9,9 @@ public class FIrePlaceTest {
     }
     @Test
     public void light() {
+        FirePlace fire = new FirePlace(100, 100);
+        boolean success = fire.light(130, 130);
+        assertTrue(success, "works if near the fireplace");
     }
     @Test
     public void addFuel() {
