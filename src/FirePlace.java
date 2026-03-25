@@ -37,6 +37,7 @@ public class FirePlace extends WorldStructure {
    public boolean light(double x, double y) {
        if (isPlayerNearby(x, y)) {
            this.lit = true;
+           this.burnTimer = 50.0;//amount of time it will light from start
            return true;
        }
        // if plaayer far away  - return false
