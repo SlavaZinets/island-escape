@@ -23,7 +23,7 @@ public class CraftingTable extends WorldStructure {
 
     }
 
-    //nternal helper to check wether player is physically near the table
+    //internal helper to check wether the player is physically near the table
     public boolean isPlayerNearby(double x, double y) {
      
         return false;
