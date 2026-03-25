@@ -52,7 +52,7 @@ public class FirePlace extends WorldStructure {
 
    
       //increases the burn timer by adding fuel items
-   public void addFuel(Chest.Item item) {
+   public void addFuel(Item item) {
        if (!this.lit) {
            System.out.println("light fire first");
            return;

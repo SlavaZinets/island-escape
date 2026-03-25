@@ -16,7 +16,8 @@ public class FIrePlaceTest {
         FirePlace fire = new FirePlace(100, 100);
          fire.light(100, 100);
          double startTime = 100.0;
-        fire.addFuel(null);
+        Item wood = new Item("Wood stick");
+        fire.addFuel(wood);
         assertTrue(fire.burnTimer > startTime, "Timer suppose to increase");
     }
     @Test

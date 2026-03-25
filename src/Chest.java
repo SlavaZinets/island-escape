@@ -58,17 +58,6 @@ public class Chest extends WorldStructure {
       return null; //return null if no items remaining
   }
 
-  //ITEM class
-    class Item {
-        private String name;
 
-        public Item(String name) {
-            this.name = name;
-        }
-
-      public String getName() {
-            return name;
-      }
-  }
 
 }
