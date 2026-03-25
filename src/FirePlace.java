@@ -82,7 +82,20 @@ public class FirePlace extends WorldStructure {
    
      //updating fireplace state based on elapsed time 
      public void update(double deltaTime) {
-  
+
+             // check if  fire is currently burning
+             if (this.lit) {
+                 //subtract the elapsed time from  timer
+                 this.burnTimer -= deltaTime;
+
+                 //if fuel  completely burned out
+                 if (this.burnTimer <= 0) {
+                     this.lit = false;
+                     this.burnTimer = 0.0; //reset to avoid negative values
+                     System.out.println("fire is out");
+                 }
+
+         }
    }
 
   
