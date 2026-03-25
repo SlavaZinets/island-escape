@@ -28,12 +28,8 @@ public class CraftingTable extends WorldStructure {
      
         return false;
     }
-   
-     //method to check if player is within range to use the crafting table
-    @Override
-    public boolean isPlayerInRange(double x, double y) {
-        return isPlayerNearby(0,0);
-    }
+    
+
 
     
      //drawing the crafting table sprite on screen
