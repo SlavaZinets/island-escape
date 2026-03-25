@@ -8,7 +8,7 @@ import java.awt.Graphics2D;
 
 public class FirePlace extends WorldStructure {
     private boolean lit;          //current state - burning/extinguished
-    private double burnTimer;     //remaining time before the fire goes out
+    double burnTimer;     //remaining time before the fire goes out
     private double warmthRadius;  //distance at which players feel the heat
     
     //constructor
@@ -53,7 +53,7 @@ public class FirePlace extends WorldStructure {
    
       //increases the burn timer by adding fuel items
    public void addFuel(Chest.Item item) {
-  
+
    }
 
    

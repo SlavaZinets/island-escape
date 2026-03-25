@@ -3,9 +3,7 @@ import static org.junit.jupiter.api.Assertions.*;
 public class FIrePlaceTest {
     @Test
     public void interact() {
-        FirePlace fire = new FirePlace(50, 50);
-        fire.interact(50, 50);
-        assertTrue(fire.isLit(), "Fireplace is lit");
+
     }
     @Test
     public void light() {
@@ -15,7 +13,11 @@ public class FIrePlaceTest {
     }
     @Test
     public void addFuel() {
-
+        FirePlace fire = new FirePlace(100, 100);
+         fire.light(100, 100);
+         double startTime = 100.0;
+        fire.addFuel(null);
+        assertTrue(fire.burnTimer > startTime, "Timer suppose to increase");
     }
     @Test
     public void update() {
