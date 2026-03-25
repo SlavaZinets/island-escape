@@ -53,7 +53,29 @@ public class FirePlace extends WorldStructure {
    
       //increases the burn timer by adding fuel items
    public void addFuel(Chest.Item item) {
+       if (!this.lit) {
+           System.out.println("light fire first");
+           return;
+       }//check if no lit - message
 
+            //check the given item is not null
+       if (item != null) {
+           String itemName = item.getName().toLowerCase();
+
+           if (itemName.contains("wood") || itemName.contains("stick")) {
+               this.burnTimer += 100.0;  //wood gives extra 100
+               System.out.println("+100s");
+           }
+           else if (itemName.contains("coal") || itemName.contains("fuel")) {
+               this.burnTimer += 300.0; //coal/fuel - 300 to burntimer
+               System.out.println("+300s");
+           }
+           else {
+               //if something else thrown  +10
+               this.burnTimer += 10.0;
+               System.out.println("+10s");
+           }
+       }
    }
 
    

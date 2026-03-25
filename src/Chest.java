@@ -65,6 +65,10 @@ public class Chest extends WorldStructure {
         public Item(String name) {
             this.name = name;
         }
-    }
+
+      public String getName() {
+            return name;
+      }
+  }
 
 }
