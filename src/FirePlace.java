@@ -22,12 +22,7 @@ public class FirePlace extends WorldStructure {
     //method interacting with the fireplace (e.g lighting it)
     @Override
     public void interact(double x, double y) {
-        if (isPlayerNearby(x, y)) {
-            this.lit = true; //works only if disnace is less then 100
-        } else {
 
-            System.out.println("come closer");
-        }
     }
 
     private boolean isPlayerNearby(double x, double y) {
@@ -40,14 +35,19 @@ public class FirePlace extends WorldStructure {
 
     //attempting to ignite the fireplace
    public boolean light(double x, double y) {
-      
+       if (isPlayerNearby(x, y)) {
+           this.lit = true;
+           return true;
+       }
+       // if plaayer far away  - return false
        return false;
+
    }
 
    
      //returns the current status of the fire
     public boolean isLit() {
-       return lit;
+       return this.lit;
    }
 
    
