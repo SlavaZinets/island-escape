@@ -20,7 +20,7 @@ public abstract class WorldStructure {
     
     
     public void interact(double x, double y) {
-     //methos when a player interacts with this structure
+     //method when a player interacts with this structure
     }
 
 

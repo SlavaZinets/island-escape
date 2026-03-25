@@ -18,10 +18,8 @@ public class FirePlace extends WorldStructure {
         this.burnTimer = 0.0; //0.0 as default value 
         this.warmthRadius = 150.0; //default radius for heat radiation
     }
-  //stub methids for this class
+  //stub methods for this class
     //method interacting with the fireplace (e.g lighting it)
-
-
     @Override
     public void interact(double x, double y) {
 
