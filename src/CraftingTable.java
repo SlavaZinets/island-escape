@@ -25,8 +25,17 @@ public class CraftingTable extends WorldStructure {
 
     //internal helper to check wether the player is physically near the table
     public boolean isPlayerNearby(double x, double y) {
+// we calculate here from player to table by getting distance using the Pythagorean theorem by treating   coordinate differences as triangle sides to verify the player interaction range for it
+        // сalculat horizontal and vertical distance(legs of triangle)
+        double a = this.x - x;
+        double b = this.y - y;
 
-        return false;
+       //apply the formulae
+        double distanceSquared = (a * a) + (b * b);
+         //get square root inn order to have actual distance
+         double distance = Math.sqrt(distanceSquared);
+         //compare vlaue we got with  interaction range
+        return distance <= this.interactionRange;
     }
 
      //drawing the crafting table sprite on screen
