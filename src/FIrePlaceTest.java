@@ -31,7 +31,10 @@ public class FIrePlaceTest {
 
     @Test
     public void getWarmthAt() {
-
+        FirePlace fire = new FirePlace(100, 100);
+        fire.light(100, 100); 
+        double warmth = fire.getWarmthAt(240, 100);
+        assertTrue(warmth > 0, " warmer near the fireplace");
 
     }
 
