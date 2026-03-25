@@ -16,8 +16,6 @@ public class CraftingTable extends WorldStructure {
     //stub methods
     
   //method when a player interacts with crafting table
-
-
     @Override
     public void interact(double x, double y) {
 
