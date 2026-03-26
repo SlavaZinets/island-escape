@@ -122,11 +122,18 @@ public class FirePlace extends WorldStructure {
 
    }
     public Item cook(Item food) {
+
+        if (this.lit && food != null) {
+
+            //chhange name to cooked state
+            String newName = food.getName().replace("Raw", "Cooked");
+            return new Item(newName);
+        }
         return null;
     }
 
     public double getLightRadius() {
-  
+
         return 0.0;
     }
 

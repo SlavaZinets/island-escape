@@ -45,7 +45,7 @@ public class FIrePlaceTest {
         fire.light(100, 100);
         Item result = fire.cook(rawFood); //cookin
         //if result null or no match for nsme- falls
-        assert result != null && result.getName().equals("cooked");
+        assert result != null && result.getName().equals("Cooked");
     }
 
 }
