@@ -58,6 +58,11 @@ public class Chest extends WorldStructure {
       return null; //return null if no items remaining
   }
 
+    public boolean addItem(Item item) {
+
+        return false;
+    }
+
 
 
 }

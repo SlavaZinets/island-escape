@@ -108,19 +108,26 @@ public class FirePlace extends WorldStructure {
        }
 
        // calculating distance between the fireplace and the player here target x -y by using  Phytagorous theorem
-        double dx = this.x - targetX;
-         double dy = this.y - targetY;
+       double dx = this.x - targetX;
+       double dy = this.y - targetY;
        double distance = Math.sqrt(dx * dx + dy * dy);
 
-           //if target is within enought  warmth radius
+       //if target is within enought  warmth radius
        if (distance <= this.warmthRadius) {
            double intensity = 1.0 - (distance / this.warmthRadius);
            return 100.0 * intensity; // Returns warmth value from 0 to 100
        }
 
        return 0.0;
-   }
 
-   
+   }
+    public Item cook(Item food) {
+        return null;
+    }
+
+    public double getLightRadius() {
+  
+        return 0.0;
+    }
 
 }
