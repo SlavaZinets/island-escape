@@ -37,7 +37,12 @@ public abstract class WorldStructure {
 
     //checks if the layer is within valid interaction distance
     public boolean isPlayerInRange(double x, double y) {
-        return false;
+        double distance = Math.sqrt(Math.pow(this.x - x, 2) + Math.pow(this.y - y, 2));
+        if (distance <= 50) {
+            return true;
+        } else {
+            return false;
+        }
     }
 
 

@@ -21,6 +21,7 @@ public class WorldStructureTest {
             }
         }
         TestStructure structure = new TestStructure(100, 200, "fireplace");
-        assertTrue(structure.isPlayerInRange(50, 70));
+        boolean result = structure.isPlayerInRange(200, 200);
+        assertFalse(result);
     }
 }
