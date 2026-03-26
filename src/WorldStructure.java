@@ -16,11 +16,10 @@ public abstract class WorldStructure {
         this.y = y;
         this.name = name;
     }
- //now for methods of abstract class with stub methods yet
-    
+
     
     public void interact(double x, double y) {
-     //method when a player interacts with this structure
+
     }
 
 
@@ -31,7 +30,7 @@ public abstract class WorldStructure {
     }
 
 
-    // handles the visual representation of the structure.
+    // handles the visual representation of the structure
     public void render(Graphics2D g2) {
     
     }
