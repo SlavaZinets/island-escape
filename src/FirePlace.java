@@ -133,8 +133,7 @@ public class FirePlace extends WorldStructure {
     }
 
     public double getLightRadius() {
-
-        return 0.0;
+        return this.lit ? 200.0 : 0.0;
     }
 
 }
