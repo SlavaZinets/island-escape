@@ -19,7 +19,18 @@ public abstract class WorldStructure {
 
     
     public void interact(double x, double y) {
+        double distance = Math.sqrt(Math.pow(this.x - x, 2) + Math.pow(this.y - y, 2));
 
+        // check if player is within interaction range
+        if (distance <= 40) {
+            //close enough - interaction go
+            System.out.println("interact happening with " + name);
+
+        } else {
+               // player too far
+            System.out.println("too far from " + name + " (distance: " + distance +  ")");
+
+         }
     }
 
 
