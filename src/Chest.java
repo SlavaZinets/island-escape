@@ -59,7 +59,20 @@ public class Chest extends WorldStructure {
   }
 
     public boolean addItem(Item item) {
+          if (item == null) {
+             return false;
+        }
 
+        //adding to chest
+        for (int i = 0; i < this.contents.length; i++) {
+            if (this.contents[i] == null) {
+                  this.contents[i] = item;
+                  System.out.println(item.getName() + " added to chest " + i);
+                return true;
+            }
+        }
+
+          System.out.println("Chest is full");
         return false;
     }
 
