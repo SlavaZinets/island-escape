@@ -5,6 +5,7 @@ public class FIrePlaceTest {
     public void interact() {
 
     }
+
     @Test
     public void light() {
         FirePlace fire = new FirePlace(100, 100);
@@ -36,6 +37,15 @@ public class FIrePlaceTest {
         double warmth = fire.getWarmthAt(240, 100);
         assertTrue(warmth > 0, " warmer near the fireplace");
 
+    }
+    @Test
+    public void cook() {
+        FirePlace fire = new FirePlace(100, 100);
+        Item rawFood = new Item("Raw Fish");
+        fire.light(100, 100);
+        Item result = fire.cook(rawFood); //cookin
+        //if result null or no match for nsme- falls
+        assert result != null && result.getName().equals("cooked");
     }
 
 }
