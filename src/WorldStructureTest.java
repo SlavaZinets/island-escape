@@ -15,6 +15,12 @@ public class WorldStructureTest {
     }
     @Test
     public void isPlayerInRange() {
-
+        class TestStructure extends WorldStructure {
+            public TestStructure(double x, double y, String name) {
+                super(x, y, name);
+            }
+        }
+        TestStructure structure = new TestStructure(100, 200, "fireplace");
+        assertTrue(structure.isPlayerInRange(50, 70));
     }
 }
