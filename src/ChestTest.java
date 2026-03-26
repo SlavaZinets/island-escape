@@ -12,16 +12,20 @@ public class ChestTest {
         assertTrue(chest.opened, "chest had to open");
 
     }
-    @Test
-    public void open() {
 
-    }
+
     @Test
     public void takeItem() {
         Chest chest = new Chest(10.0, 10.0);
         chest.open(10.0, 10.0);
         assertNotNull(chest.takeItem(5.0, 5.0));
 
+    }
+    @Test
+    public void addItem() {
+        Chest chest = new Chest(100, 100);
+        Item wood = new Item("wood");
+        assertTrue(chest.addItem(wood), "item addded");
     }
 
 }
