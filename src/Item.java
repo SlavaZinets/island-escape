@@ -12,4 +12,11 @@ public class Item {
     public String getClassification() {
         return classification;
     }
+    public void setName(String name) {
+        this.name = name;
+    }
+
+    public void setClassification(String classification) {
+        this.classification = classification;
+    }
 }
