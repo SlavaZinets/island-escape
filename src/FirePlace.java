@@ -17,20 +17,20 @@ public class FirePlace extends WorldStructure {
 
     //method interacting with the fireplace (e.g lighting it)
     @Override
-    public void interact(double x, double y) {
+    public void interact(double playerx, double playery) {
 
     }
 
-    private boolean isPlayerNearby(double x, double y) {
-        double a = this.x - x;
-           double b = this.y - y;
+    private boolean isPlayerNearby(double playerx, double playery) {
+        double a = this.x - playerx;
+           double b = this.y - playery;
         double distance = Math.sqrt(a * a + b * b);
          return distance <= 100.0;
     }
 
 
     //attempting to ignite the fireplace
-   public boolean light(double x, double y) {
+   public boolean light(double playerx, double playery) {
        if (isPlayerNearby(x, y)) {
            this.lit = true;
            this.burnTimer = 50.0;//amount of time it will light from start

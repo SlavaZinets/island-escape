@@ -13,12 +13,12 @@ public class Chest extends WorldStructure {
         this.contents = new Item[10]; //it will default storage capacity
         this.opened = false; //also close by defaut
         this.contents[0] = new Item("stone", "Custom");//put the element into chest to test
-    }//methods with stubs
+    }
     
-    //method  when a player interacts with the chest.
+    //method when a player interacts with the chest.
 
     @Override
-    public void interact(double x, double y) {
+    public void interact(double playerx, double playery) {
         if (this.opened == true) {
 
             this.opened = false;
@@ -32,14 +32,14 @@ public class Chest extends WorldStructure {
 
 
    // method that toggles the chest state to opened.
-  public void open(double x, double y) {
+  public void open(double playerx, double playery) {
       this.opened = true;
   }
 
 
    //method to remove item from a specific slot in the chest
  
-  public Item takeItem(double x, double y) {
+  public Item takeItem(double playerx, double playery) {
       //player cant take items if the chest is curently closed
         if (!opened) {
           return null;
