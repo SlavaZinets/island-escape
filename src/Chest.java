@@ -1,6 +1,3 @@
-import java.awt.Graphics2D;
-
-
 //subclass that is representing  storage container to  allow players to store collecteditems in a fixed location for  freeing up inventory space
  
 public class Chest extends WorldStructure {
@@ -15,7 +12,7 @@ public class Chest extends WorldStructure {
         super(x, y, "Chest");
         this.contents = new Item[10]; //it will default storage capacity
         this.opened = false; //also close by defaut
-        this.contents[0] = new Item("stone");//put the element into chest to test
+        this.contents[0] = new Item("stone", "Custom");//put the element into chest to test
     }//methods with stubs
     
     //method  when a player interacts with the chest.

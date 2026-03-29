@@ -1,8 +1,4 @@
-import java.awt.Graphics2D;
-
-
-
- //this class is fireplace that is used for warmth and cooking on island 
+//this class is fireplace that is used for warmth and cooking on island
  // as it is providing  heat source to prevent player from freezing and allowing food processin
  //so in technical this class manages the fire state, burn time duration and heat radiation area
 
@@ -127,7 +123,7 @@ public class FirePlace extends WorldStructure {
 
             //chhange name to cooked state
             String newName = food.getName().replace("Raw", "Cooked");
-            return new Item(newName);
+            return new Item(newName, "Custom");
         }
         return null;
     }

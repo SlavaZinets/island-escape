@@ -17,7 +17,7 @@ public class FIrePlaceTest {
         FirePlace fire = new FirePlace(100, 100);
          fire.light(100, 100);
          double startTime = 100.0;
-        Item wood = new Item("Wood stick");
+        Item wood = new Item("Wood stick", "Custom");
         fire.addFuel(wood);
         assertTrue(fire.burnTimer > startTime, "Timer suppose to increase");
     }
@@ -41,7 +41,7 @@ public class FIrePlaceTest {
     @Test
     public void cook() {
         FirePlace fire = new FirePlace(100, 100);
-        Item rawFood = new Item("Raw Fish");
+        Item rawFood = new Item("Raw Fish", "Custom");
         fire.light(100, 100);
         Item result = fire.cook(rawFood); //cookin
         //if result null or no match for nsme- falls

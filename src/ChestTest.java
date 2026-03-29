@@ -24,7 +24,7 @@ public class ChestTest {
     @Test
     public void addItem() {
         Chest chest = new Chest(100, 100);
-        Item wood = new Item("wood");
+        Item wood = new Item("wood", "Custom");
         assertTrue(chest.addItem(wood), "item addded");
     }
 
