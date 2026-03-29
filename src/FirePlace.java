@@ -18,7 +18,13 @@ public class FirePlace extends WorldStructure {
     //method interacting with the fireplace (e.g lighting it)
     @Override
     public void interact(double playerx, double playery) {
+        boolean result = light(playerx, playery);
 
+        if (result) {
+            System.out.println("The place is burning");
+        } else {
+            System.out.println("Too far away");
+        }
     }
 
     private boolean isPlayerNearby(double playerx, double playery) {
@@ -31,7 +37,7 @@ public class FirePlace extends WorldStructure {
 
     //attempting to ignite the fireplace
    public boolean light(double playerx, double playery) {
-       if (isPlayerNearby(x, y)) {
+       if (isPlayerNearby(playerx, playery)) {
            this.lit = true;
            this.burnTimer = 50.0;//amount of time it will light from start
            return true;
