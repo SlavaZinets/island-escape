@@ -19,6 +19,7 @@ public class Chest extends WorldStructure {
 
     @Override
     public void interact(double playerx, double playery) {
+        if (isPlayerInRange(playerx, playery)) {
         if (this.opened == true) {
 
             this.opened = false;
@@ -26,6 +27,9 @@ public class Chest extends WorldStructure {
 
             this.opened = true;
         }
+        }else{
+                System.out.println("Too far away");
+            }
     }
 
 
@@ -33,7 +37,9 @@ public class Chest extends WorldStructure {
 
    // method that toggles the chest state to opened.
   public void open(double playerx, double playery) {
-      this.opened = true;
+      if (isPlayerInRange(playerx, playery)) {
+          this.opened = true;
+      }
   }
 
 
@@ -41,7 +47,7 @@ public class Chest extends WorldStructure {
  
   public Item takeItem(double playerx, double playery) {
       //player cant take items if the chest is curently closed
-        if (!opened) {
+        if (!isPlayerInRange(playerx, playery) || !opened) {
           return null;
       }
       //get  through the array to find first non-null item to take it
