@@ -41,9 +41,17 @@ public class MapRenderer {
     }
     // render the map
     public void render(Graphics2D g, TileMap map){
+        System.out.println("Tileset loaded: " + (tilesetImage != null));
+        if(tilesetImage != null) {
+            System.out.println("Tileset size: " + tilesetImage.getWidth() + "x" + tilesetImage.getHeight());
+        }
         String[] layers = {"DeepWater", "Water", "Sand", "Jungle", "Trees", "Lake", "StoneLand"};
         for(String layer: layers){
             TileLayer tileLayer = map.getLayer(layer);
+            if(tileLayer == null){
+                System.out.println("WARNING: Layer not found: " + layer);
+                continue;
+            }
             renderLayer(g, map, tileLayer);
         }
     }
@@ -51,10 +59,10 @@ public class MapRenderer {
     private void renderLayer(Graphics2D g, TileMap map, TileLayer layer) {
         for (int row = 0; row < map.getHeight(); row++) {
             for(int col = 0; col < map.getWidth(); col++){
-                int tileId = layer.getTileAt(col, row);
+                int tileId = layer.getTileAt(row, col);
                 if(isEmpty(tileId)) continue;
-                int descX = row * tileSize;
-                int descY = col * tileSize;
+                int descX = col * tileSize;
+                int descY = row * tileSize;
                 int srcX = getTileSourceX(tileId);
                 int srcY = getTileSourceY(tileId);
                 g.drawImage(tilesetImage, descX, descY, descX + tileSize, descY + tileSize, srcX, srcY, srcX + tileSize, srcY + tileSize, null);

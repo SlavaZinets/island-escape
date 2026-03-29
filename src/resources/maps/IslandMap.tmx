@@ -1,56 +1,49 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<map version="1.10" tiledversion="1.12.0" orientation="orthogonal" renderorder="right-down" width="64" height="64" tilewidth="32" tileheight="32" infinite="0" nextlayerid="19" nextobjectid="14">
+<map version="1.10" tiledversion="1.12.0" orientation="orthogonal" renderorder="right-down" width="32" height="18" tilewidth="32" tileheight="32" infinite="0" nextlayerid="19" nextobjectid="14">
  <tileset firstgid="1" source="../tilesets/TileSet.tsx"/>
- <tileset firstgid="4097" source="../tilesets/Pixel.tsx"/>
- <tileset firstgid="4161" source="../tilesets/IslandTileSet.tsx"/>
- <tileset firstgid="4369" source="Boat.tsx"/>
- <layer id="6" name="DeepWater" width="64" height="64">
+ <tileset firstgid="1" source="../tilesets/Pixel.tsx"/>
+ <tileset firstgid="1" source="../tilesets/IslandTileSet.tsx"/>
+ <tileset firstgid="209" source="Boat.tsx"/>
+ <layer id="6" name="DeepWater" width="32" height="18">
   <data encoding="base64" compression="zlib">
-   eJztwzENAAAMA6BKmKX6N1UZeyChl1RVVVVVVVVVVVVVVVVVVVV9Pd8OEEw=
+   eJxjZGBgYByCmAmKB9odo3gUj+JRPIpH8SgeehgAPqICQw==
   </data>
  </layer>
- <layer id="7" name="Water" width="64" height="64">
+ <layer id="7" name="Water" width="32" height="18">
   <data encoding="base64" compression="zlib">
-   eJztmmGywjAIhD2CV7JeNEfVjFYZJmlgodUSdoY/1sh+JM2j6btcUl5arlj8iyz+6vfuYGhrsEeNt/yPxtOxWtEc0tijxkvHv8Qfys5zaEL7+yi/1N8/i85fT1v8Zxdfwy1F5q8a7QPR+auSP/mTv33t+XlJ/mP9HK0ef2Wfnf8MfZxFW3//Z577quj8gt4vLL+w9w97/wuf/cLu/9LzpahrQMMfcQ1ozhcjrgHNGWvkNSA8Aww3/6s0/BEl6QEi81dJesDZ+SMr+ZM/+dvXkj/3/+hrYNQDzsw/+/zn/R9/7mfnz72vfz35k//o/f/I/6mT8O9dA873Po8qrfCuBfIexLMOhPnDuOWhVQtrfs17AM+1wNk1Y736Ug2/d16UnXkxzYWWf83rVHeYnXtB/fyCn849/itfLxY/v+L3mHvuB/Fk4TfWvGCjff2g/A5rrmCj/fxo3gG3cqL19uZH/aDsNB+Y0+3eR/zwXhPNZ6h5wbKOPUl6VPrOF+Vv5ZPEHnNP/fSeE1rPGJ75NGHPjHvz5D+jSC2m1e36itm0cp+ZnzMgkRrrAd8Y/pk=
+   eJxjYBg+gAkHpod+kDpmHJhS/YTcgKyXXAAzAx0guwEXptRufPYjuwEfphTgs58eYNT+UfsH2P4FI9V+kN0DbT+1yjFK7B8oMJD2AwBRtAUr
   </data>
  </layer>
- <layer id="8" name="Sand" width="64" height="64">
+ <layer id="8" name="Sand" width="32" height="18">
   <data encoding="base64" compression="zlib">
-   eJztmtENwjAMRDsCOzEB7D8MykclhKjay51zTuon5Y8qfkdTYdNtK4pCxfuBrWww9aHXMBlEZfz9eeT6Xhf0fvldr5PF+KP1qThzQhbr70Dtj55JN0p/NIMV/ZFzkMG/Uf739m+U/739G+Wvcb/ilbUnaUS7N7K67yDejZH92AiOPI/o7cdWgelHV4CZLawAO1uZHcah/HV1uGDniyswYo6bnRlngEpmnAGqiZ7jZ8fVA6G/2aMY7c/06xFE+ytnVRFZKc+/y5XJQ/H8d7sxWfT6ux1UGfT4u2tXZoD6u2tWrzv797zH4a7Z+d3f3d9db/l7/UdkoHq/S+0flUHP+2KqLJj/QRQ5KGYKTC3sHNjtzmagyN7t3nhO6K9k90frcfhHzhFn8Y8CvQccz97oGfJIf3S/TP6qc4jmnclftd/oPZl6kN+ZyJ5Z/Pd6jnKIqOFqzzLK/6yuoiiKoij+8wFG7v6a
+   eJxjYBgFwwkIYcGU6CdHLyVACI1NrHnUsBvdfmRzicHUANQyZ9T+UftH7R+1n1S7B9p+egMA57IC0Q==
   </data>
  </layer>
- <layer id="12" name="Jungle" width="64" height="64">
+ <layer id="12" name="Jungle" width="32" height="18">
   <data encoding="base64" compression="zlib">
-   eJzt0sENgzAUREFKoEVKoIj0HVmJJZT4QnAkm52R/pHDW7MsAFTb+rpUtf/sBr9+N5pjx5WblX79+vXrz9xAv/7U/p7tNtA/Y3+hP7u/0K9ff+4Gyf092z/79/X7RvPP/mL0DXp1P97X6h21v2f3jK70ztxdpfW23O2fPqv1zkm2wOaj5HYAAAAAAACY1ROax+wL
+   eJxjYBgFo4B2gJkMPYpQPND2k+oGbPootZ8SPBjsJweM2j9q/0C6YdT+gbOfmnYT4wYAda4bgg==
   </data>
  </layer>
- <layer id="16" name="Trees" width="64" height="64">
+ <layer id="16" name="Trees" width="32" height="18">
   <data encoding="base64" compression="zlib">
-   eJzt08EJgEAMBMCUYLU2JFqC9Qm+FBROBdFk5ptXNtkIAICIobs3q0wuVJbt/7Pt8zb5QV76Xcd44db+IqftXc/+YXL7VUtf+p9k1bKLzu9lzGNu6H9FGW99pMqeT2XL6ajr+g8AAAAAAAAA8B0LI8sQwA==
+   eJxjYBgFo2AUjAIESCZTbiDBYHXXSAHUDv+hHp9D3f0jBQAADiwCUw==
   </data>
  </layer>
- <layer id="13" name="Lake" width="64" height="64">
+ <layer id="13" name="Lake" width="32" height="18">
   <data encoding="base64" compression="zlib">
-   eJzt1rEJwDAMRUGNkJ08SbL/EEZlSKpAUPHvQL2fCuEqAAC4u47npOjW9TIpO9CvX39uf0u+/wAAX5zh/yX90y+Yld4PAAAAAAAAAAB/2aVaEsg=
+   eJxjYBgFo2AUjIJRgAsoYcH0tJsZC6aXG0btH9n2w9wwUOmf1gAA5xYC9A==
   </data>
  </layer>
- <layer id="14" name="StoneLand" width="64" height="64">
+ <layer id="14" name="StoneLand" width="32" height="18">
   <data encoding="base64" compression="zlib">
-   eJzt1tsNgjAUgOGO0BUdgRfcQxbw0TEcTZtI0gCFQy+elv5f0ic04T9cijEAkM/NGvOw5jkcLO3zLMG1C/rf89I+31Km7wwk/Ve+L34z8Nfl+l82fKz1/r02yX9i+2uaQYqd/i72hq3+u3AO2ueew0Z/sH1rLtrnnwPPQFR/099HB3uAZAZN9/tS+8fv78eIffjfIr+DQu/AVf/ZGdQ0M79fuv/N66jfP75cKWK+/UKmc/d+sP/sKk06o6v2S9FPf6h/732Y0t5Kf6lrX1O/Myn0DxXNQKu/lhnEPAPa/drfQLn6a7gHBrtaXfX7WuvP+RxIpHbXfv1z6r1/qfd+X+/9Tu/9Tu/9AAAAAAAAAAAA6McH5/0LAA==
+   eJxjYBgFo4C6QBGIgxgYFhhCMb3tHkj7YSAYiAfSfiQ30BRk0NB+fGYTo4ce/scHRu0fWPthbhhp9qPngYEE9LKfnLICBAA2kg3t
   </data>
  </layer>
  <objectgroup id="17" name="Fish">
-  <object id="6" gid="4280" x="362.667" y="468" width="32" height="32"/>
-  <object id="7" gid="4280" x="350.667" y="404" width="32" height="32"/>
-  <object id="8" gid="4280" x="308.667" y="472" width="32" height="32"/>
+  <object id="6" gid="120" x="362.667" y="468" width="32" height="32"/>
+  <object id="7" gid="120" x="350.667" y="404" width="32" height="32"/>
+  <object id="8" gid="120" x="308.667" y="472" width="32" height="32"/>
  </objectgroup>
- <objectgroup id="18" name="Boat">
-  <object id="13" gid="4296" x="1776" y="1763" width="32" height="32"/>
- </objectgroup>
- <objectgroup id="15" name="BasicCamp">
-  <object id="1" gid="4337" x="481" y="1563" width="32" height="32"/>
-  <object id="3" gid="4289" x="399" y="1486" width="32" height="32"/>
-  <object id="4" gid="4290" x="538" y="1494" width="32" height="32"/>
-  <object id="5" gid="4292" x="468" y="1526" width="32" height="32"/>
- </objectgroup>
+ <objectgroup id="18" name="Boat"/>
+ <objectgroup id="15" name="BasicCamp"/>
 </map>
