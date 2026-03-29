@@ -15,12 +15,14 @@ public class CraftingTable extends WorldStructure {
     //main method for crafting items
     public void Crafting(double playerX, double playerY, Item[] playerInventory, int[] inventoryIndices) {
 
+
         //check the distance
         if (!isPlayerNearby(playerX, playerY)) {
             System.out.println(" player is too far");
             return;
         }
 
+        
         //transfer from inventory to 2x2 grid for craft
         Item[] grid = new Item[4];
         for (int i = 0; i < inventoryIndices.length && i < 4; i++) {
@@ -52,10 +54,10 @@ public class CraftingTable extends WorldStructure {
                 }
             }
         } else {
-            System.out.println("Crafting failed");
-        }
-    }
 
+        }
+        System.out.println("Crafting failed");
+        }
     //defining the specific mixs here
     private Item craftFromMix(Item[] grid) {
         int wood = count(grid, "Wood");
