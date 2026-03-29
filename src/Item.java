@@ -2,7 +2,7 @@ public class Item {
     private String name;
     private String classification;
 
-    public Item(String name, String custom) {
+    public Item(String name, String classification) {
         this.name = name;
         this.classification = classification;
     }

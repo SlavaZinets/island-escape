@@ -15,7 +15,18 @@ public class CraftingTableTest {
     assertTrue(result, "true when player is on top of table");
 
     }
+    @Test
+    public void Crafting() {
+            CraftingTable table = new CraftingTable(0, 0);
+            Item[] grid = new Item[4];
+            grid[0] = new Item("Wood", "Material");
+             grid[1] = new Item("Stone", "Material");
+            grid[2] = new Item("Rope", "Material");
 
+            Item result = table.Crafting(grid);
+            assertNotNull(result, "fails");
+            assertEquals("Axe", result.getName(), "supposwd to be axe");
+    }
 
 
 }

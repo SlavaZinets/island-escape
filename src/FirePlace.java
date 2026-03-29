@@ -95,7 +95,7 @@ public class FirePlace extends WorldStructure {
    }
 
   
-    //calculating heat intensity at a given set of coordinates
+    //calculating heat intensity at a given set of coordinates, traget can pe plyaer here also
    public double getWarmthAt(double targetX, double targetY) {
 
        // if the fire is not lit - no heat

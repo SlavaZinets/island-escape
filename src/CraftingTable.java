@@ -12,11 +12,15 @@ public class CraftingTable extends WorldStructure {
         this.interactionRange = 100.0; //standard interaction distance
     }
 
+    public Item Crafting(Item[] grid) {
+
+        return null;
+    }
     
   //method when a player interacts with crafting table
     @Override
-    public void interact(double x, double y) {
-        if (isPlayerNearby(x, y)) {
+    public void interact(double playerx, double playery) {
+        if (isPlayerNearby(playerx, playery)) {
             System.out.println("Opening crafting table");
         } else {
             System.out.println("player is too far");
@@ -24,11 +28,11 @@ public class CraftingTable extends WorldStructure {
     }
 
     //internal helper to check wether the player is physically near the table
-    public boolean isPlayerNearby(double x, double y) {
+    public boolean isPlayerNearby(double playerx, double playery) {
 // we calculate here from player to table by getting distance using the Pythagorean theorem by treating   coordinate differences as triangle sides to verify the player interaction range for it
         // сalculat horizontal and vertical distance(legs of triangle)
-        double a = this.x - x;
-        double b = this.y - y;
+        double a = this.x - playerx;
+        double b = this.y - playery;
 
        //apply the formulae
         double distanceSquared = (a * a) + (b * b);
