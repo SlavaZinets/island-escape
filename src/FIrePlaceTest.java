@@ -3,7 +3,9 @@ import static org.junit.jupiter.api.Assertions.*;
 public class FIrePlaceTest {
     @Test
     public void interact() {
-
+        FirePlace fire = new FirePlace(100, 100);
+         fire.interact(100, 100);
+        assertTrue(fire.isLit(), "Fire suppouse to lit");
     }
 
     @Test
