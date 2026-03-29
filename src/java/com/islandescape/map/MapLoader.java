@@ -39,15 +39,36 @@ public class MapLoader {
             Element layerElement = (Element) layerNodes.item(i);
             String layerName = layerElement.getAttribute("name");
 
-            //Get the compressed data and decompress it
+            //Get the layer data
             Element dataElement = (Element) layerElement
                     .getElementsByTagName("data").item(0);
 
-            int[][] tileData = decompressLayerData(dataElement.getTextContent().trim(), width, height);
+            String encoding = dataElement.getAttribute("encoding");
+            int[][] tileData;
+            if ("csv".equals(encoding)) {
+                tileData = parseCsvLayerData(dataElement.getTextContent().trim(), width, height);
+            } else {
+                tileData = decompressLayerData(dataElement.getTextContent().trim(), width, height);
+            }
             tileMap.addLayer(new TileLayer(layerName, tileData));
         }
 
         return tileMap;
+    }
+
+    // Parses CSV encoded layer data into a 2D int array [row][col]
+    // Preserves full raw value including flip/rotation flags in upper bits
+    private static int[][] parseCsvLayerData(String csvData, int width, int height) {
+        int[][] data = new int[height][width];
+        String[] values = csvData.split(",");
+        int index = 0;
+        for (int row = 0; row < height; row++) {
+            for (int col = 0; col < width; col++) {
+                data[row][col] = (int) Long.parseLong(values[index].trim());
+                index++;
+            }
+        }
+        return data;
     }
 
     // Decodes base64 + zlib compressed layer data into a 2D int array [row][col]
@@ -65,8 +86,8 @@ public class MapLoader {
 
         for (int row = 0; row < height; row++) {
             for (int col = 0; col < width; col++) {
-                // Mask with 0x1FFFFFFF to strip flip flags stored in upper bits by Tiled
-                data[row][col] = buffer.getInt() & 0x1FFFFFFF;
+                // Preserve full raw value including flip/rotation flags
+                data[row][col] = buffer.getInt();
             }
         }
 

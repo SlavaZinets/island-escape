@@ -14,8 +14,8 @@ public class Main {
         TileMap map = MapLoader.load("src/resources/maps/IslandMap.tmx");
 
         // 2. Create the renderer and load the tileset image
-        MapRenderer renderer = new MapRenderer(1, 16, 32);
-        renderer.loadTileset("src/resources/tilesets/island_tileset_1.png");
+        MapRenderer renderer = new MapRenderer(1, 4, 64);
+        renderer.loadTileset("src/resources/tilesets/tyleset5.png");
 
         // 3. Create the panel that draws the map
         GamePanel panel = new GamePanel(map, renderer);
