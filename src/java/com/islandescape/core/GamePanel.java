@@ -142,6 +142,17 @@ public class GamePanel extends JPanel {
 		repaint();
 	}
 
+	public void clearCraftingGrid() {
+		if (!craftingScreenOpen) {
+			return;
+		}
+		for (int index = 0; index < craftingGrid.getSlotCount(); index++) {
+			craftingGrid.setSlot(index, null);
+		}
+		refreshCraftingResult();
+		repaint();
+	}
+
 	@Override
 	protected void paintComponent(Graphics graphics) {
 		super.paintComponent(graphics);
@@ -232,8 +243,8 @@ public class GamePanel extends JPanel {
 
 		g2d.setFont(new Font("SansSerif", Font.PLAIN, 14));
 		g2d.setColor(new Color(35, 20, 10));
-		g2d.drawString("1 wood 2 stone 3 clear", panelX + 296, panelY + panelBoxH - 56);
-		g2d.drawString("arrows move enter craft i close", panelX + 265, panelY + panelBoxH - 32);
+		g2d.drawString("1 wood 2 stone 3 clear slot", panelX + 280, panelY + panelBoxH - 56);
+		g2d.drawString("arrows move enter craft c clear all esc i close", panelX + 212, panelY + panelBoxH - 32);
 	}
 
 	private void refreshCraftingResult() {

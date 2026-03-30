@@ -23,6 +23,7 @@ public class GameKeyHandler extends KeyAdapter {
 		}
 
 		switch (event.getKeyCode()) {
+			case KeyEvent.VK_ESCAPE -> gamePanel.toggleCraftingScreen();
 			case KeyEvent.VK_LEFT -> gamePanel.moveSelection(0, -1);
 			case KeyEvent.VK_RIGHT -> gamePanel.moveSelection(0, 1);
 			case KeyEvent.VK_UP -> gamePanel.moveSelection(-1, 0);
@@ -30,6 +31,7 @@ public class GameKeyHandler extends KeyAdapter {
 			case KeyEvent.VK_1 -> gamePanel.setItemInSelectedSlot("WOOD");
 			case KeyEvent.VK_2 -> gamePanel.setItemInSelectedSlot("STONE");
 			case KeyEvent.VK_3 -> gamePanel.setItemInSelectedSlot("CLEAR");
+			case KeyEvent.VK_C -> gamePanel.clearCraftingGrid();
 			case KeyEvent.VK_ENTER -> gamePanel.craftCurrentRecipe();
 			default -> {
 			}
