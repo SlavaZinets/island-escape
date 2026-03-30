@@ -58,11 +58,13 @@ public class PlayerTest {
 
     @Test
     void getXReturnsXPosition() {
+        player = new Player("Alice", 1, 10, 20);
         assertEquals(10.0, player.getX());
     }
 
     @Test
     void getYReturnsYPosition() {
+        player = new Player("Alice", 1, 10, 20);
         assertEquals(20.0, player.getY());
     }
 

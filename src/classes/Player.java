@@ -10,9 +10,13 @@ public class Player {
     private final double SPEED = 2;
 
     public Player(String name, int id, int x, int y) {
+        this.name = name;
+        this.id = id;
+        this.position = new Point(x, y);
     }
 
     public void move (Direction direction) {
+        position.setLocation(position.getX() + direction.getX() * SPEED, position.getY() + direction.getY() * SPEED);
     }
 
     public String getName() {
@@ -20,15 +24,15 @@ public class Player {
     }
 
     public int getId() {
-        return 0;
+        return id;
     }
 
     public double getX() {
-        return 0;
+        return position.getX();
     }
 
     public double getY() {
-        return 0;
+        return position.getY();
     }
 
 }
