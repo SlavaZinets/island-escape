@@ -1,3 +1,5 @@
+package com.islandescape.structures;
+
 //subclass that is representing  storage container to  allow players to store collecteditems in a fixed location for  freeing up inventory space
  
 public class Chest extends WorldStructure {

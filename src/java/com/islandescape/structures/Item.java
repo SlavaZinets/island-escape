@@ -1,3 +1,5 @@
+package com.islandescape.structures;
+
 public class Item {
     private String name;
     private String classification;

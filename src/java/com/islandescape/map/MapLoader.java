@@ -126,14 +126,18 @@ public class MapLoader {
     }
 
     // Decodes base64 + zlib compressed layer data into a 2D int array [row][col]
+    @SuppressWarnings("resource")
     private static int[][] decompressLayerData(String base64Data, int width, int height) throws Exception {
         byte[] compressed   = Base64.getDecoder().decode(base64Data);
         byte[] decompressed = new byte[width * height * 4]; // each tile = 4 bytes
 
         Inflater inflater = new Inflater();
-        inflater.setInput(compressed);
-        inflater.inflate(decompressed);
-        inflater.end();
+        try {
+            inflater.setInput(compressed);
+            inflater.inflate(decompressed);
+        } finally {
+            inflater.end();
+        }
 
         int[][] data = new int[height][width];
         ByteBuffer buffer = ByteBuffer.wrap(decompressed).order(ByteOrder.LITTLE_ENDIAN);

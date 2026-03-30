@@ -1,3 +1,5 @@
+package com.islandescape.structures;
+
 import java.awt.Graphics2D;
 import java.util.Scanner;
 
@@ -68,7 +70,6 @@ public class CraftingTable extends WorldStructure {
         int hide = count(grid, "Boar Hide");
         int planks = count(grid, "Planks");
         int clay = count(grid, "Clay");
-        int coconut = count(grid, "Coconut");
         int shell = count(grid, "Coconut Shell");
 
         if (vines == 2) return new Item("Rope", "Tools");
@@ -89,6 +90,7 @@ public class CraftingTable extends WorldStructure {
     }
 
     //helper method for crafting() method to enter the name and classification of new unknown crafted item
+    @SuppressWarnings("resource")
     private Item createCustomItem() {
         Scanner sc = new Scanner(System.in);
 

@@ -1,3 +1,5 @@
+package com.islandescape.structures;
+
 //this class is fireplace that is used for warmth and cooking on island
  // as it is providing  heat source to prevent player from freezing and allowing food processin
  //so in technical this class manages the fire state, burn time duration and heat radiation area
