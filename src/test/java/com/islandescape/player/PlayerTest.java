@@ -1,13 +1,9 @@
-package tests;
+package com.islandescape.player;
 
 import classes.Direction;
 import classes.Player;
 import org.junit.jupiter.api.BeforeAll;
 import org.junit.jupiter.api.Test;
-
-import java.awt.Point;
-
-import static org.junit.jupiter.api.Assertions.*;
 
 public class PlayerTest {
 

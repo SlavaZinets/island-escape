@@ -1,4 +1,4 @@
-package classes;
+package com.islandescape.utilities;
 
 public class Direction {
 

@@ -1,10 +1,9 @@
-package com.islandescape.core;
+package com.islandescape.window;
 
 import com.islandescape.map.MapRenderer;
 import com.islandescape.map.TileMap;
 
 import javax.swing.JPanel;
-import java.awt.Dimension;
 import java.awt.Graphics;
 import java.awt.Graphics2D;
 import java.awt.RenderingHints;

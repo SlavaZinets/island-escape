@@ -1,4 +1,6 @@
-package classes;
+package com.islandescape.player;
+
+import com.islandescape.utilities.Direction;
 
 import java.awt.Point;
 

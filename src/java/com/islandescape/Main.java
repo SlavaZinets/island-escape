@@ -1,7 +1,7 @@
 package com.islandescape;
 
-import com.islandescape.core.GamePanel;
-import com.islandescape.core.GameWindow;
+import com.islandescape.window.GamePanel;
+import com.islandescape.window.GameWindow;
 import com.islandescape.map.MapLoader;
 import com.islandescape.map.MapRenderer;
 import com.islandescape.map.TileMap;
