@@ -11,7 +11,7 @@ public class Main {
 		// sttart on edt
 
 		SwingUtilities.invokeLater(() -> {
-			// Build window
+			// build window
 			JFrame window = new JFrame("Island Escape");
 			GamePanel panel = new GamePanel();
 			// attach panel

@@ -5,14 +5,14 @@ import java.awt.event.KeyAdapter;
 import java.awt.event.KeyEvent;
 
 public class GameKeyHandler extends KeyAdapter {
-	// Target panel
+	// target panel
 	private final GamePanel gamePanel;
 	public GameKeyHandler(GamePanel gamePanel) {
 		this.gamePanel = gamePanel;
 	}
 	@Override
 	public void keyPressed(KeyEvent event) {
-		// Toggle by I
+		// toggle by i
 		if (event.getKeyCode() == KeyEvent.VK_I) {
 			gamePanel.toggleCraftingScreen();
 		}
