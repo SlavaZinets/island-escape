@@ -13,6 +13,7 @@ public class Chest extends WorldStructure {
         this.contents = new Item[25]; //it will default storage capacity
         this.opened = false; //also close by defaut
 
+        
         this.contents[0] = new Item("Stone", "Primary Resources");//stone
         this.contents[1] = new Item("Stone", "Primary Resources");
         this.contents[2] = new Item("Stone", "Primary Resources");
