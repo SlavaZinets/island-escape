@@ -6,16 +6,13 @@ import com.islandescape.map.MapLoader;
 import com.islandescape.map.MapRenderer;
 import com.islandescape.map.TileMap;
 
-import javax.swing.JScrollPane;
-
 public class Main {
     public static void main(String[] args) throws Exception {
-        // 1. Load the map from TMX
+        // 1. Load the map from TMX (tilesets are loaded automatically)
         TileMap map = MapLoader.load("src/resources/maps/IslandMap.tmx");
 
-        // 2. Create the renderer and load the tileset image
-        MapRenderer renderer = new MapRenderer(1, 4, 64);
-        renderer.loadTileset("src/resources/tilesets/tyleset5.png");
+        // 2. Create the renderer
+        MapRenderer renderer = new MapRenderer();
 
         // 3. Create the panel that draws the map
         GamePanel panel = new GamePanel(map, renderer);

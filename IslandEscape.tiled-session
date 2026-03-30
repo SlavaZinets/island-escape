@@ -1,14 +1,14 @@
 {
     "activeFile": "src/resources/maps/IslandMap.tmx",
     "expandedProjectPaths": [
-        ".claude/worktrees",
-        ".claude/worktrees/practical-mayer",
-        ".claude/worktrees/practical-mayer/.idea",
-        "src/resources/maps",
-        "src",
-        "src/resources",
         "src/resources/tilesets",
-        "."
+        ".claude/worktrees",
+        "src/resources/maps",
+        ".",
+        ".claude/worktrees/practical-mayer/.idea",
+        ".claude/worktrees/practical-mayer",
+        "src",
+        "src/resources"
     ],
     "fileStates": {
         "src/resources/maps/Boat.tsx": {
@@ -16,11 +16,11 @@
             "scaleInEditor": 1
         },
         "src/resources/maps/IslandMap.tmx": {
-            "scale": 0.0625,
-            "selectedLayer": 0,
+            "scale": 1.5,
+            "selectedLayer": 2,
             "viewCenter": {
-                "x": -792,
-                "y": 1816
+                "x": 539.3333333333333,
+                "y": 316.99999999999994
             }
         },
         "src/resources/maps/IslandTileSet.tsx": {
@@ -48,6 +48,10 @@
             "scaleInDock": 0.33,
             "scaleInEditor": 1.5
         },
+        "src/resources/tilesets/boat.tsx": {
+            "scaleInDock": 3,
+            "scaleInEditor": 1
+        },
         "src/resources/tilesets/islandTileset.tsx": {
             "scaleInDock": 1,
             "scaleInEditor": 1
@@ -55,6 +59,9 @@
         "src/resources/tilesets/tileset1.tsx": {
             "scaleInDock": 1,
             "scaleInEditor": 1
+        },
+        "src/resources/tilesets/tileset5.tsx": {
+            "scaleInDock": 1
         }
     },
     "frame.defaultDuration": 210,
@@ -63,22 +70,18 @@
     "map.lastUsedFormat": "tmx",
     "map.width": 64,
     "openFiles": [
-        "src/resources/tilesets/TileSet.tsx",
-        "src/resources/maps/Boat.tsx",
-        "src/resources/maps/IslandTileSet.tsx",
-        "src/resources/maps/IslandMap.tmx",
-        "src/resources/maps/TileSet.tsx",
-        "src/resources/tilesets/IslandTileSet.tsx"
+        "src/resources/maps/IslandMap.tmx"
     ],
     "project": "IslandEscape.tiled-project",
     "recentFiles": [
+        "src/resources/tilesets/boat.tsx",
+        "src/resources/maps/IslandMap.tmx",
+        "src/resources/tilesets/IslandTileSet.tsx",
         "src/resources/tilesets/tileset1.tsx",
         "src/resources/tilesets/TileSet.tsx",
         "src/resources/maps/Boat.tsx",
         "src/resources/maps/IslandTileSet.tsx",
-        "src/resources/tilesets/IslandTileSet.tsx",
         "src/resources/maps/TileSet.tsx",
-        "src/resources/maps/IslandMap.tmx",
         "src/resources/tilesets/Pixel.tsx",
         "src/resources/tilesets/islandTileset.tsx"
     ],

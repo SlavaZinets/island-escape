@@ -29,45 +29,58 @@ public class MapLoaderTest {
     // Test that the map dimensions and tile size are set correctly
     @Test
     public void testMapWidth() {
-        assertEquals(64, map.getWidth());
+        assertEquals(12, map.getWidth());
     }
 
     @Test
     public void testMapHeight() {
-        assertEquals(64, map.getHeight());
+        assertEquals(10, map.getHeight());
     }
 
     @Test
     public void testTileSize() {
-        assertEquals(32, map.getTileSize());
+        assertEquals(64, map.getTileSize());
     }
 
     // Test that the correct layers are present in the map
     @Test
-    public void testDeepWaterLayerExists() {
-        assertNotNull(map.getLayer("DeepWater"));
-    }
-
-    @Test
-    public void testWaterLayerExists() {
-        assertNotNull(map.getLayer("Water"));
+    public void testSeaToSandLayerExists() {
+        assertNotNull(map.getLayer("seaToSand"));
     }
 
     @Test
     public void testSandLayerExists() {
-        assertNotNull(map.getLayer("Sand"));
+        assertNotNull(map.getLayer("sand"));
     }
 
     @Test
-    public void testJungleLayerExists() {
-        assertNotNull(map.getLayer("Jungle"));
+    public void testGrassLayerExists() {
+        assertNotNull(map.getLayer("Grass"));
     }
 
     @Test
     public void testLayerDataIsNotNull() {
-        TileLayer deepWater = map.getLayer("DeepWater");
-        assertNotNull(deepWater);
-        // tile at (0,0) in DeepWater should be a valid tile id (>= 0)
-        assertTrue(deepWater.getTileAt(0, 0) >= 0);
+        TileLayer seaToSand = map.getLayer("seaToSand");
+        assertNotNull(seaToSand);
+        assertTrue(seaToSand.getTileAt(0, 0) >= 0);
+    }
+
+    // Test that tilesets are loaded
+    @Test
+    public void testTilesetsLoaded() {
+        assertFalse(map.getTilesets().isEmpty());
+    }
+
+    @Test
+    public void testTilesetHasImage() {
+        Tileset tileset = map.getTilesets().get(0);
+        assertNotNull(tileset.getImage());
+    }
+
+    @Test
+    public void testTilesetForTile() {
+        Tileset tileset = map.getTilesetForTile(1);
+        assertNotNull(tileset);
+        assertEquals(1, tileset.getFirstgid());
     }
 }

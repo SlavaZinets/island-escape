@@ -12,7 +12,7 @@ public class GameWindowTest {
 
     @BeforeEach
     public void setUp() {
-        window = new GameWindow("Island Escape", 800, 600);
+        window = new GameWindow("Island Escape");
     }
 
     @AfterEach
@@ -26,22 +26,10 @@ public class GameWindowTest {
         assertEquals("Island Escape", window.getTitle());
     }
 
-    // Test that the window width is set correctly
+    // Test that the window is fullscreen (maximized)
     @Test
-    public void testWindowWidth() {
-        assertEquals(800, window.getWindowWidth());
-    }
-
-    // Test that the window height is set correctly
-    @Test
-    public void testWindowHeight() {
-        assertEquals(600, window.getWindowHeight());
-    }
-
-    // Test that the window is not resizable
-    @Test
-    public void testWindowIsNotResizable() {
-        assertFalse(window.isResizable());
+    public void testWindowIsMaximized() {
+        assertEquals(javax.swing.JFrame.MAXIMIZED_BOTH, window.getExtendedState());
     }
 
     // Test that the window closes on exit

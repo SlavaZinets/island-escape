@@ -1,11 +1,8 @@
 package com.islandescape.map;
 
-import javax.imageio.ImageIO;
 import java.awt.Graphics2D;
 import java.awt.geom.AffineTransform;
 import java.awt.image.BufferedImage;
-import java.io.File;
-import java.io.IOException;
 
 
 public class MapRenderer {
@@ -16,22 +13,6 @@ public class MapRenderer {
     private static final int FLAG_DIAGONAL   = 0x20000000;
     private static final int MASK_TILE_ID    = 0x1FFFFFFF;
 
-    private final int offset;
-    private final int columns;
-    private final int tileSize;
-    private BufferedImage tilesetImage;
-
-
-    public MapRenderer( int offset, int columns, int tileSize) {
-        this.offset = offset;
-        this.columns = columns;
-        this.tileSize = tileSize;
-    }
-
-    // load tileset image
-    public void loadTileset(String path) throws IOException{
-        tilesetImage = ImageIO.read(new File(path));
-    }
     // check if the tile is empty (raw value with flags)
     public boolean isEmpty(int rawTileId){
         return (rawTileId & MASK_TILE_ID) == 0;
@@ -42,17 +23,9 @@ public class MapRenderer {
         return rawTileId & MASK_TILE_ID;
     }
 
-    // get the x coordinate of the tile in the tileset image
-    public int getTileSourceX(int tileId){
-        return (tileId - offset) % columns * tileSize;
-    }
-    // get the y coordinate of the tile in the tileset image
-    public int getTileSourceY(int tileId){
-        return (tileId - offset) / columns * tileSize;
-    }
     // render the map
     public void render(Graphics2D g, TileMap map){
-        String[] layers = {"Water", "waterToSand", "sand"};
+        String[] layers = {"seaToSand", "sand", "Grass", "tree", "stones"};
         for(String layer: layers){
             TileLayer tileLayer = map.getLayer(layer);
             if(tileLayer == null){
@@ -74,11 +47,15 @@ public class MapRenderer {
                 boolean flipV = (rawTileId & FLAG_VERTICAL) != 0;
                 boolean flipD = (rawTileId & FLAG_DIAGONAL) != 0;
 
-                int srcX = getTileSourceX(tileId);
-                int srcY = getTileSourceY(tileId);
+                Tileset tileset = map.getTilesetForTile(tileId);
+                if (tileset == null || tileset.getImage() == null) continue;
+
+                int srcX = tileset.getTileSourceX(tileId);
+                int srcY = tileset.getTileSourceY(tileId);
+                int tileSize = tileset.getTileWidth();
 
                 // Extract the tile from the tileset
-                BufferedImage tileImage = tilesetImage.getSubimage(srcX, srcY, tileSize, tileSize);
+                BufferedImage tileImage = tileset.getImage().getSubimage(srcX, srcY, tileSize, tileSize);
 
                 int destX = col * tileSize;
                 int destY = row * tileSize;
@@ -120,6 +97,4 @@ public class MapRenderer {
             }
         }
     }
-
-
 }
