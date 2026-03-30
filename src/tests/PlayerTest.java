@@ -15,6 +15,8 @@ public class PlayerTest {
         player = new Player("Alice", 1, 10, 20);
     }
 
+
+
     // tests for constructor
 
     @Test
@@ -34,6 +36,30 @@ public class PlayerTest {
 
     @Test
     void constructorSetsYPosition() {
+        assertEquals(20.0, player.getY());
+    }
+
+
+
+    // tests for getters
+
+    @Test
+    void getNameReturnsName() {
+        assertEquals("Alice", player.getName());
+    }
+
+    @Test
+    void getIdReturnsId() {
+        assertEquals(1, player.getId());
+    }
+
+    @Test
+    void getXReturnsXPosition() {
+        assertEquals(10.0, player.getX());
+    }
+
+    @Test
+    void getYReturnsYPosition() {
         assertEquals(20.0, player.getY());
     }
 }
