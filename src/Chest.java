@@ -45,13 +45,7 @@ public class Chest extends WorldStructure {
     @Override
     public void interact(double playerx, double playery) {
         if (isPlayerInRange(playerx, playery)) {
-        if (this.opened == true) {
-
-            this.opened = false;
-        } else {
-
-            this.opened = true;
-        }
+            this.opened = !this.opened;  // toggle boolean uopdate instead of if else
         }else{
                 System.out.println("Too far away");
             }
