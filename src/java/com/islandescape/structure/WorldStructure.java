@@ -1,3 +1,5 @@
+package com.islandescape.structure;
+
 import java.awt.Graphics2D;
 
 

@@ -1,5 +1,7 @@
+package com.islandescape.structure;
 import java.awt.Graphics2D;
 import java.util.Scanner;
+
 
  //this is a subclass called crafting table that is used to enables professional item creation procceses in the game
    //providing ability for  players as a working place to combine raw resources into something useful as tools  or gear

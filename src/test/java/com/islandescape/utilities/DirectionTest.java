@@ -1,7 +1,9 @@
 package com.islandescape.utilities;
 
-import classes.Direction;
+import com.islandescape.utilities.Direction;
 import org.junit.jupiter.api.Test;
+
+import static org.junit.jupiter.api.Assertions.assertEquals;
 
 public class DirectionTest {
 

@@ -1,9 +1,10 @@
 package com.islandescape.player;
 
-import classes.Direction;
-import classes.Player;
+import com.islandescape.utilities.Direction;
 import org.junit.jupiter.api.BeforeAll;
 import org.junit.jupiter.api.Test;
+
+import static org.junit.jupiter.api.Assertions.assertEquals;
 
 public class PlayerTest {
 

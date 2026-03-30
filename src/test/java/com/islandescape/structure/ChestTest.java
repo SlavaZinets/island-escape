@@ -1,5 +1,9 @@
+package com.islandescape.structure;
+
 import org.junit.jupiter.api.Test;
 import static org.junit.jupiter.api.Assertions.*;
+import com.islandescape.structure.Chest;
+
 
 public class ChestTest {
 

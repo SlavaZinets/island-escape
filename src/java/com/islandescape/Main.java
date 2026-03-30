@@ -23,5 +23,7 @@ public class Main {
         GameWindow window = new GameWindow("Island Escape");
         window.add(panel);
         window.setVisible(true);
+
+
     }
 }
