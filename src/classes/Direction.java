@@ -4,13 +4,10 @@ import java.awt.Point;
 
 public class Direction {
 
-    private Point direction;
+    private int x;
+    private int y;
 
     public Direction(int x, int y) {
-    }
-
-    public Point getDirection() {
-        return null;
     }
 
     public int getX() {
@@ -21,11 +18,16 @@ public class Direction {
         return 0;
     }
 
+    public void setX(int x) {
+    }
+    public void setY(int y) {}
+
     public void setDirection(int x, int y) {
+
     }
 
-    public Direction normalize() {
-        return null;
+    private void normalize () {
+
     }
 
 }
