@@ -34,6 +34,9 @@ public class GamePanel extends JPanel {
 	private boolean craftingScreenOpen;
 	private boolean paused;
 	private int worldTick;
+	private int selectedSlotIndex;
+	private String currentResultItemName;
+	private int craftedPlankCount;
 
 	public GamePanel() {
 		// panel base
@@ -56,7 +59,8 @@ public class GamePanel extends JPanel {
 
 		// demo slots
 		craftingGrid.setSlot(0, new Item("Wood"));
-		craftingGrid.setSlot(1, new Item("Stone"));
+		craftingGrid.setSlot(1, new Item("Wood"));
+		refreshCraftingResult();
 
 		// loop timer
 		gameLoopTimer = new Timer(1000 / 10, event -> gameTick());
@@ -89,6 +93,53 @@ public class GamePanel extends JPanel {
 
 	public boolean isPaused() {
 		return paused;
+	}
+
+	public void moveSelection(int rowShift, int colShift) {
+		if (!craftingScreenOpen) {
+			return;
+		}
+		int row = selectedSlotIndex / 2;
+		int col = selectedSlotIndex % 2;
+		row = Math.max(0, Math.min(1, row + rowShift));
+		col = Math.max(0, Math.min(1, col + colShift));
+		selectedSlotIndex = row * 2 + col;
+		repaint();
+	}
+
+	public void setItemInSelectedSlot(String itemType) {
+		if (!craftingScreenOpen) {
+			return;
+		}
+		if ("WOOD".equals(itemType)) {
+			craftingGrid.setSlot(selectedSlotIndex, new Item("Wood"));
+		} else if ("STONE".equals(itemType)) {
+			craftingGrid.setSlot(selectedSlotIndex, new Item("Stone"));
+		} else if ("CLEAR".equals(itemType)) {
+			craftingGrid.setSlot(selectedSlotIndex, null);
+		}
+		refreshCraftingResult();
+		repaint();
+	}
+
+	public void craftCurrentRecipe() {
+		if (!craftingScreenOpen || !"plank".equals(currentResultItemName)) {
+			return;
+		}
+
+		int removedWood = 0;
+		for (int index = 0; index < craftingGrid.getSlotCount(); index++) {
+			Item slotItem = craftingGrid.getSlot(index);
+			if (slotItem != null && "wood".equalsIgnoreCase(slotItem.getName()) && removedWood < 2) {
+				craftingGrid.setSlot(index, null);
+				removedWood++;
+			}
+		}
+
+		craftedPlankCount++;
+		refreshCraftingResult();
+		updateStateLabel();
+		repaint();
 	}
 
 	@Override
@@ -136,7 +187,7 @@ public class GamePanel extends JPanel {
 			int x = startX + col * (slotSize + slotGap);
 			int y = startY + row * (slotSize + slotGap);
 
-			BufferedImage slotImage = index == 0 ? craftingSlotSelected : craftingSlotEmpty;
+			BufferedImage slotImage = index == selectedSlotIndex ? craftingSlotSelected : craftingSlotEmpty;
 			if (slotImage != null) {
 				g2d.drawImage(slotImage, x, y, slotSize, slotSize, null);
 			} else {
@@ -174,14 +225,32 @@ public class GamePanel extends JPanel {
 			g2d.drawRect(resultX, resultY, 72, 72);
 		}
 
-		BufferedImage plankIcon = itemIcons.get("plank");
+		BufferedImage plankIcon = itemIcons.get(currentResultItemName);
 		if (plankIcon != null) {
 			g2d.drawImage(plankIcon, resultX + 20, resultY + 20, 32, 32, null);
 		}
 
 		g2d.setFont(new Font("SansSerif", Font.PLAIN, 14));
 		g2d.setColor(new Color(35, 20, 10));
-		g2d.drawString("press i to close", panelX + 322, panelY + panelBoxH - 36);
+		g2d.drawString("1 wood 2 stone 3 clear", panelX + 296, panelY + panelBoxH - 56);
+		g2d.drawString("arrows move enter craft i close", panelX + 265, panelY + panelBoxH - 32);
+	}
+
+	private void refreshCraftingResult() {
+		int woodCount = 0;
+		for (int index = 0; index < craftingGrid.getSlotCount(); index++) {
+			Item slotItem = craftingGrid.getSlot(index);
+			if (slotItem == null) {
+				continue;
+			}
+			if ("wood".equalsIgnoreCase(slotItem.getName())) {
+				woodCount++;
+			} else {
+				currentResultItemName = null;
+				return;
+			}
+		}
+		currentResultItemName = woodCount == 2 ? "plank" : null;
 	}
 
 	private void loadCraftingAssets() {
@@ -206,7 +275,11 @@ public class GamePanel extends JPanel {
 
 	private void updateStateLabel() {
 		// show state
-		stateLabel.setText(craftingScreenOpen ? "Crafting: OPEN | Game: PAUSED" : "Crafting: CLOSED | Game: RUNNING");
+		stateLabel.setText(
+				craftingScreenOpen
+						? "Crafting: OPEN | Game: PAUSED | Planks: " + craftedPlankCount
+						: "Crafting: CLOSED | Game: RUNNING | Planks: " + craftedPlankCount
+		);
 	}
 
 	private void updateTickLabel() {

@@ -15,6 +15,24 @@ public class GameKeyHandler extends KeyAdapter {
 		// toggle by i
 		if (event.getKeyCode() == KeyEvent.VK_I) {
 			gamePanel.toggleCraftingScreen();
+			return;
+		}
+
+		if (!gamePanel.isCraftingScreenOpen()) {
+			return;
+		}
+
+		switch (event.getKeyCode()) {
+			case KeyEvent.VK_LEFT -> gamePanel.moveSelection(0, -1);
+			case KeyEvent.VK_RIGHT -> gamePanel.moveSelection(0, 1);
+			case KeyEvent.VK_UP -> gamePanel.moveSelection(-1, 0);
+			case KeyEvent.VK_DOWN -> gamePanel.moveSelection(1, 0);
+			case KeyEvent.VK_1 -> gamePanel.setItemInSelectedSlot("WOOD");
+			case KeyEvent.VK_2 -> gamePanel.setItemInSelectedSlot("STONE");
+			case KeyEvent.VK_3 -> gamePanel.setItemInSelectedSlot("CLEAR");
+			case KeyEvent.VK_ENTER -> gamePanel.craftCurrentRecipe();
+			default -> {
+			}
 		}
 	}
 }
