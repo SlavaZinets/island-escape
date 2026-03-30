@@ -1,27 +1,33 @@
 package com.islandescape;
 
-import com.islandescape.window.GamePanel;
+import com.islandescape.core.GamePanel;
+import com.islandescape.input.GameKeyHandler;
+import javax.swing.SwingUtilities;
 import com.islandescape.window.GameWindow;
 import com.islandescape.map.MapLoader;
 import com.islandescape.map.MapRenderer;
 import com.islandescape.map.TileMap;
 
 public class Main {
-    public static void main(String[] args) throws Exception {
-        // 1. Load the map from TMX (tilesets are loaded automatically)
-        TileMap map = MapLoader.load("src/resources/maps/IslandMap.tmx");
+	public static void main(String[] args) {
+		SwingUtilities.invokeLater(() -> {
+			try {
+				TileMap map = MapLoader.load("src/resources/maps/IslandMap.tmx");
+				MapRenderer renderer = new MapRenderer();
 
-        // 2. Create the renderer
-        MapRenderer renderer = new MapRenderer();
+				GamePanel panel = new GamePanel(map, renderer);
 
-        // 3. Create the panel that draws the map
-        GamePanel panel = new GamePanel(map, renderer);
+				GameWindow window = new GameWindow("Island Escape");
+				window.add(panel);
 
+				panel.setFocusable(true);
+				panel.addKeyListener(new GameKeyHandler(panel));
 
-
-        // 4. Create the window fullscreen and add the panel
-        GameWindow window = new GameWindow("Island Escape");
-        window.add(panel);
-        window.setVisible(true);
+				window.setVisible(true);
+				panel.requestFocusInWindow();
+			} catch (Exception exception) {
+				throw new RuntimeException("Failed to start game", exception);
+			}
+		});
     }
 }
