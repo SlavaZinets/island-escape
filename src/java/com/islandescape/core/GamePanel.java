@@ -2,6 +2,8 @@ package com.islandescape.core;
 
 import com.islandescape.entity.CraftingGrid;
 import com.islandescape.entity.Item;
+import com.islandescape.map.MapRenderer;
+import com.islandescape.map.TileMap;
 
 import javax.imageio.ImageIO;
 import javax.swing.JLabel;
@@ -13,6 +15,7 @@ import java.awt.Dimension;
 import java.awt.Font;
 import java.awt.Graphics;
 import java.awt.Graphics2D;
+import java.awt.RenderingHints;
 import java.awt.image.BufferedImage;
 import java.io.File;
 import java.io.IOException;
@@ -20,6 +23,11 @@ import java.util.HashMap;
 import java.util.Map;
 
 public class GamePanel extends JPanel {
+	private final TileMap map;
+	private final MapRenderer renderer;
+	private final int nativeWidth;
+	private final int nativeHeight;
+
 	// craft state
 	private final JLabel stateLabel;
 	private final JLabel tickLabel;
@@ -39,6 +47,21 @@ public class GamePanel extends JPanel {
 	private int craftedPlankCount;
 
 	public GamePanel() {
+		this(null, null);
+	}
+
+	public GamePanel(TileMap map, MapRenderer renderer) {
+		this.map = map;
+		this.renderer = renderer;
+
+		if (map != null) {
+			nativeWidth = map.getWidth() * map.getTileSize();
+			nativeHeight = map.getHeight() * map.getTileSize();
+		} else {
+			nativeWidth = 960;
+			nativeHeight = 640;
+		}
+
 		// panel base
 		setLayout(new BorderLayout());
 		setBackground(Color.BLACK);
@@ -157,6 +180,33 @@ public class GamePanel extends JPanel {
 	protected void paintComponent(Graphics graphics) {
 		super.paintComponent(graphics);
 		Graphics2D g2d = (Graphics2D) graphics;
+
+		g2d.setColor(Color.BLACK);
+		g2d.fillRect(0, 0, getWidth(), getHeight());
+
+		if (map != null && renderer != null) {
+			try {
+				BufferedImage buffer = new BufferedImage(nativeWidth, nativeHeight, BufferedImage.TYPE_INT_ARGB);
+				Graphics2D bufferG = buffer.createGraphics();
+				renderer.render(bufferG, map);
+				bufferG.dispose();
+
+				g2d.setRenderingHint(RenderingHints.KEY_INTERPOLATION, RenderingHints.VALUE_INTERPOLATION_BILINEAR);
+
+				double scaleX = (double) getWidth() / nativeWidth;
+				double scaleY = (double) getHeight() / nativeHeight;
+				double scale = Math.min(scaleX, scaleY);
+
+				int scaledWidth = (int) (nativeWidth * scale);
+				int scaledHeight = (int) (nativeHeight * scale);
+				int offsetX = (getWidth() - scaledWidth) / 2;
+				int offsetY = (getHeight() - scaledHeight) / 2;
+
+				g2d.drawImage(buffer, offsetX, offsetY, scaledWidth, scaledHeight, null);
+			} catch (Exception exception) {
+				exception.printStackTrace();
+			}
+		}
 
 		if (craftingScreenOpen) {
 			drawCraftingOverlay(g2d);

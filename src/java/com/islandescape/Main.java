@@ -2,29 +2,32 @@ package com.islandescape;
 
 import com.islandescape.core.GamePanel;
 import com.islandescape.input.GameKeyHandler;
-import javax.swing.JFrame;
 import javax.swing.SwingUtilities;
-
+import com.islandescape.window.GameWindow;
+import com.islandescape.map.MapLoader;
+import com.islandescape.map.MapRenderer;
+import com.islandescape.map.TileMap;
 
 public class Main {
 	public static void main(String[] args) {
-		// sttart on edt
-
 		SwingUtilities.invokeLater(() -> {
-			// build window
-			JFrame window = new JFrame("Island Escape");
-			GamePanel panel = new GamePanel();
-			// attach panel
-			window.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
-			window.add(panel);
-			window.pack();
-			window.setLocationRelativeTo(null);
-			// bind input
-			panel.setFocusable(true);
-			panel.addKeyListener(new GameKeyHandler(panel));
-			// show window
-			window.setVisible(true);
-			panel.requestFocusInWindow();
+			try {
+				TileMap map = MapLoader.load("src/resources/maps/IslandMap.tmx");
+				MapRenderer renderer = new MapRenderer();
+
+				GamePanel panel = new GamePanel(map, renderer);
+
+				GameWindow window = new GameWindow("Island Escape");
+				window.add(panel);
+
+				panel.setFocusable(true);
+				panel.addKeyListener(new GameKeyHandler(panel));
+
+				window.setVisible(true);
+				panel.requestFocusInWindow();
+			} catch (Exception exception) {
+				throw new RuntimeException("Failed to start game", exception);
+			}
 		});
-	}
+    }
 }
