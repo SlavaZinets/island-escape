@@ -1,5 +1,6 @@
 package tests;
 
+import classes.Direction;
 import classes.Player;
 import org.junit.jupiter.api.BeforeAll;
 import org.junit.jupiter.api.Test;
@@ -75,7 +76,7 @@ public class PlayerTest {
     void moveRight() {
         double prevX = player.getX();
         double prevY = player.getY();
-        player.move(new Point(1, 0));
+        player.move(new Direction(1, 0));
         assertEquals(prevX + SPEED, player.getX());
         assertEquals(prevY, player.getY());
     }
@@ -84,7 +85,7 @@ public class PlayerTest {
     void moveLeft() {
         double prevX = player.getX();
         double prevY = player.getY();
-        player.move(new Point(-1, 0));
+        player.move(new Direction(-1, 0));
         assertEquals(prevX - SPEED, player.getX());
         assertEquals(prevY, player.getY());
     }
@@ -93,7 +94,7 @@ public class PlayerTest {
     void moveUp() {
         double prevX = player.getX();
         double prevY = player.getY();
-        player.move(new Point(0, 1));
+        player.move(new Direction(0, 1));
         assertEquals(prevX, player.getX());
         assertEquals(prevY + SPEED, player.getY());
     }
@@ -102,7 +103,7 @@ public class PlayerTest {
     void moveDown() {
         double prevX = player.getX();
         double prevY = player.getY();
-        player.move(new Point(0, -1));
+        player.move(new Direction(0, -1));
         assertEquals(prevX, player.getX());
         assertEquals(prevY - SPEED, player.getY());
     }
@@ -111,7 +112,7 @@ public class PlayerTest {
     void moveRightAndUp() {
         double prevX = player.getX();
         double prevY = player.getY();
-        player.move(new Point(1, 1));
+        player.move(new Direction(1, 1));
         assertEquals(prevX + SPEED, player.getX());
         assertEquals(prevY + SPEED, player.getY());
     }
@@ -120,7 +121,7 @@ public class PlayerTest {
     void moveLeftAndDown() {
         double prevX = player.getX();
         double prevY = player.getY();
-        player.move(new Point(-1, -1));
+        player.move(new Direction(-1, -1));
         assertEquals(prevX - SPEED, player.getX());
         assertEquals(prevY - SPEED, player.getY());
     }
@@ -129,7 +130,7 @@ public class PlayerTest {
     void moveWithZeroDirection() {
         double prevX = player.getX();
         double prevY = player.getY();
-        player.move(new Point(0, 0));
+        player.move(new Direction(0, 0));
         assertEquals(prevX, player.getX());
         assertEquals(prevY, player.getY());
     }
@@ -138,7 +139,7 @@ public class PlayerTest {
     void moveWithNotUnitDirection() {
         double prevX = player.getX();
         double prevY = player.getY();
-        player.move(new Point(7, 8));
+        player.move(new Direction(7, 8));
         assertEquals(prevX + SPEED, player.getX());
         assertEquals(prevY + SPEED, player.getY());
     }
