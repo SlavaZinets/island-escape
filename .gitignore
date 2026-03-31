@@ -26,5 +26,11 @@ bin/
 ### VS Code ###
 .vscode/
 
+### Java build artifacts ###
+*.class
+
 ### Mac OS ###
 .DS_Store
+
+###Cloud
+.claude/
