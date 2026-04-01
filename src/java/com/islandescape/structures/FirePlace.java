@@ -129,9 +129,9 @@ public class FirePlace extends WorldStructure {
 
         if (this.lit && food != null) {
 
-            //chhange name to cooked state
+            //change name to cooked state
             String newName = food.getName().replace("Raw", "Cooked");
-            return new Item(newName, "Custom");
+            return new Item(food.getType(), food.getCategory(), newName, "Cooked " + food.getDescription());
         }
         return null;
     }

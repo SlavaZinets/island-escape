@@ -25,7 +25,9 @@ public class ItemTest {
     public void testSplitItem(){
         Item banana = new Item(ItemType.BANANA, ItemCategory.FOOD, "Banana", "Nutritious fruit", 8);
         Item coconut= new Item(ItemType.COCONUT, ItemCategory.FOOD, "Banana", "Nutritious fruit", 4);
+        Item fish = new Item(ItemType.FISH , ItemCategory.FOOD, "Fish", "Fish", 10);
         Item axe = new Item(ItemType.AXE, ItemCategory.TOOL, "Axe", "Axe for stone extraction");
+
 
         // check cases when the amount is less than the item quantity
         Item splitBananaResult = banana.split(2);
@@ -35,11 +37,14 @@ public class ItemTest {
         // check when the amount is bigger than the item quantity
         Item splitCoconutResult = coconut.split(5);
         assertEquals(4,splitCoconutResult.getQuantity()); // new split item with quantity 4,
-        assertEquals(0, banana.getQuantity()); // new coconut quantity after split
+        assertEquals(0, coconut.getQuantity()); // new coconut quantity after split
 
         //check case when we pass an unstackable item
 
         assertEquals(1, axe.split(12).getQuantity());
+
+        //check case when amount equals to 0
+        assertNull(fish.split(0));
 
     }
     @Test

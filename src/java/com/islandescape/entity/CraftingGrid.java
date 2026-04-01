@@ -1,5 +1,7 @@
 package com.islandescape.entity;
 
+import com.islandescape.item.Item;
+
 public class CraftingGrid {
 	private static final int SLOT_COUNT = 4;
 

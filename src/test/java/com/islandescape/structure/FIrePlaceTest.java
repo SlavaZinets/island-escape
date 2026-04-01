@@ -2,6 +2,8 @@ package com.islandescape.structure;
 
 import com.islandescape.structures.FirePlace;
 import com.islandescape.item.Item;
+import com.islandescape.item.ItemCategory;
+import com.islandescape.item.ItemType;
 import org.junit.jupiter.api.Test;
 import static org.junit.jupiter.api.Assertions.*;
 public class FIrePlaceTest {
@@ -23,7 +25,7 @@ public class FIrePlaceTest {
         FirePlace fire = new FirePlace(100, 100);
          fire.light(100, 100);
          double startTime = 100.0;
-        Item wood = new Item("Wood stick", "Custom");
+        Item wood = new Item(ItemType.WOOD, ItemCategory.PRIMARY_RESOURCE, "Wood stick", "A wooden stick");
         fire.addFuel(wood);
         assertTrue(fire.burnTimer > startTime, "Timer suppose to increase");
     }
@@ -47,11 +49,12 @@ public class FIrePlaceTest {
     @Test
     public void cook() {
         FirePlace fire = new FirePlace(100, 100);
-        Item rawFood = new Item("Raw Fish", "Custom");
+        Item rawFood = new Item(ItemType.FISH, ItemCategory.FOOD, "Raw Fish", "A fresh fish");
         fire.light(100, 100);
         Item result = fire.cook(rawFood); //cookin
-        //if result null or no match for nsme- falls
-        assert result != null && result.getName().equals("Cooked");
+        //if result null or no match for name - fails
+        assertNotNull(result);
+        assertEquals("Cooked Fish", result.getName());
     }
 
 }

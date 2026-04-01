@@ -2,6 +2,8 @@ package com.islandescape.structure;
 
 import com.islandescape.structures.Chest;
 import com.islandescape.item.Item;
+import com.islandescape.item.ItemCategory;
+import com.islandescape.item.ItemType;
 import org.junit.jupiter.api.Test;
 import static org.junit.jupiter.api.Assertions.*;
 
@@ -28,7 +30,7 @@ public class ChestTest {
     @Test
     public void addItem() {
         Chest chest = new Chest(100, 100);
-        Item wood = new Item("wood", "Custom");
+        Item wood = new Item(ItemType.WOOD, ItemCategory.PRIMARY_RESOURCE, "Wood", "A piece of wood");
         assertTrue(chest.addItem(wood), "item addded");
     }
 

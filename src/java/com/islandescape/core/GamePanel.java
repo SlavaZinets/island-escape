@@ -1,6 +1,9 @@
 package com.islandescape.core;
 
 import com.islandescape.entity.CraftingGrid;
+import com.islandescape.item.Item;
+import com.islandescape.item.ItemCategory;
+import com.islandescape.item.ItemType;
 import com.islandescape.map.MapRenderer;
 import com.islandescape.map.TileMap;
 
@@ -80,8 +83,8 @@ public class GamePanel extends JPanel {
 		add(tickLabel, BorderLayout.SOUTH);
 
 		// demo slots
-		craftingGrid.setSlot(0, new Item("Wood"));
-		craftingGrid.setSlot(1, new Item("Wood"));
+		craftingGrid.setSlot(0, new Item(ItemType.WOOD, ItemCategory.PRIMARY_RESOURCE, "Wood", "Wood", 3));
+		craftingGrid.setSlot(1, new Item(ItemType.WOOD, ItemCategory.PRIMARY_RESOURCE, "Wood", "Wood", 3));
 		refreshCraftingResult();
 
 		// loop timer
@@ -134,9 +137,10 @@ public class GamePanel extends JPanel {
 			return;
 		}
 		if ("WOOD".equals(itemType)) {
-			craftingGrid.setSlot(selectedSlotIndex, new Item("Wood"));
+			craftingGrid.setSlot(selectedSlotIndex, new Item(ItemType.WOOD, ItemCategory.PRIMARY_RESOURCE, "Wood", "Wood", 3));
+
 		} else if ("STONE".equals(itemType)) {
-			craftingGrid.setSlot(selectedSlotIndex, new Item("Stone"));
+			craftingGrid.setSlot(selectedSlotIndex, new Item(ItemType.STONE, ItemCategory.PRIMARY_RESOURCE, "Stone", "Stone", 5));
 		} else if ("CLEAR".equals(itemType)) {
 			craftingGrid.setSlot(selectedSlotIndex, null);
 		}
