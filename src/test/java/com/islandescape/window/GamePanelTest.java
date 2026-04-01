@@ -1,10 +1,9 @@
-package com.islandescape.core;
+package com.islandescape.window;
 
 import com.islandescape.map.MapLoader;
 import com.islandescape.map.MapRenderer;
 import com.islandescape.map.TileMap;
 import org.junit.jupiter.api.BeforeEach;
-import org.junit.jupiter.api.AfterEach;
 import org.junit.jupiter.api.Test;
 
 import static org.junit.jupiter.api.Assertions.*;

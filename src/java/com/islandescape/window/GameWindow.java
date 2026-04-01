@@ -1,4 +1,4 @@
-package com.islandescape.core;
+package com.islandescape.window;
 
 import javax.swing.JFrame;
 
