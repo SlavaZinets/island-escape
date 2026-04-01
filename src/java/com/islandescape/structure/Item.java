@@ -1,6 +1,7 @@
 package com.islandescape.structure;
 
-public class Item {
+public class
+Item {
     private String name;
     private String classification;
 

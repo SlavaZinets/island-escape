@@ -1,7 +1,7 @@
 package com.islandescape.player;
 
 import com.islandescape.utilities.Direction;
-
+import javax.swing.*;
 import java.awt.Point;
 
 public class Player {

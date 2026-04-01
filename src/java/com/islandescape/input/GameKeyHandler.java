@@ -1,6 +1,6 @@
 package com.islandescape.input;
 
-import com.islandescape.core.GamePanel;
+import com.islandescape.window.GamePanel;
 import java.awt.event.KeyAdapter;
 import java.awt.event.KeyEvent;
 

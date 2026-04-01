@@ -56,9 +56,8 @@ public class CraftingTable extends WorldStructure {
                 }
             }
         } else {
-
+            System.out.println("Crafting failed");
         }
-        System.out.println("Crafting failed");
         }
     //defining the specific mixs here
     private Item craftFromMix(Item[] grid) {
