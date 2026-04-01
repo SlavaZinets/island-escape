@@ -9,25 +9,20 @@ import com.islandescape.map.MapRenderer;
 import com.islandescape.map.TileMap;
 
 public class Main {
-	public static void main(String[] args) {
-		SwingUtilities.invokeLater(() -> {
-			try {
-				TileMap map = MapLoader.load("src/resources/maps/IslandMap.tmx");
-				MapRenderer renderer = new MapRenderer();
+	public static void main(String[] args) throws Exception {
+		TileMap map = MapLoader.load("src/resources/maps/IslandMap.tmx");
 
-				GamePanel panel = new GamePanel(map, renderer);
+		// 2. Create the renderer
+		MapRenderer renderer = new MapRenderer();
 
-				GameWindow window = new GameWindow("Island Escape");
-				window.add(panel);
+		// 3. Create the panel that draws the map
+		GamePanel panel = new GamePanel(map, renderer);
 
-				panel.setFocusable(true);
-				panel.addKeyListener(new GameKeyHandler(panel));
 
-				window.setVisible(true);
-				panel.requestFocusInWindow();
-			} catch (Exception exception) {
-				throw new RuntimeException("Failed to start game", exception);
-			}
-		});
+
+		// 4. Create the window fullscreen and add the panel
+		GameWindow window = new GameWindow("Island Escape");
+		window.add(panel);
+		window.setVisible(true);
     }
 }
