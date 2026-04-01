@@ -24,20 +24,44 @@ public class Item {
       this.description = description;
       quantity = 1;
    }
+
+
+   //Getters
+   public int getQuantity(){
+      return  quantity;
+   }
+
+   public int getMaxStackSize() {
+      return maxStackSize;
+   }
+
+   public ItemCategory getCategory() {
+      return category;
+   }
+
+   public ItemType getType() {
+      return type;
+   }
+
+   public String getName() {
+      return name;
+   }
+
+   public String getDescription() {
+      return description;
+   }
+
+
    public boolean use(Player player) {
-       return false;
+      return false;
    }
    public boolean isStackable() {
-       return true;
+      return true;
    }
    public Item split(int amount) {
-       return null;
+      return null;
    }
-   public void merge(Item item){
-
+   public boolean merge(Item item){
+      return false;
    }
-
-
-
-
 }
