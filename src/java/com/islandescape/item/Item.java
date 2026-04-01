@@ -8,7 +8,7 @@ public class Item {
    private String name;
    private String description;
    private int quantity;
-   private static final int MAX_STACK_SIZE = 15;
+   private static final int MAX_STACK_SIZE = 10;
    private static final Set<ItemCategory> UNSTACKABLE = Set.of(
            ItemCategory.TOOL, ItemCategory.CUTLERY
    );
