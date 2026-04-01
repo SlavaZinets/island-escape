@@ -1,3 +1,7 @@
+package com.islandescape.structure;
+
+import com.islandescape.structures.FirePlace;
+import com.islandescape.item.Item;
 import org.junit.jupiter.api.Test;
 import static org.junit.jupiter.api.Assertions.*;
 public class FIrePlaceTest {

@@ -1,7 +1,6 @@
 package com.islandescape.core;
 
 import com.islandescape.entity.CraftingGrid;
-import com.islandescape.entity.Item;
 import com.islandescape.map.MapRenderer;
 import com.islandescape.map.TileMap;
 

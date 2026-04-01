@@ -1,3 +1,7 @@
+package com.islandescape.structures;
+
+import com.islandescape.item.Item;
+
 import java.awt.Graphics2D;
 import java.util.Scanner;
 
