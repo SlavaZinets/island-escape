@@ -39,6 +39,7 @@ public class GamePanel extends JPanel {
         super.paintComponent(g);
         g.setColor(java.awt.Color.BLACK);
         g.fillRect(0, 0, getWidth(), getHeight());
+
         map.renderMapComponent(renderer, g, map);
 
         // write code here to draw

@@ -2,7 +2,7 @@ package com.islandescape.player;
 
 import com.islandescape.utilities.Direction;
 
-import java.awt.Point;
+import java.awt.*;
 
 public class Player {
 
@@ -35,6 +35,9 @@ public class Player {
 
     public double getY() {
         return position.getY();
+    }
+
+    public void renderPlayer(Graphics2D g) {
     }
 
 }
