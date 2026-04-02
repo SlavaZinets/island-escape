@@ -1,8 +1,11 @@
 package com.islandescape.structure;
 
+import com.islandescape.structures.CraftingTable;
+import com.islandescape.item.Item;
+import com.islandescape.item.ItemCategory;
+import com.islandescape.item.ItemType;
 import org.junit.jupiter.api.Test;
 import static org.junit.jupiter.api.Assertions.*;
-
 public class CraftingTableTest {
     @Test   public void interact() {
 
@@ -22,9 +25,9 @@ public class CraftingTableTest {
     public void Crafting() {
         CraftingTable table = new CraftingTable(0, 0);
         Item[] inv = new Item[5];
-         inv[0] = new Item("Wood", "Materials");
-        inv[1] = new Item("Stone", "Materials");
-         inv[2] = new Item("Rope", "Materials");
+         inv[0] = new Item(ItemType.WOOD, ItemCategory.PRIMARY_RESOURCE, "Wood", "A piece of wood");
+        inv[1] = new Item(ItemType.STONE, ItemCategory.PRIMARY_RESOURCE, "Stone", "A solid stone");
+         inv[2] = new Item(ItemType.ROPE, ItemCategory.CRAFTABLE_RESOURCE, "Rope", "Crafted rope");
            int[] indices = {0, 1, 2};
         //running craft at table position
         table.Crafting(0, 0, inv, indices);

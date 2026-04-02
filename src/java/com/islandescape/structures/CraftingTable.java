@@ -1,7 +1,10 @@
 package com.islandescape.structure;
-import java.awt.Graphics2D;
-import java.util.Scanner;
 
+import com.islandescape.item.Item;
+import com.islandescape.item.ItemCategory;
+import com.islandescape.item.ItemType;
+
+import java.awt.Graphics2D;
 
  //this is a subclass called crafting table that is used to enables professional item creation procceses in the game
    //providing ability for  players as a working place to combine raw resources into something useful as tools  or gear
@@ -45,7 +48,7 @@ public class CraftingTable extends WorldStructure {
 
         // give the crafted item back to the player
         if (result != null) {
-            System.out.println("Crafted: " + result.getName() + " (" + result.getClassification() + ")");
+            System.out.println("Crafted: " + result.getName() + " (" + result.getCategory() + ")");
 
             //look for the first empty slot  in the inventory to store the result
             for (int i = 0; i < playerInventory.length; i++) {
@@ -56,8 +59,9 @@ public class CraftingTable extends WorldStructure {
                 }
             }
         } else {
-            System.out.println("Crafting failed");
+
         }
+        System.out.println("Crafting failed");
         }
     //defining the specific mixs here
     private Item craftFromMix(Item[] grid) {
@@ -72,41 +76,22 @@ public class CraftingTable extends WorldStructure {
         int coconut = count(grid, "Coconut");
         int shell = count(grid, "Coconut Shell");
 
-        if (vines == 2) return new Item("Rope", "Tools");
-        if (leaves == 1 && rope == 1) return new Item("Bandage", "Medical");
-        if (shell == 1 && vines == 1) return new Item("Coconut Bottle", "Cutlery");
-        if (clay == 2) return new Item("Clay Cup", "Cutlery");
-        if (stone == 1 && wood == 1 && rope == 1) return new Item("Axe", "Tools");
-        if (stone == 2 && wood == 1 && rope == 1) return new Item("Pickaxe", "Tools");
-        if (wood == 2) return new Item("Planks", "Boat Parts");
-        if (wood == 3 && rope == 1) return new Item("Mast", "Boat Parts");
-        if (planks == 2 && rope == 2) return new Item("Frame", "Boat Parts");
-        if (leaves == 2 && hide == 2) return new Item("Sail", "Boat Parts");
-        if (planks == 2 && stone == 1 && rope == 1) return new Item("Rudder", "Boat Parts");
-        if (stone == 2 && rope == 1 && wood == 1) return new Item("Fittings", "Boat Parts");
-        if (vines == 2 && hide == 2) return new Item("Backpack", "Storage");
+        if (vines == 2) return new Item(ItemType.ROPE, ItemCategory.CRAFTABLE_RESOURCE, "Rope", "Crafted rope");
+        if (shell == 1 && vines == 1) return new Item(ItemType.COCONUT_BOTTLE, ItemCategory.CUTLERY, "Coconut Bottle", "A bottle made from coconut");
+        if (stone == 1 && wood == 1 && rope == 1) return new Item(ItemType.AXE, ItemCategory.TOOL, "Axe", "Axe for chopping");
+        if (stone == 2 && wood == 1 && rope == 1) return new Item(ItemType.PICKAXE, ItemCategory.TOOL, "Pickaxe", "Pickaxe for mining");
+        if (wood == 2) return new Item(ItemType.PLANKS, ItemCategory.CRAFTABLE_RESOURCE, "Planks", "Wooden planks");
+        if (wood == 3 && rope == 1) return new Item(ItemType.MAST, ItemCategory.CRAFTABLE_RESOURCE, "Mast", "Boat mast");
+        if (planks == 2 && rope == 2) return new Item(ItemType.FRAME, ItemCategory.CRAFTABLE_RESOURCE, "Frame", "Boat frame");
+        if (planks == 2 && stone == 1 && rope == 1) return new Item(ItemType.RUDDER, ItemCategory.CRAFTABLE_RESOURCE, "Rudder", "Boat rudder");
+        if (stone == 2 && rope == 1 && wood == 1) return new Item(ItemType.FITTINGS, ItemCategory.CRAFTABLE_RESOURCE, "Fittings", "Boat fittings");
 
         return null;
     }
 
-    //helper method for crafting() method to enter the name and classification of new unknown crafted item
+    //helper method for crafting() method - unknown mix yields null
     private Item createCustomItem() {
-        Scanner sc = new Scanner(System.in);
-
-        //create object with empty attributes
-        Item newItem = new Item("", "");
-
-        // enter name
-        System.out.println("Unknown mix, enter name:");
-        String nameInput = sc.nextLine();
-        newItem.setName(nameInput);
-
-        // classification
-        System.out.println("enter classification:");
-        String classInput = sc.nextLine();
-        newItem.setClassification(classInput);
-
-        return newItem;
+        return null;
     }
 
     // helper to count items in grid
