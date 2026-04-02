@@ -40,7 +40,7 @@ public class GamePanel extends JPanel {
         g.setColor(java.awt.Color.BLACK);
         g.fillRect(0, 0, getWidth(), getHeight());
 
-        map.renderMapComponent(renderer, g, map);
+        map.renderMapComponent(renderer, g, getWidth(), getHeight());
 
         // write code here to draw
     }

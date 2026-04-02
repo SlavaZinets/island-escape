@@ -1,8 +1,6 @@
 package com.islandescape;
 
-import com.islandescape.core.GamePanel;
-import com.islandescape.input.GameKeyHandler;
-import javax.swing.SwingUtilities;
+import com.islandescape.window.GamePanel;
 import com.islandescape.window.GameWindow;
 import com.islandescape.map.MapLoader;
 import com.islandescape.map.MapRenderer;
