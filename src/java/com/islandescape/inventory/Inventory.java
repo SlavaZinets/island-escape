@@ -35,11 +35,11 @@ public class Inventory {
         return slots;
     }
     // get slot by slotID
-    public Item getSlot(int slotId){
+    public Item getSlot(int slotIndex){
         return null;
     }
     // set item to the slot by ID
-    public void setSlot(int slotId, Item item){
+    public void setSlot(int slotIndex, Item item){
 
     }
     // check whether there is an item in inventory in the right quantity
