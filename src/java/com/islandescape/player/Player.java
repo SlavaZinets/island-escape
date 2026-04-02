@@ -6,6 +6,9 @@ import java.awt.*;
 
 public class Player {
 
+    private static final int WIDTH = 16;
+    private static final int HEIGHT = 16;
+
     private String name;
     private int id;
     private Point position;
@@ -38,6 +41,8 @@ public class Player {
     }
 
     public void renderPlayer(Graphics2D g) {
+        g.setColor(Color.RED);
+        g.fillRect((int) position.getX(), (int) position.getY(), WIDTH, HEIGHT);
     }
 
 }

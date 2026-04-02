@@ -1,5 +1,7 @@
 package com.islandescape.map;
 
+import com.islandescape.player.Player;
+
 import java.awt.*;
 import java.awt.image.BufferedImage;
 import java.util.ArrayList;
@@ -66,7 +68,7 @@ public class TileMap {
         }
         return result;
     }
-    public void renderMapComponent(MapRenderer renderer, Graphics g, int screenWidth, int screenHeight) {
+    public void renderMapComponent(MapRenderer renderer, Graphics g, int screenWidth, int screenHeight, Player player) {
 
         int nativeWidth = this.getWidth() * this.getTileSize();
         int nativeHeight = this.getHeight() * this.getTileSize();
@@ -76,6 +78,12 @@ public class TileMap {
             BufferedImage buffer = new BufferedImage(nativeWidth, nativeHeight, BufferedImage.TYPE_INT_ARGB);
             Graphics2D bufferG = buffer.createGraphics();
             renderer.render(bufferG, this);
+
+            // Render player on the same buffer so it scales with the map
+            if (player != null) {
+                player.renderPlayer(bufferG);
+            }
+
             bufferG.dispose();
 
             // Scale the buffer to fit the panel, preserving aspect ratio

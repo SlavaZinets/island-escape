@@ -2,6 +2,7 @@ package com.islandescape.window;
 
 import com.islandescape.map.MapRenderer;
 import com.islandescape.map.TileMap;
+import com.islandescape.player.Player;
 
 import javax.swing.JPanel;
 import java.awt.Graphics;
@@ -18,11 +19,16 @@ public class GamePanel extends JPanel {
 
     private final TileMap map;
     private final MapRenderer renderer;
+    private Player player;
 
 
     public GamePanel(TileMap map, MapRenderer renderer) {
         this.map = map;
         this.renderer = renderer;
+    }
+
+    public void setPlayer(Player player) {
+        this.player = player;
     }
 
     public TileMap getMap() {
@@ -40,8 +46,6 @@ public class GamePanel extends JPanel {
         g.setColor(java.awt.Color.BLACK);
         g.fillRect(0, 0, getWidth(), getHeight());
 
-        map.renderMapComponent(renderer, g, getWidth(), getHeight());
-
-        // write code here to draw
+        map.renderMapComponent(renderer, g, getWidth(), getHeight(), player);
     }
 }
