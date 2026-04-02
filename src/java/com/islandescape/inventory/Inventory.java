@@ -6,13 +6,20 @@ import com.islandescape.item.ItemType;
 public class Inventory {
     Item[] slots;
     int capacity;
+    int selectedHotBarSlot;
 
+    public Inventory(){
+        capacity = 20;
+        slots = new Item[20];
+        selectedHotBarSlot = 0;
 
+    }
+    // add item to the array
     public boolean addItem(Item item){
         return true;
     }
 
-    // remove item entierly
+    // remove item entirely
     public boolean removeItem(Item item){
         return true;
     }
