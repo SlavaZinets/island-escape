@@ -53,9 +53,8 @@ public class Item {
    public boolean isStackable() {
       return !UNSTACKABLE.contains(this.category);
    }
-
    public boolean hasSpace(Item item) {
-      return isStackable() && quantity + item.quantity <= MAX_STACK_SIZE;
+      return this.type == item.type && quantity + item.quantity <= MAX_STACK_SIZE;
    }
 
    public Item split(int amount) {
