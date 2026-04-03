@@ -86,9 +86,13 @@ public class ItemTest {
         Item bigBanana = new Item(ItemType.BANANA, ItemCategory.FOOD, "Banana", "Nutritious fruit", 4);
         assertFalse(banana.hasSpace(bigBanana));
 
-        // unstackable item never has space
+        // same type check — axe + axe: 1 + 1 = 2 <= 10, same type → true
         Item anotherAxe = new Item(ItemType.AXE, ItemCategory.TOOL, "Axe", "Axe for chopping");
-        assertFalse(axe.hasSpace(anotherAxe));
+        assertTrue(axe.hasSpace(anotherAxe));
+
+        // different type — banana + coconut: same category but different ItemType → false
+        Item coconut = new Item(ItemType.COCONUT, ItemCategory.FOOD, "Coconut", "A hard coconut", 1);
+        assertFalse(banana.hasSpace(coconut));
 
         // 7 + 1 = 8 <= 10, fits
         Item oneBanana = new Item(ItemType.BANANA, ItemCategory.FOOD, "Banana", "Nutritious fruit", 1);
