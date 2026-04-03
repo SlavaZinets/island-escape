@@ -22,15 +22,13 @@ public class Inventory {
         if (newItem == null) return false;
 
         for (Item hotBarSlot : hotBarSlots) {
-            if (hotBarSlot != null && hotBarSlot.hasSpace(newItem)) {
-                hotBarSlot.merge(newItem);
+            if (hotBarSlot != null && hotBarSlot.hasSpace(newItem) && hotBarSlot.merge(newItem)) {
                 return true;
             }
         }
 
         for (Item slot : slots) {
-            if (slot != null && slot.hasSpace(newItem)) {
-                slot.merge(newItem);
+            if (slot != null && slot.hasSpace(newItem) && slot.merge(newItem)) {
                 return true;
             }
         }
@@ -122,7 +120,7 @@ public class Inventory {
     }
     // check whether there is an item in inventory in the right quantity
     public boolean hasItem(Item item, int quantity){
-        return true;
+        return getItemCount(item) >= quantity;
     }
     public int getItemCount(Item item){
         if (item == null) return 0;
