@@ -5,6 +5,7 @@ import com.islandescape.item.Item;
 import com.islandescape.item.ItemCategory;
 import com.islandescape.item.ItemType;
 import org.junit.jupiter.api.Test;
+
 import static org.junit.jupiter.api.Assertions.*;
 public class CraftingTableTest {
     @Test   public void interact() {

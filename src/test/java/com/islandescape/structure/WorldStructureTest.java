@@ -3,6 +3,7 @@ package com.islandescape.structure;
 import com.islandescape.structures.WorldStructure;
 import org.junit.jupiter.api.Test;
 import static org.junit.jupiter.api.Assertions.*;
+
 public class WorldStructureTest {
     @Test
     public void interact() {

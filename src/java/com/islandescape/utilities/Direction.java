@@ -1,4 +1,4 @@
-package java.com.islandescape.utilities;
+package com.islandescape.utilities;
 
 public class Direction {
 

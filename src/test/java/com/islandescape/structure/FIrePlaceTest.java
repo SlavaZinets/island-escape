@@ -6,6 +6,7 @@ import com.islandescape.item.ItemCategory;
 import com.islandescape.item.ItemType;
 import org.junit.jupiter.api.Test;
 import static org.junit.jupiter.api.Assertions.*;
+
 public class FIrePlaceTest {
     @Test
     public void interact() {
