@@ -1,5 +1,5 @@
 package com.islandescape.structures;
-import  com.islandescape.player.Player;
+
 import  com.islandescape.item.Item;
 
 
@@ -8,8 +8,8 @@ public abstract class NaturalResource extends WorldStructure {
     protected String itemName;
     protected int health;
 
-    public NaturalResource(int x, int y, String itemName, int health, String structureName) {
-        super(x, y, structureName);
+    public NaturalResource(double x, double y, String itemName, int health, String name) {
+        super(x, y, name);
         this.itemName = itemName;//here will be the material thst will be mined from specific structure(stone for example)
         this.health = health;//attribure health will be used as the counter of how many times is the structure has to be mined in order to get resource for player
     }
