@@ -1,5 +1,6 @@
 package java.com.islandescape.structures;
-import java.com.islandescape.player.Player;
+import  java.com.islandescape.player.Player;
+
 
 //this will be abstract class from parent class worldstrucure for creating resources such as stone, tree, etc
 public abstract class NaturalResource extends WorldStructure {
