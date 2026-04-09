@@ -9,6 +9,7 @@ public class TreeTest {
     public void interact() {
         Tree tree = new Tree(50.0, 50.0, "Oak Tree");
         tree.interact(50.0, 50.0);
-        assertEquals(1, tree.getHealth(), "health should be decreased");
+        tree.interact(50.0, 50.0);
+        assertEquals(0, tree.getHealth(), "health should be gone");
     }
 }
