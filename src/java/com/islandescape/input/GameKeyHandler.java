@@ -37,7 +37,20 @@ public class GameKeyHandler implements KeyListener {
 
     @Override
     public void keyReleased(KeyEvent e) {
-
+        switch (e.getKeyCode()) {
+            case KeyEvent.VK_W:
+                isPressedW = false;
+                break;
+            case KeyEvent.VK_A:
+                isPressedA = false;
+                break;
+            case KeyEvent.VK_S:
+                isPressedS = false;
+                break;
+            case KeyEvent.VK_D:
+                isPressedD = false;
+                break;
+        }
     }
 
     @Override
