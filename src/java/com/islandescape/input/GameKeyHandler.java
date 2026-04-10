@@ -19,7 +19,20 @@ public class GameKeyHandler implements KeyListener {
 
     @Override
     public void keyPressed(KeyEvent e) {
-
+        switch (e.getKeyCode()) {
+            case KeyEvent.VK_W:
+                isPressedW = true;
+                break;
+            case KeyEvent.VK_A:
+                isPressedA = true;
+                break;
+            case KeyEvent.VK_S:
+                isPressedS = true;
+                break;
+            case KeyEvent.VK_D:
+                isPressedD = true;
+                break;
+        }
     }
 
     @Override
