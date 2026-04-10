@@ -38,9 +38,21 @@ public class GamePanel extends JPanel {
     }
 
     public void setKeyHandler(GameKeyHandler handler) {
+        if (this.keyHandler != null) {
+            removeKeyListener(this.keyHandler);
+        }
+        this.keyHandler = handler;
+        addKeyListener(handler);
     }
 
     public void startGameLoop() {
+        gameLoop = new Timer(16, e -> {
+            if (player != null && keyHandler != null) {
+                player.move(keyHandler.getDirection());
+            }
+            repaint();
+        });
+        gameLoop.start();
     }
 
     public TileMap getMap() {
