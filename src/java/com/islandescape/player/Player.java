@@ -6,8 +6,8 @@ import java.awt.*;
 
 public class Player {
 
-    private static final int WIDTH = 16;
-    private static final int HEIGHT = 16;
+    private static final int WIDTH = 60;
+    private static final int HEIGHT = 100;
 
     private String name;
     private int id;
