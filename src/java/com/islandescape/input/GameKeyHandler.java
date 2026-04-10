@@ -8,11 +8,18 @@ import java.awt.event.KeyListener;
 /*
     GameKeyHandler listens for keyboard input and exposes the current
     movement direction so the game loop can drive Player.move(Direction).
+    Convention: up is +y, down is -y, right is +x, left is -x.
  */
 public class GameKeyHandler implements KeyListener {
 
+    private boolean isPressedW = false;
+    private boolean isPressedA = false;
+    private boolean isPressedS = false;
+    private boolean isPressedD = false;
+
     @Override
     public void keyPressed(KeyEvent e) {
+
     }
 
     @Override
@@ -22,12 +29,11 @@ public class GameKeyHandler implements KeyListener {
 
     @Override
     public void keyTyped(KeyEvent e) {
-
+        // Unused
     }
 
     // Current movement direction derived from currently-held keys.
     public Direction getDirection() {
-
-        return null;
+        return new Direction((isPressedD ? 1 : 0) - (isPressedA ? 1 : 0), (isPressedW ? 1 : 0) - (isPressedS ? 1 : 0));
     }
 }
