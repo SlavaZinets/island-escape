@@ -1,10 +1,12 @@
 package com.islandescape.window;
 
+import com.islandescape.input.GameKeyHandler;
 import com.islandescape.map.MapRenderer;
 import com.islandescape.map.TileMap;
 import com.islandescape.player.Player;
 
 import javax.swing.JPanel;
+import javax.swing.Timer;
 import java.awt.Graphics;
 import java.awt.Graphics2D;
 import java.awt.RenderingHints;
@@ -19,16 +21,26 @@ public class GamePanel extends JPanel {
 
     private final TileMap map;
     private final MapRenderer renderer;
+
     private Player player;
+    private GameKeyHandler keyHandler;
+    private Timer gameLoop;
 
 
     public GamePanel(TileMap map, MapRenderer renderer) {
         this.map = map;
         this.renderer = renderer;
+        setFocusable(true);
     }
 
     public void setPlayer(Player player) {
         this.player = player;
+    }
+
+    public void setKeyHandler(GameKeyHandler handler) {
+    }
+
+    public void startGameLoop() {
     }
 
     public TileMap getMap() {
