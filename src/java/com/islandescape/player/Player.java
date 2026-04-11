@@ -25,6 +25,10 @@ public class Player {
         position.setLocation(position.getX() + direction.getX() * SPEED, position.getY() - direction.getY() * SPEED);
     }
 
+    public void setWorldBounds(int worldWidth, int worldHeight) {
+        // TODO: store bounds and apply per-axis clamping inside move().
+    }
+
     public String getName() {
         return name;
     }
