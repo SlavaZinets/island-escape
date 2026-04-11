@@ -1,6 +1,7 @@
 package com.islandescape.structures;
 
 import com.islandescape.inventory.Inventory;
+import com.islandescape.item.Item;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -10,7 +11,7 @@ public class BoatWreck extends WorldStructure{
 
     private List<String> fixedParts; //making list for storing all parts crafted from player fpr repairing the boat
     private final List<String> requiredParts;//the full list of repairs needed for boat
-    private List<String> boatInventory;//invertory of boat
+    private List<Item> boatInventory;//invertory of boat
 
     public BoatWreck(double x, double y, String name) {
         super(x, y, "Boat Wreck Site");
@@ -22,6 +23,7 @@ public class BoatWreck extends WorldStructure{
         );
 
         this.fixedParts = new ArrayList<>();
+        this.boatInventory = new ArrayList<>();
     }
 
     public void addPart(String partName) {
@@ -66,8 +68,10 @@ public class BoatWreck extends WorldStructure{
         }
     }
     //loads everything player needs on boat
-    public void loadItems(String part) {
-
+    public void loadItems(Inventory playerInventory) {
+        this.boatInventory.addAll(playerInventory.getItems());
+        playerInventory.clear();//clear player invertory after replacing
+        System.out.println("items transferred to boat");
     }
     // method for depart the boat from island
     public boolean depart(double playerx, double playery, Inventory playerInventory) {
