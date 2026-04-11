@@ -45,7 +45,16 @@ public class BoatWreck extends WorldStructure{
     }
 
     @Override
-    public void interact(double playerx, double playery) {}
+    public void interact(double playerx, double playery) {
+        double distance = Math.sqrt(Math.pow(this.x - playerx, 2) + Math.pow(this.y - playery, 2));
+//check if palyer is near the boat
+        if (distance < 15.0) {
+            List<String> missing = getMissingParts();
+            for (String part : missing) {
+                addPart(part);
+            }
+        }
+    }
 
 
 }

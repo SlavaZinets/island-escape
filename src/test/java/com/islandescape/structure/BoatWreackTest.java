@@ -2,8 +2,6 @@ package com.islandescape.structure;
 
 import com.islandescape.structures.BoatWreck;
 import org.junit.jupiter.api.Test;
-import java.util.ArrayList;
-import java.util.List;
 import static org.junit.jupiter.api.Assertions.*;
 public class BoatWreackTest {
     @Test
@@ -22,7 +20,7 @@ public class BoatWreackTest {
     @Test
     public void interact() {
         BoatWreck boat = new BoatWreck(40, 40, "Boat Wreck Site");
-        boat.interact(40, 40);
-        assertTrue(boat.isFullyRepaired());
+        boat.interact(70, 70);
+        assertEquals(17, boat.getMissingParts().size());
     }
 }
