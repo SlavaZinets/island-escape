@@ -16,13 +16,32 @@ public class BoatWreck extends WorldStructure{
         );
         this.fixedParts = new ArrayList<>();
     }
-    public void addPart(String partName) {}//adding element to boat
+    public void addPart(String partName) {
+        int fixedCount = 0; //make count how many parts of repair part are already in the boa
+        for (String p : fixedParts) {
+            if (p.equals(partName)) fixedCount++;
+        }
+    //counting amount of parts of pepair part that is still needed from required list
+        int requiredCount = 0;
+        for (String p : requiredParts) {
+            if (p.equals(partName)) requiredCount++;
+        }
+
+//add the part only in case if  current amount is less than  requirement
+        if (fixedCount < requiredCount) {
+            fixedParts.add(partName);
+        }
+    }//adding element to boat
 
     public boolean isFullyRepaired() {//check for is the repair complete fully or not
         return false;
     }
     public List<String> getMissingParts() {//get all  of remaining requird  repairs
-        return new ArrayList<>();
+        List<String> missing = new ArrayList<>(requiredParts);//copy of full repairs nedeed list to get the remaining parts
+        for (String p : fixedParts) {
+            missing.remove(p);
+        }
+        return missing;
     }
 
     @Override
