@@ -1,12 +1,11 @@
 package com.islandescape;
 
-import com.islandescape.core.GamePanel;
 import com.islandescape.input.GameKeyHandler;
 import com.islandescape.item.Item;
 import com.islandescape.item.ItemCategory;
 import com.islandescape.item.ItemType;
 import com.islandescape.player.Player;
-import javax.swing.SwingUtilities;
+import com.islandescape.window.GamePanel;
 import com.islandescape.window.GameWindow;
 import com.islandescape.map.MapLoader;
 import com.islandescape.map.MapRenderer;
@@ -27,11 +26,8 @@ public class Main {
 		player1.getInventory().addItem(new Item(ItemType.WOOD, ItemCategory.PRIMARY_RESOURCE, "Wood", "A piece of wood", 5));
 		player1.getInventory().addItem(new Item(ItemType.STONE, ItemCategory.PRIMARY_RESOURCE, "Stone", "A solid stone", 3));
 
-
 		// 4. Create the panel that draws the map
 		GamePanel panel = new GamePanel(map, renderer, player1, player2);
-
-
 
 		// 5. Register key handler
 		panel.setFocusable(true);
