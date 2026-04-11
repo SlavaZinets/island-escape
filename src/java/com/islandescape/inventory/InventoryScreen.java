@@ -19,7 +19,7 @@ public class InventoryScreen {
     private static final int ROWS_PER_PLAYER = 4; // 3 main + 1 hotbar
     private static final int SLOT_SIZE = 64;
     private static final int SLOT_GAP = 12;
-    private static final int SEPARATOR_HEIGHT = 20;
+    private static final int SEPARATOR_WIDTH = 30;
 
     private final Player player1;
     private final Player player2;
@@ -53,50 +53,18 @@ public class InventoryScreen {
 
 
 
-    public void handleClick(int bufferX, int bufferY, boolean isLeftClick) {
+    public void handleClick(int screenX, int screenY, boolean isLeftClick, int panelW, int panelH) {
         if (!open) return;
 
-        int gridLeft = calcGridLeft(bufferX, bufferY);
-        int p1Top = calcP1Top(bufferX, bufferY);
-        int yBorder = calcYBorder(bufferX, bufferY);
+        int xBorder = getXBorder(panelW);
+        int gridTop = getGridTop(panelH);
 
-        // determine player
-        boolean isPlayer1 = bufferY < yBorder;
+        // determine player by X position
+        boolean isPlayer1 = screenX < xBorder;
         Inventory inventory = isPlayer1 ? player1.getInventory() : player2.getInventory();
-        int gridTop = isPlayer1 ? p1Top : calcP2Top(bufferX, bufferY);
+        int gridLeft = isPlayer1 ? getP1Left(panelW) : getP2Left(panelW);
 
-        int slotIndex = pixelToSlot(bufferX, bufferY, gridLeft, gridTop);
-        if (slotIndex < 0) return;
-
-        if (cursor.isEmpty()) {
-            if (isLeftClick) {
-                cursor.pickUp(inventory, slotIndex);
-            } else {
-                cursor.pickUpHalf(inventory, slotIndex);
-            }
-        } else {
-            if (isLeftClick) {
-                cursor.placeAll(inventory, slotIndex);
-            } else {
-                cursor.placeOne(inventory, slotIndex);
-            }
-        }
-    }
-
-    // Overloaded version using panel dimensions for layout calculation
-    public void handleClick(int bufferX, int bufferY, boolean isLeftClick, int panelW, int panelH) {
-        if (!open) return;
-
-        int gridLeft = getGridLeft(panelW);
-        int p1Top = getP1Top(panelH);
-        int yBorder = getYBorder(panelH);
-        int p2Top = getP2Top(panelH);
-
-        boolean isPlayer1 = bufferY < yBorder;
-        Inventory inventory = isPlayer1 ? player1.getInventory() : player2.getInventory();
-        int gridTop = isPlayer1 ? p1Top : p2Top;
-
-        int slotIndex = pixelToSlot(bufferX, bufferY, gridLeft, gridTop);
+        int slotIndex = pixelToSlot(screenX, screenY, gridLeft, gridTop);
         if (slotIndex < 0) return;
 
         if (cursor.isEmpty()) {
@@ -134,9 +102,9 @@ public class InventoryScreen {
         return row * COLS + col;
     }
 
-    // --- Layout calculations ---
+    // --- Layout calculations (side-by-side) ---
 
-    private int getGridWidth() {
+    private int getOneGridWidth() {
         return COLS * SLOT_SIZE + (COLS - 1) * SLOT_GAP;
     }
 
@@ -144,59 +112,57 @@ public class InventoryScreen {
         return ROWS_PER_PLAYER * SLOT_SIZE + (ROWS_PER_PLAYER - 1) * SLOT_GAP;
     }
 
-    private int getTotalHeight() {
-        return getPlayerGridHeight() * 2 + SEPARATOR_HEIGHT;
+    private int getTotalWidth() {
+        return getOneGridWidth() * 2 + SEPARATOR_WIDTH;
     }
 
-    int getGridLeft(int panelW) {
-        return (panelW - getGridWidth()) / 2;
+    // Player 1 grid left X
+    int getP1Left(int panelW) {
+        return (panelW - getTotalWidth()) / 2;
     }
 
-    int getP1Top(int panelH) {
-        return (panelH - getTotalHeight()) / 2;
+    // Player 2 grid left X
+    int getP2Left(int panelW) {
+        return getP1Left(panelW) + getOneGridWidth() + SEPARATOR_WIDTH;
     }
 
-    int getP2Top(int panelH) {
-        return getP1Top(panelH) + getPlayerGridHeight() + SEPARATOR_HEIGHT;
+    // Vertical X border between the two grids
+    int getXBorder(int panelW) {
+        return getP1Left(panelW) + getOneGridWidth() + SEPARATOR_WIDTH / 2;
     }
 
-    int getYBorder(int panelH) {
-        return getP1Top(panelH) + getPlayerGridHeight() + SEPARATOR_HEIGHT / 2;
+    // Both grids share the same top Y
+    int getGridTop(int panelH) {
+        return (panelH - getPlayerGridHeight()) / 2;
     }
-
-    // Fallback versions using stored mouse coordinates (not recommended — use panelW/H versions)
-    private int calcGridLeft(int bx, int by) { return 0; }
-    private int calcP1Top(int bx, int by) { return 60; }
-    private int calcP2Top(int bx, int by) { return calcP1Top(bx, by) + getPlayerGridHeight() + SEPARATOR_HEIGHT; }
-    private int calcYBorder(int bx, int by) { return calcP1Top(bx, by) + getPlayerGridHeight() + SEPARATOR_HEIGHT / 2; }
 
     // --- Rendering ---
 
     public void drawFullInventory(Graphics2D g2d, int panelW, int panelH) {
-        int gridLeft = getGridLeft(panelW);
-        int p1Top = getP1Top(panelH);
-        int p2Top = getP2Top(panelH);
+        int p1Left = getP1Left(panelW);
+        int p2Left = getP2Left(panelW);
+        int gridTop = getGridTop(panelH);
 
         // Player 1 label
         g2d.setColor(Color.WHITE);
         g2d.setFont(new Font("SansSerif", Font.BOLD, 18));
-        g2d.drawString(player1.getName(), gridLeft, p1Top - 8);
+        g2d.drawString(player1.getName(), p1Left, gridTop - 8);
 
         // Player 1 grid
-        drawPlayerGrid(g2d, player1.getInventory(), gridLeft, p1Top);
+        drawPlayerGrid(g2d, player1.getInventory(), p1Left, gridTop);
 
-        // Separator
-        int yBorder = getYBorder(panelH);
+        // Vertical separator
+        int xBorder = getXBorder(panelW);
         g2d.setColor(new Color(200, 200, 200, 150));
-        g2d.fillRect(gridLeft, yBorder - 1, getGridWidth(), 2);
+        g2d.fillRect(xBorder - 1, gridTop, 2, getPlayerGridHeight());
 
         // Player 2 label
         g2d.setColor(Color.WHITE);
         g2d.setFont(new Font("SansSerif", Font.BOLD, 18));
-        g2d.drawString(player2.getName(), gridLeft, p2Top - 8);
+        g2d.drawString(player2.getName(), p2Left, gridTop - 8);
 
         // Player 2 grid
-        drawPlayerGrid(g2d, player2.getInventory(), gridLeft, p2Top);
+        drawPlayerGrid(g2d, player2.getInventory(), p2Left, gridTop);
 
         // Held item on cursor
         if (!cursor.isEmpty()) {
