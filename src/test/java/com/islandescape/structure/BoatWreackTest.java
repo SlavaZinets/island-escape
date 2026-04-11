@@ -1,6 +1,9 @@
 package com.islandescape.structure;
 
 import com.islandescape.inventory.Inventory;
+import com.islandescape.item.Item;
+import com.islandescape.item.ItemCategory;
+import com.islandescape.item.ItemType;
 import com.islandescape.player.Player;
 import com.islandescape.structures.BoatWreck;
 import org.junit.jupiter.api.Test;
@@ -30,7 +33,12 @@ public class BoatWreackTest {
     }
     @Test
     public void loadItems() {
-
+        BoatWreck boat = new BoatWreck(20, 20, "Boat");
+        Inventory playerInventory = new Inventory();
+        Item rope = new Item(ItemType.ROPE, ItemCategory.TOOL, "Rope", "Test rope");
+        playerInventory.addItem(rope);
+        boat.loadItems(playerInventory);
+        assertTrue(playerInventory.isEmpty(), "player inventory shjould empty");
     }
 @Test
     public void depart() {
