@@ -292,15 +292,18 @@ public class PlayerTest {
     }
 
     @Test
-    void zeroMoveDoesNotIncrementAnimationTick() {
-        // Standing still must freeze the walk cycle.
+    void zeroMoveResetsAnimationTick() {
+        // Standing still must snap the walk cycle back to the first frame,
+        // so an idle player is drawn in a neutral pose rather than holding
+        // a mid-stride frame from whenever they last stopped.
         Player p = new Player("Bob", 2, 0, 0);
         p.move(new Direction(1, 0));
         p.move(new Direction(1, 0));
         assertEquals(2, p.getAnimationTick());
 
         p.move(new Direction(0, 0));
-        assertEquals(2, p.getAnimationTick());
+        assertEquals(0, p.getAnimationTick());
+        assertEquals(0, p.getFrameIndex());
     }
 
     @Test
