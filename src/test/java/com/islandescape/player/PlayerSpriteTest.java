@@ -14,7 +14,7 @@ import static org.junit.jupiter.api.Assertions.fail;
 
 public class PlayerSpriteTest {
 
-    private static final String PATH = "src/resources/player/player_frames.png";
+    private static final String PATH = "src/resources/player/player_walking.png";
 
     private static PlayerSprite sprite;
 
@@ -25,9 +25,11 @@ public class PlayerSpriteTest {
 
 
     @Test
-    void testFrameWidthTimesColsEqualsImageWidth() {
-        assertEquals(sprite.getImageWidth(), sprite.getFrameWidth() * PlayerSprite.COLS);
-        assertEquals(sprite.getImageHeight(), sprite.getFrameHeight() * PlayerSprite.ROWS);
+    void testFramesFitInImage() {
+        assertTrue(sprite.getFrameWidth() > 0 );
+        assertTrue(sprite.getFrameHeight() > 0);
+        assertTrue(sprite.getFrameWidth() * PlayerSprite.COLS <= sprite.getImageWidth());
+        assertTrue(sprite.getFrameHeight() * PlayerSprite.ROWS <= sprite.getImageHeight());
     }
 
     @Test

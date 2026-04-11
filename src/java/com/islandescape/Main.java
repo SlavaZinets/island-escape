@@ -19,7 +19,7 @@ public class Main {
 		// 3. Create the player
 		Player player = new Player("Player1", 1, 0, 0);
 		player.setWorldBounds(map.getWidth() * map.getTileSize(), map.getHeight() * map.getTileSize());
-		player.setSprite(new PlayerSprite("src/resources/player/player_frames.png"));
+		player.setSprite(new PlayerSprite("src/resources/player/player_walking.png"));
 
 		// 4. Create the panel that draws the map
 		GamePanel panel = new GamePanel(map, renderer);

@@ -8,7 +8,7 @@ import java.io.IOException;
 public class PlayerSprite {
 
     public static final int COLS = 6;
-    public static final int ROWS = 5;
+    public static final int ROWS = 3;
 
     private final BufferedImage sheet;
     private final int frameWidth;
