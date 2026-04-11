@@ -20,5 +20,9 @@ public class BoatWreackTest {
 
     }
     @Test
-    public void interact() {}
+    public void interact() {
+        BoatWreck boat = new BoatWreck(40, 40, "Boat Wreck Site");
+        boat.interact(40, 40);
+        assertTrue(boat.isFullyRepaired());
+    }
 }
