@@ -34,7 +34,7 @@ public class BoatWreck extends WorldStructure{
     }//adding element to boat
 
     public boolean isFullyRepaired() {//check for is the repair complete fully or not
-        return false;
+        return getMissingParts().isEmpty();//if list is empty - everything is repaired
     }
     public List<String> getMissingParts() {//get all  of remaining requird  repairs
         List<String> missing = new ArrayList<>(requiredParts);//copy of full repairs nedeed list to get the remaining parts
