@@ -214,4 +214,60 @@ public class PlayerTest {
         assertEquals(-SPEED, p.getX());
         assertEquals(-SPEED, p.getY());
     }
+
+
+
+    // tests for facing tracking
+
+    @Test
+    void defaultFacingIsSouth() {
+        Player p = new Player("Bob", 2, 0, 0);
+        assertEquals(Facing.SOUTH, p.getFacing());
+    }
+
+    @Test
+    void moveEastSetsFacingEast() {
+        Player p = new Player("Bob", 2, 0, 0);
+        p.move(new Direction(1, 0));
+        assertEquals(Facing.EAST, p.getFacing());
+    }
+
+    @Test
+    void moveWestSetsFacingWest() {
+        Player p = new Player("Bob", 2, 0, 0);
+        p.move(new Direction(-1, 0));
+        assertEquals(Facing.WEST, p.getFacing());
+    }
+
+    @Test
+    void moveNorthSetsFacingNorth() {
+        Player p = new Player("Bob", 2, 0, 0);
+        p.move(new Direction(0, 1));
+        assertEquals(Facing.NORTH, p.getFacing());
+    }
+
+    @Test
+    void moveSouthSetsFacingSouth() {
+        Player p = new Player("Bob", 2, 0, 0);
+        p.move(new Direction(0, -1));
+        assertEquals(Facing.SOUTH, p.getFacing());
+    }
+
+    @Test
+    void zeroMoveKeepsPreviousFacing() {
+        Player p = new Player("Bob", 2, 0, 0);
+        p.move(new Direction(1, 0));          // facing becomes EAST
+        p.move(new Direction(0, 0));          // no input, so should keep EAST
+        assertEquals(Facing.EAST, p.getFacing());
+    }
+
+    @Test
+    void diagonalMoveUpdatesFacingViaHorizontalRule() {
+        Player p = new Player("Bob", 2, 0, 0);
+        p.move(new Direction(1, 1));
+        assertEquals(Facing.EAST, p.getFacing());
+
+        p.move(new Direction(-1, -1));
+        assertEquals(Facing.WEST, p.getFacing());
+    }
 }
