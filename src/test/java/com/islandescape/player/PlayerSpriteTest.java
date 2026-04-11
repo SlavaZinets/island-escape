@@ -52,4 +52,23 @@ public class PlayerSpriteTest {
         assertEquals(original.getWidth(), flipped.getWidth());
         assertEquals(original.getHeight(), flipped.getHeight());
     }
+
+
+    // Out-of-range row/col on either getter must throw. checkBounds is private,
+    // so we exercise it via both public callers.
+    @Test
+    void testCheckBoundsForFrames() {
+        assertThrows(IndexOutOfBoundsException.class, () -> sprite.getFrame(-1, 0));
+        assertThrows(IndexOutOfBoundsException.class, () -> sprite.getFrame(0, -1));
+        assertThrows(IndexOutOfBoundsException.class, () -> sprite.getFrame(PlayerSprite.ROWS, 0));
+        assertThrows(IndexOutOfBoundsException.class, () -> sprite.getFrame(0, PlayerSprite.COLS));
+    }
+
+    @Test
+    void testCheckBoundsForFlippedFrames() {
+        assertThrows(IndexOutOfBoundsException.class, () -> sprite.getFlippedFrame(-1, 0));
+        assertThrows(IndexOutOfBoundsException.class, () -> sprite.getFlippedFrame(0, -1));
+        assertThrows(IndexOutOfBoundsException.class, () -> sprite.getFlippedFrame(PlayerSprite.ROWS, 0));
+        assertThrows(IndexOutOfBoundsException.class, () -> sprite.getFlippedFrame(0, PlayerSprite.COLS));
+    }
 }

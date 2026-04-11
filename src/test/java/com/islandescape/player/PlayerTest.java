@@ -143,10 +143,6 @@ public class PlayerTest {
     }
 
 
-
-    // tests for world-border clamping
-    // Player size is 60x100 (see Player.WIDTH / Player.HEIGHT), so with a
-    // 500x500 world the right edge is at x=440 and the bottom edge at y=400.
     private static final int WORLD_SIZE = 500;
     private static final int MAX_X = WORLD_SIZE - 60;  // worldWidth - Player.WIDTH
     private static final int MAX_Y = WORLD_SIZE - 100; // worldHeight - Player.HEIGHT
