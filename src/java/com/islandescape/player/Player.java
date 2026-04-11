@@ -3,11 +3,17 @@ package com.islandescape.player;
 import com.islandescape.utilities.Direction;
 
 import java.awt.*;
+import java.awt.image.BufferedImage;
 
 public class Player {
 
     private static final int WIDTH = 60;
     private static final int HEIGHT = 100;
+
+    // Walk-cycle tuning. FRAME_COUNT must match PlayerSprite.COLS.
+    // FRAMES_PER_STEP is how many game ticks a single visible frame is held for.
+    private static final int FRAMES_PER_STEP = 8;
+    private static final int FRAME_COUNT = 6;
 
     private String name;
     private int id;
@@ -75,7 +81,7 @@ public class Player {
     }
 
     public int getFrameIndex() {
-        return 0;
+        return (animationTick / FRAMES_PER_STEP) % FRAME_COUNT;
     }
 
     public void setSprite(PlayerSprite sprite) {
@@ -83,8 +89,21 @@ public class Player {
     }
 
     public void renderPlayer(Graphics2D g) {
-        g.setColor(Color.RED);
-        g.fillRect((int) position.getX(), (int) position.getY(), WIDTH, HEIGHT);
+        int x = (int) position.getX();
+        int y = (int) position.getY();
+
+        if (sprite == null) {
+            g.setColor(Color.RED);
+            g.fillRect(x, y, WIDTH, HEIGHT);
+            return;
+        }
+
+        int row = facing.getSpriteRow();
+        int col = getFrameIndex();
+        BufferedImage frame = facing.isFlipped()
+                ? sprite.getFlippedFrame(row, col)
+                : sprite.getFrame(row, col);
+        g.drawImage(frame, x, y, WIDTH, HEIGHT, null);
     }
 
 }
