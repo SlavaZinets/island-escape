@@ -18,6 +18,7 @@ public class Player {
     private int worldHeight = 0;
 
     private Facing facing = Facing.SOUTH;
+    private int animationTick = 0;
 
     public Player(String name, int id, int x, int y) {
         this.name = name;
@@ -65,6 +66,10 @@ public class Player {
 
     public Facing getFacing() {
         return facing;
+    }
+
+    public int getAnimationTick() {
+        return animationTick;
     }
 
     public void renderPlayer(Graphics2D g) {

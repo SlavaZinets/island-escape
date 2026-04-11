@@ -270,4 +270,43 @@ public class PlayerTest {
         p.move(new Direction(-1, -1));
         assertEquals(Facing.WEST, p.getFacing());
     }
+
+
+
+    // tests for animation tick
+
+    @Test
+    void nonZeroMoveIncrementsAnimationTick() {
+        Player p = new Player("Bob", 2, 0, 0);
+        p.move(new Direction(1, 0));
+        assertEquals(1, p.getAnimationTick());
+
+        for (int i = 0; i < 4; i++) {
+            p.move(new Direction(1, 0));
+        }
+        assertEquals(5, p.getAnimationTick());
+    }
+
+    @Test
+    void zeroMoveDoesNotIncrementAnimationTick() {
+        // Standing still must freeze the walk cycle.
+        Player p = new Player("Bob", 2, 0, 0);
+        p.move(new Direction(1, 0));
+        p.move(new Direction(1, 0));
+        assertEquals(2, p.getAnimationTick());
+
+        p.move(new Direction(0, 0));
+        assertEquals(2, p.getAnimationTick());
+    }
+
+    @Test
+    void animationTickIncrementsAcrossDirections() {
+        // Changing direction should not reset the tick — the walk cycle keeps flowing
+        // even as facing flips. Otherwise pressing A then D would stutter the animation.
+        Player p = new Player("Bob", 2, 0, 0);
+        p.move(new Direction(1, 0));
+        p.move(new Direction(-1, 0));
+        p.move(new Direction(0, 1));
+        assertEquals(3, p.getAnimationTick());
+    }
 }
