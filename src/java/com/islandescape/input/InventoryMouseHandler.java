@@ -1,19 +1,19 @@
 package com.islandescape.input;
 
-import com.islandescape.core.GamePanel;
 import com.islandescape.inventory.InventoryScreen;
 
+import javax.swing.JPanel;
 import java.awt.event.MouseAdapter;
 import java.awt.event.MouseEvent;
 
 public class InventoryMouseHandler extends MouseAdapter {
 
     private final InventoryScreen inventoryScreen;
-    private final GamePanel gamePanel;
+    private final JPanel panel;
 
-    public InventoryMouseHandler(InventoryScreen inventoryScreen, GamePanel gamePanel) {
+    public InventoryMouseHandler(InventoryScreen inventoryScreen, JPanel panel) {
         this.inventoryScreen = inventoryScreen;
-        this.gamePanel = gamePanel;
+        this.panel = panel;
     }
 
     @Override
@@ -24,9 +24,8 @@ public class InventoryMouseHandler extends MouseAdapter {
         boolean isRightClick = e.getButton() == MouseEvent.BUTTON3;
         if (!isLeftClick && !isRightClick) return;
 
-        // inventory is drawn in screen/panel space, so use raw screen coords
         inventoryScreen.handleClick(e.getX(), e.getY(), isLeftClick,
-                gamePanel.getWidth(), gamePanel.getHeight());
+                panel.getWidth(), panel.getHeight());
     }
 
     @Override
