@@ -21,7 +21,8 @@ public class Player {
     }
 
     public void move (Direction direction) {
-        position.setLocation(position.getX() + direction.getX() * SPEED, position.getY() + direction.getY() * SPEED);
+        // Direction uses world-space convention (+y = up), but Swing screen coords grow downward, so flip y.
+        position.setLocation(position.getX() + direction.getX() * SPEED, position.getY() - direction.getY() * SPEED);
     }
 
     public String getName() {
