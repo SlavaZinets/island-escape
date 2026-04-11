@@ -31,7 +31,7 @@ public class Main {
 
 		// 5. Register key handler
 		panel.setFocusable(true);
-		panel.addKeyListener(new GameKeyHandler(panel));
+		panel.setKeyHandler(new GameKeyHandler(panel));
 
 		// 6. Create the window fullscreen and add the panel
 		GameWindow window = new GameWindow("Island Escape");

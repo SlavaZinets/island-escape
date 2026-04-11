@@ -1,5 +1,6 @@
 package com.islandescape.window;
 
+import com.islandescape.input.GameKeyHandler;
 import com.islandescape.input.InventoryMouseHandler;
 import com.islandescape.inventory.InventoryCursor;
 import com.islandescape.inventory.InventoryScreen;
@@ -41,6 +42,16 @@ public class GamePanel extends JPanel {
         InventoryMouseHandler mouseHandler = new InventoryMouseHandler(inventoryScreen, this);
         addMouseListener(mouseHandler);
         addMouseMotionListener(mouseHandler);
+    }
+
+    private GameKeyHandler keyHandler;
+
+    public void setKeyHandler(GameKeyHandler handler) {
+        if (this.keyHandler != null) {
+            removeKeyListener(this.keyHandler);
+        }
+        this.keyHandler = handler;
+        addKeyListener(handler);
     }
 
     public TileMap getMap() {
