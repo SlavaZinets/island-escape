@@ -17,6 +17,8 @@ public class Player {
     private int worldWidth = 0;
     private int worldHeight = 0;
 
+    private Facing facing = Facing.SOUTH;
+
     public Player(String name, int id, int x, int y) {
         this.name = name;
         this.id = id;
@@ -54,6 +56,10 @@ public class Player {
 
     public double getY() {
         return position.getY();
+    }
+
+    public Facing getFacing() {
+        return facing;
     }
 
     public void renderPlayer(Graphics2D g) {
