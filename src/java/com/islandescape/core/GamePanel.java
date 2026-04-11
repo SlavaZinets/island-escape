@@ -1,11 +1,15 @@
 package com.islandescape.core;
 
 import com.islandescape.entity.CraftingGrid;
+import com.islandescape.input.InventoryMouseHandler;
+import com.islandescape.inventory.InventoryCursor;
+import com.islandescape.inventory.InventoryScreen;
 import com.islandescape.item.Item;
 import com.islandescape.item.ItemCategory;
 import com.islandescape.item.ItemType;
 import com.islandescape.map.MapRenderer;
 import com.islandescape.map.TileMap;
+import com.islandescape.player.Player;
 
 import javax.imageio.ImageIO;
 import javax.swing.JLabel;
@@ -30,6 +34,17 @@ public class GamePanel extends JPanel {
 	private final int nativeWidth;
 	private final int nativeHeight;
 
+	// players and inventory
+	private Player player1;
+	private Player player2;
+	private InventoryCursor inventoryCursor;
+	private InventoryScreen inventoryScreen;
+
+	// render scale info (updated each paint, read by mouse handler)
+	private double renderScale;
+	private int renderOffsetX;
+	private int renderOffsetY;
+
 	// craft state
 	private final JLabel stateLabel;
 	private final JLabel tickLabel;
@@ -53,6 +68,10 @@ public class GamePanel extends JPanel {
 	}
 
 	public GamePanel(TileMap map, MapRenderer renderer) {
+		this(map, renderer, null, null);
+	}
+
+	public GamePanel(TileMap map, MapRenderer renderer, Player player1, Player player2) {
 		this.map = map;
 		this.renderer = renderer;
 
@@ -62,6 +81,17 @@ public class GamePanel extends JPanel {
 		} else {
 			nativeWidth = 960;
 			nativeHeight = 640;
+		}
+
+		// players and inventory
+		this.player1 = player1;
+		this.player2 = player2;
+		if (player1 != null && player2 != null) {
+			this.inventoryCursor = new InventoryCursor();
+			this.inventoryScreen = new InventoryScreen(player1, player2, inventoryCursor);
+			InventoryMouseHandler mouseHandler = new InventoryMouseHandler(inventoryScreen, this);
+			addMouseListener(mouseHandler);
+			addMouseMotionListener(mouseHandler);
 		}
 
 		// panel base
@@ -205,6 +235,11 @@ public class GamePanel extends JPanel {
 				int offsetX = (getWidth() - scaledWidth) / 2;
 				int offsetY = (getHeight() - scaledHeight) / 2;
 
+				// store for mouse handler
+				this.renderScale = scale;
+				this.renderOffsetX = offsetX;
+				this.renderOffsetY = offsetY;
+
 				g2d.drawImage(buffer, offsetX, offsetY, scaledWidth, scaledHeight, null);
 			} catch (Exception exception) {
 				exception.printStackTrace();
@@ -213,6 +248,15 @@ public class GamePanel extends JPanel {
 
 		if (craftingScreenOpen) {
 			drawCraftingOverlay(g2d);
+		}
+
+		// inventory UI
+		if (inventoryScreen != null) {
+			if (inventoryScreen.isOpen()) {
+				inventoryScreen.drawFullInventory(g2d, getWidth(), getHeight());
+			} else {
+				inventoryScreen.drawHotbar(g2d, getWidth(), getHeight());
+			}
 		}
 	}
 
@@ -335,6 +379,46 @@ public class GamePanel extends JPanel {
 		} catch (IOException exception) {
 			return null;
 		}
+	}
+
+	public void toggleInventoryScreen() {
+		if (inventoryScreen == null) return;
+		boolean wasOpen = inventoryScreen.isOpen();
+		if (wasOpen) {
+			inventoryScreen.returnHeldItem();
+		}
+		// close crafting if opening inventory
+		if (!wasOpen && craftingScreenOpen) {
+			craftingScreenOpen = false;
+		}
+		inventoryScreen.setOpen(!wasOpen);
+		paused = inventoryScreen.isOpen() || craftingScreenOpen;
+		updateStateLabel();
+		repaint();
+	}
+
+	public boolean isInventoryScreenOpen() {
+		return inventoryScreen != null && inventoryScreen.isOpen();
+	}
+
+	public double getRenderScale() {
+		return renderScale;
+	}
+
+	public int getRenderOffsetX() {
+		return renderOffsetX;
+	}
+
+	public int getRenderOffsetY() {
+		return renderOffsetY;
+	}
+
+	public Player getPlayer1() {
+		return player1;
+	}
+
+	public Player getPlayer2() {
+		return player2;
 	}
 
 	private void updateStateLabel() {
