@@ -3,6 +3,10 @@ package com.islandescape.player;
 import com.islandescape.utilities.Direction;
 import org.junit.jupiter.api.BeforeAll;
 import org.junit.jupiter.api.Test;
+
+import java.awt.Graphics2D;
+import java.awt.image.BufferedImage;
+
 import static org.junit.jupiter.api.Assertions.*;
 
 public class PlayerTest {
@@ -308,5 +312,36 @@ public class PlayerTest {
         p.move(new Direction(-1, 0));
         p.move(new Direction(0, 1));
         assertEquals(3, p.getAnimationTick());
+    }
+
+    // tests for frame index and rendering
+
+    private static final int FRAMES_PER_STEP = 8;
+    private static final int FRAME_COUNT = 6;
+
+    private static Player movedBy(int ticks) {
+        Player p = new Player("Bob", 2, 0, 0);
+        for (int i = 0; i < ticks; i++) {
+            p.move(new Direction(1, 0));
+        }
+        return p;
+    }
+
+    @Test
+    void frameIndexAdvancesAsTickGrows() {
+        assertEquals(1, movedBy(FRAMES_PER_STEP).getFrameIndex());
+        assertEquals(2, movedBy(FRAMES_PER_STEP * 2).getFrameIndex());
+        assertEquals(5, movedBy(FRAMES_PER_STEP * 5).getFrameIndex());
+    }
+
+    @Test
+    void frameIndexHoldsWithinAStep() {
+        assertEquals(0, movedBy(FRAMES_PER_STEP - 1).getFrameIndex());
+        assertEquals(1, movedBy(FRAMES_PER_STEP + 1).getFrameIndex());
+    }
+
+    @Test
+    void frameIndexWrapsAfterFullCycle() {
+        assertEquals(0, movedBy(FRAMES_PER_STEP * FRAME_COUNT).getFrameIndex());
     }
 }
