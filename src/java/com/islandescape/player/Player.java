@@ -14,6 +14,9 @@ public class Player {
     private Point position;
     private final double SPEED = 2;
 
+    private int worldWidth = 0;
+    private int worldHeight = 0;
+
     public Player(String name, int id, int x, int y) {
         this.name = name;
         this.id = id;
@@ -21,12 +24,20 @@ public class Player {
     }
 
     public void move (Direction direction) {
-        // Direction uses world-space convention (+y = up), but Swing screen coords grow downward, so flip y.
-        position.setLocation(position.getX() + direction.getX() * SPEED, position.getY() - direction.getY() * SPEED);
+        double newX = position.getX() + direction.getX() * SPEED;
+        double newY = position.getY() - direction.getY() * SPEED;
+
+        if (worldWidth > 0 && worldHeight > 0) {
+            newX = Math.max(0, Math.min(newX, worldWidth - WIDTH));
+            newY = Math.max(0, Math.min(newY, worldHeight - HEIGHT));
+        }
+
+        position.setLocation(newX, newY);
     }
 
     public void setWorldBounds(int worldWidth, int worldHeight) {
-        // TODO: store bounds and apply per-axis clamping inside move().
+        this.worldWidth = worldWidth;
+        this.worldHeight = worldHeight;
     }
 
     public String getName() {
