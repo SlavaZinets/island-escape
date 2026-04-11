@@ -26,6 +26,13 @@ public enum Facing {
     }
 
     public static Facing fromDirection(Direction d) {
+        // Horizontal axis wins on diagonals, so check x first.
+        if (d.getX() != 0) {
+            return d.getX() > 0 ? EAST : WEST;
+        }
+        if (d.getY() != 0) {
+            return d.getY() > 0 ? NORTH : SOUTH;
+        }
         return null;
     }
 }
