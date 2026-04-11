@@ -1,5 +1,7 @@
 package com.islandescape.structures;
 
+import com.islandescape.inventory.Inventory;
+
 import java.util.ArrayList;
 import java.util.List;
 
@@ -68,8 +70,28 @@ public class BoatWreck extends WorldStructure{
 
     }
     // method for depart the boat from island
-    public boolean depart() {
+    public boolean depart(double playerx, double playery, Inventory playerInventory) {
+        if (!isFullyRepaired()) {//check that boat is fully ready
+            System.out.println("Boat is not fixed");
+            return false;
+        }
 
+       //check that player invertory is empmty
+        if (!playerInventory.isEmpty()) {
+            System.out.println("Still items in invertory");
+            return false;
+        }
+
+       //calc distance
+        double distance = Math.sqrt(Math.pow(this.x - playerx, 2) + Math.pow(this.y - playery, 2));
+
+        //if distance enough - sail happen
+        if (distance <= 10.0) {
+            System.out.println("We sailed away");
+            return true;
+        }
+
+        System.out.println("too far from boat ");
         return false;
     }
 }

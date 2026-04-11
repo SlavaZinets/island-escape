@@ -1,5 +1,6 @@
 package com.islandescape.structure;
 
+import com.islandescape.inventory.Inventory;
 import com.islandescape.player.Player;
 import com.islandescape.structures.BoatWreck;
 import org.junit.jupiter.api.Test;
@@ -33,6 +34,7 @@ public class BoatWreackTest {
     }
 @Test
     public void depart() {
+
 
     }
 }
