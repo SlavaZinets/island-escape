@@ -26,6 +26,11 @@ public class Player {
     }
 
     public void move (Direction direction) {
+        Facing newFacing = Facing.fromDirection(direction);
+        if (newFacing != null) {
+            facing = newFacing;
+        }
+
         double newX = position.getX() + direction.getX() * SPEED;
         double newY = position.getY() - direction.getY() * SPEED;
 
