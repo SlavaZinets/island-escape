@@ -1,9 +1,12 @@
 package com.islandescape.window;
 
+import com.islandescape.input.GameKeyHandler;
 import com.islandescape.map.MapRenderer;
 import com.islandescape.map.TileMap;
+import com.islandescape.player.Player;
 
 import javax.swing.JPanel;
+import javax.swing.Timer;
 import java.awt.Graphics;
 import java.awt.Graphics2D;
 import java.awt.RenderingHints;
@@ -19,10 +22,37 @@ public class GamePanel extends JPanel {
     private final TileMap map;
     private final MapRenderer renderer;
 
+    private Player player;
+    private GameKeyHandler keyHandler;
+    private Timer gameLoop;
+
 
     public GamePanel(TileMap map, MapRenderer renderer) {
         this.map = map;
         this.renderer = renderer;
+        setFocusable(true);
+    }
+
+    public void setPlayer(Player player) {
+        this.player = player;
+    }
+
+    public void setKeyHandler(GameKeyHandler handler) {
+        if (this.keyHandler != null) {
+            removeKeyListener(this.keyHandler);
+        }
+        this.keyHandler = handler;
+        addKeyListener(handler);
+    }
+
+    public void startGameLoop() {
+        gameLoop = new Timer(16, e -> {
+            if (player != null && keyHandler != null) {
+                player.move(keyHandler.getDirection());
+            }
+            repaint();
+        });
+        gameLoop.start();
     }
 
     public TileMap getMap() {
@@ -39,8 +69,7 @@ public class GamePanel extends JPanel {
         super.paintComponent(g);
         g.setColor(java.awt.Color.BLACK);
         g.fillRect(0, 0, getWidth(), getHeight());
-        map.renderMapComponent(renderer, g, map);
 
-        // write code here to draw
+        map.renderMapComponent(renderer, g, getWidth(), getHeight(), player);
     }
 }

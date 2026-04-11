@@ -1,5 +1,7 @@
 package com.islandescape.map;
 
+import com.islandescape.player.Player;
+
 import java.awt.*;
 import java.awt.image.BufferedImage;
 import java.util.ArrayList;
@@ -66,30 +68,36 @@ public class TileMap {
         }
         return result;
     }
-    public void renderMapComponent(MapRenderer renderer, Graphics g, TileMap map ){
+    public void renderMapComponent(MapRenderer renderer, Graphics g, int screenWidth, int screenHeight, Player player) {
 
-        int nativeWidth = map.getWidth() * map.getTileSize();
-        int nativeHeight = map.getHeight() * map.getTileSize();
+        int nativeWidth = this.getWidth() * this.getTileSize();
+        int nativeHeight = this.getHeight() * this.getTileSize();
 
         try {
             // Render map at native resolution onto an off-screen buffer
             BufferedImage buffer = new BufferedImage(nativeWidth, nativeHeight, BufferedImage.TYPE_INT_ARGB);
             Graphics2D bufferG = buffer.createGraphics();
-            renderer.render(bufferG, map);
+            renderer.render(bufferG, this);
+
+            // Render player on the same buffer so it scales with the map
+            if (player != null) {
+                player.renderPlayer(bufferG);
+            }
+
             bufferG.dispose();
 
             // Scale the buffer to fit the panel, preserving aspect ratio
             Graphics2D g2 = (Graphics2D) g;
             g2.setRenderingHint(RenderingHints.KEY_INTERPOLATION, RenderingHints.VALUE_INTERPOLATION_BILINEAR);
 
-            double scaleX = (double) getWidth() / nativeWidth;
-            double scaleY = (double) getHeight() / nativeHeight;
+            double scaleX = (double) screenWidth / nativeWidth;
+            double scaleY = (double) screenHeight / nativeHeight;
             double scale = Math.min(scaleX, scaleY);
 
             int scaledWidth = (int) (nativeWidth * scale);
             int scaledHeight = (int) (nativeHeight * scale);
-            int offsetX = (getWidth() - scaledWidth) / 2;
-            int offsetY = (getHeight() - scaledHeight) / 2;
+            int offsetX = (screenWidth - scaledWidth) / 2;
+            int offsetY = (screenHeight - scaledHeight) / 2;
 
             g2.drawImage(buffer, offsetX, offsetY, scaledWidth, scaledHeight, null);
 

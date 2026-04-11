@@ -1,40 +1,65 @@
 package com.islandescape.input;
 
-import com.islandescape.core.GamePanel;
-import java.awt.event.KeyAdapter;
+import com.islandescape.utilities.Direction;
+
 import java.awt.event.KeyEvent;
+import java.awt.event.KeyListener;
 
-public class GameKeyHandler extends KeyAdapter {
-	// target panel
-	private final GamePanel gamePanel;
-	public GameKeyHandler(GamePanel gamePanel) {
-		this.gamePanel = gamePanel;
-	}
-	@Override
-	public void keyPressed(KeyEvent event) {
-		// toggle by i
-		if (event.getKeyCode() == KeyEvent.VK_I) {
-			gamePanel.toggleCraftingScreen();
-			return;
-		}
+/*
+    GameKeyHandler listens for keyboard input and exposes the current
+    movement direction so the game loop can drive Player.move(Direction).
+    Convention: up is +y, down is -y, right is +x, left is -x.
+ */
+public class GameKeyHandler implements KeyListener {
 
-		if (!gamePanel.isCraftingScreenOpen()) {
-			return;
-		}
+    private boolean isPressedW = false;
+    private boolean isPressedA = false;
+    private boolean isPressedS = false;
+    private boolean isPressedD = false;
 
-		switch (event.getKeyCode()) {
-			case KeyEvent.VK_ESCAPE -> gamePanel.toggleCraftingScreen();
-			case KeyEvent.VK_LEFT -> gamePanel.moveSelection(0, -1);
-			case KeyEvent.VK_RIGHT -> gamePanel.moveSelection(0, 1);
-			case KeyEvent.VK_UP -> gamePanel.moveSelection(-1, 0);
-			case KeyEvent.VK_DOWN -> gamePanel.moveSelection(1, 0);
-			case KeyEvent.VK_1 -> gamePanel.setItemInSelectedSlot("WOOD");
-			case KeyEvent.VK_2 -> gamePanel.setItemInSelectedSlot("STONE");
-			case KeyEvent.VK_3 -> gamePanel.setItemInSelectedSlot("CLEAR");
-			case KeyEvent.VK_C -> gamePanel.clearCraftingGrid();
-			case KeyEvent.VK_ENTER -> gamePanel.craftCurrentRecipe();
-			default -> {
-			}
-		}
-	}
+    @Override
+    public void keyPressed(KeyEvent e) {
+        switch (e.getKeyCode()) {
+            case KeyEvent.VK_W:
+                isPressedW = true;
+                break;
+            case KeyEvent.VK_A:
+                isPressedA = true;
+                break;
+            case KeyEvent.VK_S:
+                isPressedS = true;
+                break;
+            case KeyEvent.VK_D:
+                isPressedD = true;
+                break;
+        }
+    }
+
+    @Override
+    public void keyReleased(KeyEvent e) {
+        switch (e.getKeyCode()) {
+            case KeyEvent.VK_W:
+                isPressedW = false;
+                break;
+            case KeyEvent.VK_A:
+                isPressedA = false;
+                break;
+            case KeyEvent.VK_S:
+                isPressedS = false;
+                break;
+            case KeyEvent.VK_D:
+                isPressedD = false;
+                break;
+        }
+    }
+
+    @Override
+    public void keyTyped(KeyEvent e) {
+        // Unused
+    }
+
+    // Current movement direction derived from currently-held keys.
+    public Direction getDirection() {
+        return new Direction((isPressedD ? 1 : 0) - (isPressedA ? 1 : 0), (isPressedW ? 1 : 0) - (isPressedS ? 1 : 0));
+    }
 }
