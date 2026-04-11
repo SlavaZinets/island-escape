@@ -2,6 +2,7 @@ package com.islandescape;
 
 import com.islandescape.input.GameKeyHandler;
 import com.islandescape.player.Player;
+import com.islandescape.player.PlayerSprite;
 import com.islandescape.window.GamePanel;
 import com.islandescape.window.GameWindow;
 import com.islandescape.map.MapLoader;
@@ -18,6 +19,7 @@ public class Main {
 		// 3. Create the player
 		Player player = new Player("Player1", 1, 0, 0);
 		player.setWorldBounds(map.getWidth() * map.getTileSize(), map.getHeight() * map.getTileSize());
+		player.setSprite(new PlayerSprite("src/resources/player/player_frames.png"));
 
 		// 4. Create the panel that draws the map
 		GamePanel panel = new GamePanel(map, renderer);
