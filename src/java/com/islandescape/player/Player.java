@@ -1,5 +1,6 @@
 package com.islandescape.player;
 
+import com.islandescape.inventory.Inventory;
 import com.islandescape.utilities.Direction;
 
 import java.awt.*;
@@ -19,6 +20,7 @@ public class Player {
     private int id;
     private Point position;
     private final double SPEED = 2;
+    private final Inventory inventory = new Inventory();
 
     private int worldWidth = 0;
     private int worldHeight = 0;
@@ -109,4 +111,7 @@ public class Player {
         g.drawImage(frame, x, y, WIDTH, HEIGHT, null);
     }
 
+    public Inventory getInventory() {
+        return inventory;
+    }
 }

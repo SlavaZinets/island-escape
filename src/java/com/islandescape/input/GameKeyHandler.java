@@ -1,6 +1,7 @@
 package com.islandescape.input;
 
 import com.islandescape.utilities.Direction;
+import com.islandescape.window.GamePanel;
 
 import java.awt.event.KeyEvent;
 import java.awt.event.KeyListener;
@@ -17,9 +18,16 @@ public class GameKeyHandler implements KeyListener {
     private boolean isPressedS = false;
     private boolean isPressedD = false;
 
+    private final GamePanel gamePanel;
+
+    public GameKeyHandler(GamePanel gamePanel) {
+        this.gamePanel = gamePanel;
+    }
+
     @Override
     public void keyPressed(KeyEvent e) {
-        switch (e.getKeyCode()) {
+        int key = e.getKeyCode();
+        switch (key) {
             case KeyEvent.VK_W:
                 isPressedW = true;
                 break;
@@ -32,7 +40,36 @@ public class GameKeyHandler implements KeyListener {
             case KeyEvent.VK_D:
                 isPressedD = true;
                 break;
+            case KeyEvent.VK_E:
+                gamePanel.toggleInventoryScreen();
+                break;
         }
+        // if inventory is open, only ESC closes it
+        if (gamePanel.isInventoryScreenOpen()) {
+            if (key == KeyEvent.VK_ESCAPE) {
+                gamePanel.toggleInventoryScreen();
+            }
+            return;
+        }
+
+        // hotbar slot selection when inventory is closed
+        // Player 1: keys 1-5
+        if (key >= KeyEvent.VK_1 && key <= KeyEvent.VK_5 && gamePanel.getPlayer1() != null) {
+            gamePanel.getPlayer1().getInventory().setSelectedHotBarSlot(15 + (key - KeyEvent.VK_1));
+            return;
+        }
+        // Player 2: keys 6-0 (6=15, 7=16, 8=17, 9=18, 0=19)
+        if (gamePanel.getPlayer2() != null) {
+            if (key >= KeyEvent.VK_6 && key <= KeyEvent.VK_9) {
+                gamePanel.getPlayer2().getInventory().setSelectedHotBarSlot(15 + (key - KeyEvent.VK_6));
+                return;
+            }
+            if (key == KeyEvent.VK_0) {
+                gamePanel.getPlayer2().getInventory().setSelectedHotBarSlot(19);
+                return;
+            }
+        }
+
     }
 
     @Override
@@ -51,6 +88,8 @@ public class GameKeyHandler implements KeyListener {
                 isPressedD = false;
                 break;
         }
+
+
     }
 
     @Override

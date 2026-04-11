@@ -8,7 +8,7 @@ public class Item {
    private String name;
    private String description;
    private int quantity;
-   private static final int MAX_STACK_SIZE = 10;
+   public static final int MAX_STACK_SIZE = 10;
    private static final Set<ItemCategory> UNSTACKABLE = Set.of(
            ItemCategory.TOOL, ItemCategory.CUTLERY
    );
@@ -53,9 +53,8 @@ public class Item {
    public boolean isStackable() {
       return !UNSTACKABLE.contains(this.category);
    }
-
-   public boolean hasSpace() {
-      return isStackable() && quantity < MAX_STACK_SIZE;
+   public boolean hasSpace(Item item) {
+      return this.type == item.type && quantity + item.quantity <= MAX_STACK_SIZE;
    }
 
    public Item split(int amount) {

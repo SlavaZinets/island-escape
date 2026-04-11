@@ -1,9 +1,12 @@
 package com.islandescape;
 
 import com.islandescape.input.GameKeyHandler;
+import com.islandescape.item.Item;
+import com.islandescape.item.ItemCategory;
+import com.islandescape.item.ItemType;
 import com.islandescape.player.Player;
-import com.islandescape.player.PlayerSprite;
 import com.islandescape.window.GamePanel;
+import com.islandescape.player.PlayerSprite;
 import com.islandescape.window.GameWindow;
 import com.islandescape.map.MapLoader;
 import com.islandescape.map.MapRenderer;
@@ -17,22 +20,30 @@ public class Main {
 		MapRenderer renderer = new MapRenderer();
 
 		// 3. Create the player
-		Player player = new Player("Player1", 1, 0, 0);
-		player.setWorldBounds(map.getWidth() * map.getTileSize(), map.getHeight() * map.getTileSize());
-		player.setSprite(new PlayerSprite("src/resources/player/player_walking.png"));
+		Player player1 = new Player("Player1", 1, 0, 0);
+		Player player2 = new Player("Player1", 2, 0, 0);
+		player1.setWorldBounds(map.getWidth() * map.getTileSize(), map.getHeight() * map.getTileSize());
+		player1.setSprite(new PlayerSprite("src/resources/player/player_walking.png"));
+
+		player1.getInventory().addItem(new Item(ItemType.WOOD, ItemCategory.PRIMARY_RESOURCE, "Wood", "A piece of wood", 5));
+		player1.getInventory().addItem(new Item(ItemType.STONE, ItemCategory.PRIMARY_RESOURCE, "Stone", "A solid stone", 3));
 
 		// 4. Create the panel that draws the map
-		GamePanel panel = new GamePanel(map, renderer);
-		panel.setPlayer(player);
 
-		// 5. Create the key handler and attach it to the panel
-		GameKeyHandler keyHandler = new GameKeyHandler();
-		panel.setKeyHandler(keyHandler);
+
+
+		// 4. Create the panel that draws the map
+		GamePanel panel = new GamePanel(map, renderer, player1, player2);
+
+		// 5. Register key handler
+		panel.setFocusable(true);
+		panel.setKeyHandler(new GameKeyHandler(panel));
 
 		// 6. Create the window fullscreen and add the panel
 		GameWindow window = new GameWindow("Island Escape");
 		window.add(panel);
 		window.setVisible(true);
+		panel.requestFocusInWindow();
 
 		// 7. Focus the panel so it receives key events, then start the game loop
 		panel.requestFocusInWindow();

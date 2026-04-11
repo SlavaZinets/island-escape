@@ -73,5 +73,31 @@ public class ItemTest {
 
     }
 
+    @Test
+    public void testHasSpace(){
+        Item banana = new Item(ItemType.BANANA, ItemCategory.FOOD, "Banana", "Nutritious fruit", 7);
+        Item axe = new Item(ItemType.AXE, ItemCategory.TOOL, "Axe", "Axe for chopping");
+
+        // 7 + 3 = 10 = MAX_STACK_SIZE, fits exactly
+        Item smallBanana = new Item(ItemType.BANANA, ItemCategory.FOOD, "Banana", "Nutritious fruit", 3);
+        assertTrue(banana.hasSpace(smallBanana));
+
+        // 7 + 4 = 11 > MAX_STACK_SIZE, does not fit
+        Item bigBanana = new Item(ItemType.BANANA, ItemCategory.FOOD, "Banana", "Nutritious fruit", 4);
+        assertFalse(banana.hasSpace(bigBanana));
+
+        // same type check — axe + axe: 1 + 1 = 2 <= 10, same type → true
+        Item anotherAxe = new Item(ItemType.AXE, ItemCategory.TOOL, "Axe", "Axe for chopping");
+        assertTrue(axe.hasSpace(anotherAxe));
+
+        // different type — banana + coconut: same category but different ItemType → false
+        Item coconut = new Item(ItemType.COCONUT, ItemCategory.FOOD, "Coconut", "A hard coconut", 1);
+        assertFalse(banana.hasSpace(coconut));
+
+        // 7 + 1 = 8 <= 10, fits
+        Item oneBanana = new Item(ItemType.BANANA, ItemCategory.FOOD, "Banana", "Nutritious fruit", 1);
+        assertTrue(banana.hasSpace(oneBanana));
+    }
+
 
 }
