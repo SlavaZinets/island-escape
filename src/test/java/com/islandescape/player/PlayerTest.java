@@ -94,7 +94,7 @@ public class PlayerTest {
         double prevY = player.getY();
         player.move(new Direction(0, 1));
         assertEquals(prevX, player.getX());
-        assertEquals(prevY + SPEED, player.getY());
+        assertEquals(prevY - SPEED, player.getY());
     }
 
     @Test
@@ -103,7 +103,7 @@ public class PlayerTest {
         double prevY = player.getY();
         player.move(new Direction(0, -1));
         assertEquals(prevX, player.getX());
-        assertEquals(prevY - SPEED, player.getY());
+        assertEquals(prevY + SPEED, player.getY());
     }
 
     @Test
@@ -112,7 +112,7 @@ public class PlayerTest {
         double prevY = player.getY();
         player.move(new Direction(1, 1));
         assertEquals(prevX + SPEED, player.getX());
-        assertEquals(prevY + SPEED, player.getY());
+        assertEquals(prevY - SPEED, player.getY());
     }
 
     @Test
@@ -121,7 +121,7 @@ public class PlayerTest {
         double prevY = player.getY();
         player.move(new Direction(-1, -1));
         assertEquals(prevX - SPEED, player.getX());
-        assertEquals(prevY - SPEED, player.getY());
+        assertEquals(prevY + SPEED, player.getY());
     }
 
     @Test
@@ -139,6 +139,6 @@ public class PlayerTest {
         double prevY = player.getY();
         player.move(new Direction(7, 8));
         assertEquals(prevX + SPEED, player.getX());
-        assertEquals(prevY + SPEED, player.getY());
+        assertEquals(prevY - SPEED, player.getY());
     }
 }
