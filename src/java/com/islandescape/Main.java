@@ -1,5 +1,6 @@
 package com.islandescape;
 
+import com.islandescape.input.GameKeyHandler;
 import com.islandescape.player.Player;
 import com.islandescape.window.GamePanel;
 import com.islandescape.window.GameWindow;
@@ -21,11 +22,17 @@ public class Main {
 		GamePanel panel = new GamePanel(map, renderer);
 		panel.setPlayer(player);
 
+		// 5. Create the key handler and attach it to the panel
+		GameKeyHandler keyHandler = new GameKeyHandler();
+		panel.setKeyHandler(keyHandler);
 
-
-		// 4. Create the window fullscreen and add the panel
+		// 6. Create the window fullscreen and add the panel
 		GameWindow window = new GameWindow("Island Escape");
 		window.add(panel);
 		window.setVisible(true);
+
+		// 7. Focus the panel so it receives key events, then start the game loop
+		panel.requestFocusInWindow();
+		panel.startGameLoop();
     }
 }
