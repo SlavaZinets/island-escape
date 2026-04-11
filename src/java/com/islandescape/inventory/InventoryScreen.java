@@ -6,6 +6,7 @@ import com.islandescape.player.Player;
 import javax.imageio.ImageIO;
 import java.awt.Color;
 import java.awt.Font;
+import java.awt.Graphics;
 import java.awt.Graphics2D;
 import java.awt.image.BufferedImage;
 import java.io.File;
@@ -136,9 +137,18 @@ public class InventoryScreen {
         return (panelH - getPlayerGridHeight()) / 2;
     }
 
-    // --- Rendering ---
 
-    public void drawFullInventory(Graphics2D g2d, int panelW, int panelH) {
+
+    public void renderInventoryComponent(Graphics g, int panelW, int panelH) {
+        Graphics2D g2d = (Graphics2D) g;
+        if (open) {
+            drawFullInventory(g2d, panelW, panelH);
+        } else {
+            drawHotbar(g2d, panelW, panelH);
+        }
+    }
+
+    private void drawFullInventory(Graphics2D g2d, int panelW, int panelH) {
         int p1Left = getP1Left(panelW);
         int p2Left = getP2Left(panelW);
         int gridTop = getGridTop(panelH);
