@@ -19,6 +19,7 @@ public class Player {
 
     private Facing facing = Facing.SOUTH;
     private int animationTick = 0;
+    private PlayerSprite sprite = null;
 
     public Player(String name, int id, int x, int y) {
         this.name = name;
@@ -71,6 +72,14 @@ public class Player {
 
     public int getAnimationTick() {
         return animationTick;
+    }
+
+    public int getFrameIndex() {
+        return 0;
+    }
+
+    public void setSprite(PlayerSprite sprite) {
+        this.sprite = sprite;
     }
 
     public void renderPlayer(Graphics2D g) {
