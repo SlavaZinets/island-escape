@@ -21,7 +21,7 @@ public class Main {
 
 		// 3. Create the player
 		Player player1 = new Player("Player1", 1, 0, 0);
-		Player player2 = new Player("Player1", 2, 0, 0);
+		Player player2 = new Player("Player2", 2, 0, 0);
 		player1.setWorldBounds(map.getWidth() * map.getTileSize(), map.getHeight() * map.getTileSize());
 		player1.setSprite(new PlayerSprite("src/resources/player/player_walking.png"));
 
