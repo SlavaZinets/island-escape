@@ -30,6 +30,7 @@ public class Player {
         Facing newFacing = Facing.fromDirection(direction);
         if (newFacing != null) {
             facing = newFacing;
+            animationTick++;
         }
 
         double newX = position.getX() + direction.getX() * SPEED;
