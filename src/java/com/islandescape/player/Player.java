@@ -1,5 +1,6 @@
 package com.islandescape.player;
 
+import com.islandescape.inventory.Inventory;
 import com.islandescape.utilities.Direction;
 
 import java.awt.Point;
@@ -10,6 +11,7 @@ public class Player {
     private int id;
     private Point position;
     private final double SPEED = 2;
+    private final Inventory inventory = new Inventory();
 
     public Player(String name, int id, int x, int y) {
         this.name = name;
@@ -37,4 +39,7 @@ public class Player {
         return position.getY();
     }
 
+    public Inventory getInventory() {
+        return inventory;
+    }
 }
