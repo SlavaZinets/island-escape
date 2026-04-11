@@ -23,4 +23,12 @@ public class BoatWreackTest {
         boat.interact(70, 70);
         assertEquals(17, boat.getMissingParts().size());
     }
+    @Test
+    public void loadItems() {
+
+    }
+@Test
+    public void depart() {
+
+    }
 }

@@ -55,6 +55,13 @@ public class BoatWreck extends WorldStructure{
             }
         }
     }
+    //loads everything player needs on boat
+    public void loadItems(String part) {
 
+    }
+    // method for depart the boat from island
+    public boolean depart() {
 
+        return false;
+    }
 }
