@@ -77,7 +77,6 @@ public class CraftingTable extends WorldStructure {
         int shell = count(grid, "Coconut Shell");
 
         if (vines == 2) return new Item(ItemType.ROPE, ItemCategory.CRAFTABLE_RESOURCE, "Rope", "Crafted rope");
-        if (shell == 1 && vines == 1) return new Item(ItemType.COCONUT_BOTTLE, ItemCategory.CUTLERY, "Coconut Bottle", "A bottle made from coconut");
         if (stone == 1 && wood == 1 && rope == 1) return new Item(ItemType.AXE, ItemCategory.TOOL, "Axe", "Axe for chopping");
         if (stone == 2 && wood == 1 && rope == 1) return new Item(ItemType.PICKAXE, ItemCategory.TOOL, "Pickaxe", "Pickaxe for mining");
         if (wood == 2) return new Item(ItemType.PLANKS, ItemCategory.CRAFTABLE_RESOURCE, "Planks", "Wooden planks");

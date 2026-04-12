@@ -29,20 +29,14 @@ public class Chest extends WorldStructure {
         this.contents[7] = new Item(ItemType.VINES, ItemCategory.PRIMARY_RESOURCE, "Vines", "Flexible vines");
         this.contents[8] = new Item(ItemType.VINES, ItemCategory.PRIMARY_RESOURCE, "Vines", "Flexible vines");
         this.contents[9] = new Item(ItemType.VINES, ItemCategory.PRIMARY_RESOURCE, "Vines", "Flexible vines");
-        this.contents[10] = new Item(ItemType.BANANA, ItemCategory.FOOD, "Banana", "Nutritious fruit");
-        this.contents[11] = new Item(ItemType.BANANA, ItemCategory.FOOD, "Banana", "Nutritious fruit");
-        this.contents[12] = new Item(ItemType.BANANA, ItemCategory.FOOD, "Banana", "Nutritious fruit");
-        this.contents[13] = new Item(ItemType.BANANA, ItemCategory.FOOD, "Banana", "Nutritious fruit");
-        this.contents[14] = new Item(ItemType.COCONUT, ItemCategory.FOOD, "Coconut", "A hard coconut");
-        this.contents[15] = new Item(ItemType.COCONUT, ItemCategory.FOOD, "Coconut", "A hard coconut");
-        this.contents[16] = new Item(ItemType.TROPICAL_LEAVES, ItemCategory.PRIMARY_RESOURCE, "Tropical Tree Leaves", "Large tropical leaves");
-        this.contents[17] = new Item(ItemType.TROPICAL_LEAVES, ItemCategory.PRIMARY_RESOURCE, "Tropical Tree Leaves", "Large tropical leaves");
-        this.contents[18] = new Item(ItemType.TROPICAL_LEAVES, ItemCategory.PRIMARY_RESOURCE, "Tropical Tree Leaves", "Large tropical leaves");
-        this.contents[19] = new Item(ItemType.TROPICAL_LEAVES, ItemCategory.PRIMARY_RESOURCE, "Tropical Tree Leaves", "Large tropical leaves");
-        this.contents[20] = new Item(ItemType.WOOD, ItemCategory.PRIMARY_RESOURCE, "Wood", "A piece of wood");
-        this.contents[21] = new Item(ItemType.WOOD, ItemCategory.PRIMARY_RESOURCE, "Wood", "A piece of wood");
-        this.contents[22] = new Item(ItemType.WOOD, ItemCategory.PRIMARY_RESOURCE, "Wood", "A piece of wood");
-        this.contents[23] = new Item(ItemType.WOOD, ItemCategory.PRIMARY_RESOURCE, "Wood", "A piece of wood");
+        this.contents[10] = new Item(ItemType.TROPICAL_LEAVES, ItemCategory.PRIMARY_RESOURCE, "Tropical Tree Leaves", "Large tropical leaves");
+        this.contents[11] = new Item(ItemType.TROPICAL_LEAVES, ItemCategory.PRIMARY_RESOURCE, "Tropical Tree Leaves", "Large tropical leaves");
+        this.contents[12] = new Item(ItemType.TROPICAL_LEAVES, ItemCategory.PRIMARY_RESOURCE, "Tropical Tree Leaves", "Large tropical leaves");
+        this.contents[13] = new Item(ItemType.TROPICAL_LEAVES, ItemCategory.PRIMARY_RESOURCE, "Tropical Tree Leaves", "Large tropical leaves");
+        this.contents[14] = new Item(ItemType.WOOD, ItemCategory.PRIMARY_RESOURCE, "Wood", "A piece of wood");
+        this.contents[15] = new Item(ItemType.WOOD, ItemCategory.PRIMARY_RESOURCE, "Wood", "A piece of wood");
+        this.contents[16] = new Item(ItemType.WOOD, ItemCategory.PRIMARY_RESOURCE, "Wood", "A piece of wood");
+        this.contents[17] = new Item(ItemType.WOOD, ItemCategory.PRIMARY_RESOURCE, "Wood", "A piece of wood");
     }
     
     //method when a player interacts with the chest.

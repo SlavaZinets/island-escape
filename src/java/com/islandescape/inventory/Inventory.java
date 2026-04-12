@@ -35,7 +35,7 @@ public class Inventory {
         return 0;
     }
 
-    public List<Item> snapshot() {
+    public ArrayList<Item> snapshot() {
         return null;
     }
 

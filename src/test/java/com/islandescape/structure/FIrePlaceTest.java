@@ -49,12 +49,12 @@ public class FIrePlaceTest {
     @Test
     public void cook() {
         FirePlace fire = new FirePlace(100, 100);
-        Item rawFood = new Item(ItemType.FISH, ItemCategory.FOOD, "Raw Fish", "A fresh fish");
+        Item rawFood = new Item(ItemType.WOOD, ItemCategory.PRIMARY_RESOURCE, "Raw Wood", "A raw piece");
         fire.light(100, 100);
         Item result = fire.cook(rawFood); //cookin
         //if result null or no match for name - fails
         assertNotNull(result);
-        assertEquals("Cooked Fish", result.getName());
+        assertEquals("Cooked Wood", result.getName());
     }
 
 }
