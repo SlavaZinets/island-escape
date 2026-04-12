@@ -1,6 +1,7 @@
 package com.islandescape.player;
 
 import com.islandescape.inventory.Inventory;
+import com.islandescape.map.TileMap;
 import com.islandescape.utilities.Direction;
 
 import java.awt.*;
@@ -24,6 +25,7 @@ public class Player {
 
     private int worldWidth = 0;
     private int worldHeight = 0;
+    private TileMap tileMap;
 
     private Facing facing = Facing.SOUTH;
     private int animationTick = 0;
@@ -41,7 +43,7 @@ public class Player {
             facing = newFacing;
             animationTick++;
         } else {
-            // idle
+
             animationTick = 0;
         }
 
@@ -53,12 +55,21 @@ public class Player {
             newY = Math.max(0, Math.min(newY, worldHeight - HEIGHT));
         }
 
+
+        if (tileMap != null) {
+
+        }
+
         position.setLocation(newX, newY);
     }
 
     public void setWorldBounds(int worldWidth, int worldHeight) {
         this.worldWidth = worldWidth;
         this.worldHeight = worldHeight;
+    }
+
+    public void setTileMap(TileMap tileMap) {
+        this.tileMap = tileMap;
     }
 
     public String getName() {
