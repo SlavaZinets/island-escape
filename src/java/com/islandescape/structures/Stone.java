@@ -1,4 +1,10 @@
 package com.islandescape.structures;
+
+import com.islandescape.inventory.Inventory;
+import com.islandescape.item.Item;
+import com.islandescape.item.ItemCategory;
+import com.islandescape.item.ItemType;
+
 //stone sub class of natural resource with Stone itemanme which is thematerial getting from resource after mining
 public class Stone extends NaturalResource {
 
@@ -8,7 +14,7 @@ public class Stone extends NaturalResource {
     }
 
     @Override
-    public void interact(double playerx, double playery) {
+    public void interact(double playerx, double playery, Inventory inventory) {
         //calculate distance
         double distance = Math.sqrt(Math.pow(this.x - playerx, 2) + Math.pow(this.y - playery, 2));
 
@@ -18,6 +24,8 @@ public class Stone extends NaturalResource {
                  System.out.println("Mining:" + this.health);
 
                 if (this.health == 0) {
+                    Item stoneItem = new Item(ItemType.STONE, ItemCategory.PRIMARY_RESOURCE, "Stone", "stone");
+                    inventory.addItem(stoneItem);//add to inverntory pf player
                     System.out.println("You mined: " + this.itemName);
                 }//show what material is mined
             }

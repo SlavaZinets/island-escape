@@ -1,7 +1,7 @@
 package com.islandescape.structures;
 
 import  com.islandescape.item.Item;
-
+import com.islandescape.inventory.Inventory;
 
 //this will be abstract class from parent class worldstrucure for creating resources such as stone, tree, etc
 public abstract class NaturalResource extends WorldStructure {
@@ -22,8 +22,8 @@ public abstract class NaturalResource extends WorldStructure {
     }
 
 
-    @Override
-    public abstract void interact(double playerx, double playery);//main method that will base for intercating with player and overriden by each structure
+
+    public abstract void interact(double playerx, double playery, Inventory inventory);//main method that will base for intercating with player and overriden by each structure
 
     public int getHealth() {
         return health; //getter to get current health value
