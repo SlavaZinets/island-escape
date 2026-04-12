@@ -5,11 +5,6 @@ import com.islandescape.utilities.Direction;
 import java.awt.event.KeyEvent;
 import java.awt.event.KeyListener;
 
-/*
-    GameKeyHandler listens for keyboard input and exposes the current
-    movement direction so the game loop can drive Player.move(Direction).
-    Convention: up is +y, down is -y, right is +x, left is -x.
- */
 public class GameKeyHandler implements KeyListener {
 
     private boolean isPressedW = false;
