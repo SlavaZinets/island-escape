@@ -9,8 +9,8 @@ import java.awt.image.BufferedImage;
 
 public class Player {
 
-    private static final int WIDTH = 64;
-    private static final int HEIGHT = 64;
+    private static final int WIDTH = 36;
+    private static final int HEIGHT = 60;
 
     // Walk-cycle tuning. FRAME_COUNT must match PlayerSprite.COLS.
     // FRAMES_PER_STEP is how many game ticks a single visible frame is held for.
