@@ -21,7 +21,6 @@ public class TileMap {
     private final List<Tileset> tilesets = new ArrayList<>();
 
 
-
     public TileMap(int width, int height, int tileSize) {
         this.width = width;
         this.height = height;
@@ -68,7 +67,8 @@ public class TileMap {
         }
         return result;
     }
-    public void renderMapComponent(MapRenderer renderer, Graphics g, int screenWidth, int screenHeight, Player player) {
+
+    public void renderMapComponent(MapRenderer renderer, Graphics g, int screenWidth, int screenHeight, Player player1, Player player2) {
 
         int nativeWidth = this.getWidth() * this.getTileSize();
         int nativeHeight = this.getHeight() * this.getTileSize();
@@ -79,10 +79,16 @@ public class TileMap {
             Graphics2D bufferG = buffer.createGraphics();
             renderer.render(bufferG, this);
 
-            // Render player on the same buffer so it scales with the map
-            if (player != null) {
-                player.renderPlayer(bufferG);
+            // Render players on the same buffer so they scale with the map
+
+            if (player1 != null) {
+                player1.renderPlayer(bufferG);
             }
+
+            if (player2 != null) {
+                player2.renderPlayer(bufferG);
+            }
+
 
             bufferG.dispose();
 
