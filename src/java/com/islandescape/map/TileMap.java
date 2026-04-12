@@ -14,6 +14,11 @@ import java.util.Map;
  */
 public class TileMap {
 
+    private static final String[] COLLISION_LAYERS = {
+        "seaToSand", "tree", "stones", "boat", "craftingTable", "bonfire", "chest"
+    };
+    private static final int MASK_TILE_ID = 0x1FFFFFFF;
+
     private final int width;
     private final int height;
     private final int tileSize;
@@ -68,6 +73,10 @@ public class TileMap {
         }
         return result;
     }
+    public boolean isBlocked(double x, double y, int playerWidth, int playerHeight) {
+        return false;
+    }
+
     public void renderMapComponent(MapRenderer renderer, Graphics g, int screenWidth, int screenHeight, Player player) {
 
         int nativeWidth = this.getWidth() * this.getTileSize();
