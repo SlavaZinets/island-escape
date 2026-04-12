@@ -20,9 +20,11 @@ public class Main {
 		MapRenderer renderer = new MapRenderer();
 
 		// 3. Create the player
-		Player player1 = new Player("Player1", 1, 0, 0);
+		Player player1 = new Player("Player1", 1, 128, 128);
 		Player player2 = new Player("Player2", 2, 0, 0);
 		player1.setWorldBounds(map.getWidth() * map.getTileSize(), map.getHeight() * map.getTileSize());
+		player1.setTileMap(map);
+		player2.setTileMap(map);
 		player1.setSprite(new PlayerSprite("src/resources/player/player_walking.png"));
 
 		player1.getInventory().addItem(new Item(ItemType.WOOD, ItemCategory.PRIMARY_RESOURCE, "Wood", "A piece of wood", 5));
