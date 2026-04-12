@@ -42,7 +42,15 @@ public class BoatWreackTest {
     }
 @Test
     public void depart() {
-
+    BoatWreck boat = new BoatWreck(15, 15, "Boat");
+    Inventory playerInventory = new Inventory();
+    List<String> missingParts = boat.getMissingParts();
+    for (String part : missingParts) {
+        boat.addPart(part);
+    }
+    assertTrue(boat.isFullyRepaired(), "boat is fixed");
+    boolean result = boat.depart(8.0, 8.0, playerInventory);
+    assertTrue(result, "boat sail away");
 
     }
 }
