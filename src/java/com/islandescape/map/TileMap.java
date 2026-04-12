@@ -74,6 +74,24 @@ public class TileMap {
         return result;
     }
     public boolean isBlocked(double x, double y, int playerWidth, int playerHeight) {
+        int colStart = (int) (x / tileSize);
+        int colEnd = (int) ((x + playerWidth - 1) / tileSize);
+        int rowStart = (int) (y / tileSize);
+        int rowEnd = (int) ((y + playerHeight - 1) / tileSize);
+
+        for (int row = rowStart; row <= rowEnd; row++) {
+            for (int col = colStart; col <= colEnd; col++) {
+                if (row < 0 || row >= height || col < 0 || col >= width) continue;
+
+                for (String layerName : COLLISION_LAYERS) {
+                    TileLayer layer = getLayer(layerName);
+                    if (layer == null) continue;
+
+                    int tileId = layer.getTileAt(row, col) & MASK_TILE_ID;
+                    if (tileId != 0) return true;
+                }
+            }
+        }
         return false;
     }
 
