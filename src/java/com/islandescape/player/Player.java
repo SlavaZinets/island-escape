@@ -57,7 +57,16 @@ public class Player {
 
 
         if (tileMap != null) {
+            double currentX = position.getX();
+            double currentY = position.getY();
 
+            if (tileMap.isBlocked(newX, currentY, WIDTH, HEIGHT)) {
+                newX = currentX;
+            }
+
+            if (tileMap.isBlocked(newX, newY, WIDTH, HEIGHT)) {
+                newY = currentY;
+            }
         }
 
         position.setLocation(newX, newY);

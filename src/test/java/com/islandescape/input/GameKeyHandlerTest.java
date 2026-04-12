@@ -18,7 +18,7 @@ public class GameKeyHandlerTest {
 
     @BeforeEach
     void setUp() {
-        handler = new GameKeyHandler();
+        handler = new GameKeyHandler(null);
         source = new JPanel();
     }
 
