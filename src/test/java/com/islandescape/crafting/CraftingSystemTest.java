@@ -34,8 +34,8 @@ public class CraftingSystemTest {
 
     @Test
     public void testRopeRecipe() {
-        cs.place(0, item(ItemType.VINES), 0);
-        cs.place(1, item(ItemType.VINES), 0);
+        cs.placeIn(0, item(ItemType.VINES), 0);
+        cs.placeIn(1, item(ItemType.VINES), 0);
         CraftingRecipe match = cs.preview();
         assertNotNull(match);
         assertEquals(ItemType.ROPE, match.getOutput());
@@ -44,9 +44,9 @@ public class CraftingSystemTest {
 
     @Test
     public void testAxeRecipe() {
-        cs.place(0, item(ItemType.STONE), 0);
-        cs.place(1, item(ItemType.WOOD), 0);
-        cs.place(2, item(ItemType.ROPE), 0);
+        cs.placeIn(0, item(ItemType.STONE), 0);
+        cs.placeIn(1, item(ItemType.WOOD), 0);
+        cs.placeIn(2, item(ItemType.ROPE), 0);
         CraftingRecipe match = cs.preview();
         assertNotNull(match);
         assertEquals(ItemType.AXE, match.getOutput());
@@ -54,10 +54,10 @@ public class CraftingSystemTest {
 
     @Test
     public void testPickaxeRecipe() {
-        cs.place(0, item(ItemType.STONE), 0);
-        cs.place(1, item(ItemType.STONE), 0);
-        cs.place(2, item(ItemType.WOOD), 0);
-        cs.place(3, item(ItemType.ROPE), 0);
+        cs.placeIn(0, item(ItemType.STONE), 0);
+        cs.placeIn(1, item(ItemType.STONE), 0);
+        cs.placeIn(2, item(ItemType.WOOD), 0);
+        cs.placeIn(3, item(ItemType.ROPE), 0);
         CraftingRecipe match = cs.preview();
         assertNotNull(match);
         assertEquals(ItemType.PICKAXE, match.getOutput());
@@ -65,8 +65,8 @@ public class CraftingSystemTest {
 
     @Test
     public void testPlanksRecipe() {
-        cs.place(0, item(ItemType.WOOD), 0);
-        cs.place(1, item(ItemType.WOOD), 0);
+        cs.placeIn(0, item(ItemType.WOOD), 0);
+        cs.placeIn(1, item(ItemType.WOOD), 0);
         CraftingRecipe match = cs.preview();
         assertNotNull(match);
         assertEquals(ItemType.PLANKS, match.getOutput());
@@ -75,8 +75,8 @@ public class CraftingSystemTest {
 
     @Test
     public void testPaddleRecipe() {
-        cs.place(0, item(ItemType.PLANKS), 0);
-        cs.place(1, item(ItemType.PLANKS), 0);
+        cs.placeIn(0, item(ItemType.PLANKS), 0);
+        cs.placeIn(1, item(ItemType.PLANKS), 0);
         CraftingRecipe match = cs.preview();
         assertNotNull(match);
         assertEquals(ItemType.PADDLE, match.getOutput());
@@ -84,10 +84,10 @@ public class CraftingSystemTest {
 
     @Test
     public void testFrameRecipe() {
-        cs.place(0, item(ItemType.PLANKS), 0);
-        cs.place(1, item(ItemType.PLANKS), 0);
-        cs.place(2, item(ItemType.ROPE), 0);
-        cs.place(3, item(ItemType.ROPE), 0);
+        cs.placeIn(0, item(ItemType.PLANKS), 0);
+        cs.placeIn(1, item(ItemType.PLANKS), 0);
+        cs.placeIn(2, item(ItemType.ROPE), 0);
+        cs.placeIn(3, item(ItemType.ROPE), 0);
         CraftingRecipe match = cs.preview();
         assertNotNull(match);
         assertEquals(ItemType.FRAME, match.getOutput());
@@ -95,10 +95,10 @@ public class CraftingSystemTest {
 
     @Test
     public void testMastRecipe() {
-        cs.place(0, item(ItemType.WOOD), 0);
-        cs.place(1, item(ItemType.WOOD), 0);
-        cs.place(2, item(ItemType.WOOD), 0);
-        cs.place(3, item(ItemType.ROPE), 0);
+        cs.placeIn(0, item(ItemType.WOOD), 0);
+        cs.placeIn(1, item(ItemType.WOOD), 0);
+        cs.placeIn(2, item(ItemType.WOOD), 0);
+        cs.placeIn(3, item(ItemType.ROPE), 0);
         CraftingRecipe match = cs.preview();
         assertNotNull(match);
         assertEquals(ItemType.MAST, match.getOutput());
@@ -106,10 +106,10 @@ public class CraftingSystemTest {
 
     @Test
     public void testRudderRecipe() {
-        cs.place(0, item(ItemType.PLANKS), 0);
-        cs.place(1, item(ItemType.PLANKS), 0);
-        cs.place(2, item(ItemType.STONE), 0);
-        cs.place(3, item(ItemType.ROPE), 0);
+        cs.placeIn(0, item(ItemType.PLANKS), 0);
+        cs.placeIn(1, item(ItemType.PLANKS), 0);
+        cs.placeIn(2, item(ItemType.STONE), 0);
+        cs.placeIn(3, item(ItemType.ROPE), 0);
         CraftingRecipe match = cs.preview();
         assertNotNull(match);
         assertEquals(ItemType.RUDDER, match.getOutput());
@@ -117,10 +117,10 @@ public class CraftingSystemTest {
 
     @Test
     public void testFittingsRecipe() {
-        cs.place(0, item(ItemType.STONE), 0);
-        cs.place(1, item(ItemType.STONE), 0);
-        cs.place(2, item(ItemType.ROPE), 0);
-        cs.place(3, item(ItemType.WOOD), 0);
+        cs.placeIn(0, item(ItemType.STONE), 0);
+        cs.placeIn(1, item(ItemType.STONE), 0);
+        cs.placeIn(2, item(ItemType.ROPE), 0);
+        cs.placeIn(3, item(ItemType.WOOD), 0);
         CraftingRecipe match = cs.preview();
         assertNotNull(match);
         assertEquals(ItemType.FITTINGS, match.getOutput());
@@ -130,9 +130,9 @@ public class CraftingSystemTest {
 
     @Test
     public void testSlotOrderDoesNotMatter() {
-        cs.place(2, item(ItemType.STONE), 0);
-        cs.place(0, item(ItemType.ROPE), 0);
-        cs.place(1, item(ItemType.WOOD), 0);
+        cs.placeIn(2, item(ItemType.STONE), 0);
+        cs.placeIn(0, item(ItemType.ROPE), 0);
+        cs.placeIn(1, item(ItemType.WOOD), 0);
         CraftingRecipe match = cs.preview();
         assertNotNull(match);
         assertEquals(ItemType.AXE, match.getOutput());
@@ -147,16 +147,16 @@ public class CraftingSystemTest {
 
     @Test
     public void testPartialIngredientsReturnNull() {
-        cs.place(0, item(ItemType.STONE), 0);
-        cs.place(1, item(ItemType.WOOD), 0);
+        cs.placeIn(0, item(ItemType.STONE), 0);
+        cs.placeIn(1, item(ItemType.WOOD), 0);
         assertNull(cs.preview());
     }
 
     @Test
     public void testExtraIngredientsReturnNull() {
-        cs.place(0, item(ItemType.VINES), 0);
-        cs.place(1, item(ItemType.VINES), 0);
-        cs.place(2, item(ItemType.WOOD), 0);
+        cs.placeIn(0, item(ItemType.VINES), 0);
+        cs.placeIn(1, item(ItemType.VINES), 0);
+        cs.placeIn(2, item(ItemType.WOOD), 0);
         assertNull(cs.preview());
     }
 
@@ -164,8 +164,8 @@ public class CraftingSystemTest {
 
     @Test
     public void testCraftConsumesGridAndDeliversOutput() {
-        cs.place(0, item(ItemType.VINES), 0);
-        cs.place(1, item(ItemType.VINES), 0);
+        cs.placeIn(0, item(ItemType.VINES), 0);
+        cs.placeIn(1, item(ItemType.VINES), 0);
         Item result = cs.craft(p1Inv);
         assertNotNull(result);
         assertEquals(ItemType.ROPE, result.getType());
@@ -175,8 +175,8 @@ public class CraftingSystemTest {
 
     @Test
     public void testCraftPlanksYieldsThree() {
-        cs.place(0, item(ItemType.WOOD), 0);
-        cs.place(1, item(ItemType.WOOD), 0);
+        cs.placeIn(0, item(ItemType.WOOD), 0);
+        cs.placeIn(1, item(ItemType.WOOD), 0);
         Item result = cs.craft(p1Inv);
         assertNotNull(result);
         assertEquals(ItemType.PLANKS, result.getType());
@@ -185,17 +185,17 @@ public class CraftingSystemTest {
 
     @Test
     public void testCraftWithNoMatchReturnsNull() {
-        cs.place(0, item(ItemType.STONE), 0);
+        cs.placeIn(0, item(ItemType.STONE), 0);
         assertNull(cs.craft(p1Inv));
-        assertNotNull(cs.take(0));
+        assertNotNull(cs.takeOut(0));
     }
 
     // ── clearGrid ───────────────────────────────────────────────────────
 
     @Test
     public void testClearGridReturnsItemsToOriginatingPlayer() {
-        cs.place(0, item(ItemType.WOOD), 0);
-        cs.place(1, item(ItemType.STONE), 1);
+        cs.placeIn(0, item(ItemType.WOOD), 0);
+        cs.placeIn(1, item(ItemType.STONE), 1);
         cs.clearGrid(p1Inv, p2Inv);
         assertEquals(1, p1Inv.countOf(ItemType.WOOD));
         assertEquals(0, p1Inv.countOf(ItemType.STONE));
@@ -205,23 +205,23 @@ public class CraftingSystemTest {
 
     @Test
     public void testClearGridEmptiesAllSlots() {
-        cs.place(0, item(ItemType.WOOD), 0);
-        cs.place(1, item(ItemType.VINES), 0);
+        cs.placeIn(0, item(ItemType.WOOD), 0);
+        cs.placeIn(1, item(ItemType.VINES), 0);
         cs.clearGrid(p1Inv, p2Inv);
         assertNull(cs.preview());
-        assertNull(cs.take(0));
-        assertNull(cs.take(1));
+        assertNull(cs.takeOut(0));
+        assertNull(cs.takeOut(1));
     }
 
     // ── take ────────────────────────────────────────────────────────────
 
     @Test
-    public void testTakeRemovesItemFromSlot() {
+    public void testTakeOutRemovesItemFromSlot() {
         Item wood = item(ItemType.WOOD);
-        cs.place(0, wood, 0);
-        Item taken = cs.take(0);
+        cs.placeIn(0, wood, 0);
+        Item taken = cs.takeOut(0);
         assertNotNull(taken);
         assertEquals(ItemType.WOOD, taken.getType());
-        assertNull(cs.take(0));
+        assertNull(cs.takeOut(0));
     }
 }
