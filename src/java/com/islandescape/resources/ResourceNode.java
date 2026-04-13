@@ -16,10 +16,12 @@ import java.util.List;
 public abstract class ResourceNode extends WorldStructure {
 
     private static final double GATHER_RADIUS = 32.0;
+    private static final int RESPAWN_TICKS = 1000;
 
     protected ItemType requiredTool;
     private ArrayList<Point> tileCoords = new ArrayList<>();
     private boolean disabled = false;
+    private int respawnCountdown = 0;
 
     public ResourceNode(double x, double y, String name, ItemType requiredTool) {
         super(x, y, name);
@@ -42,6 +44,15 @@ public abstract class ResourceNode extends WorldStructure {
 
     public void disable() {
         this.disabled = true;
+        this.respawnCountdown = RESPAWN_TICKS;
+    }
+
+    public void tick() {
+        if (!disabled) return;
+        respawnCountdown--;
+        if (respawnCountdown <= 0) {
+            disabled = false;
+        }
     }
 
     public void setTileCoords(ArrayList<Point> coords) {

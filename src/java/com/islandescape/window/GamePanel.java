@@ -102,6 +102,10 @@ public class GamePanel extends JPanel {
             farmToastFrames--;
         }
 
+        for (ResourceNode node : resourceNodes) {
+            node.tick();
+        }
+
         // Crafting-screen toggle (I key) — single-press consumed once per press
         if (keyHandler.consumeCraftScreenToggle()) {
             if (gameState == GameState.INVENTORY_OPEN) {
