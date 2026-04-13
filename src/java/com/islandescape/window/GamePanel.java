@@ -16,6 +16,8 @@ import com.islandescape.structures.CraftingTable;
 import com.islandescape.ui.CraftingScreen;
 
 import javax.swing.*;
+import java.awt.Color;
+import java.awt.Font;
 import java.awt.Graphics;
 import java.awt.Graphics2D;
 import java.util.ArrayList;
@@ -42,6 +44,8 @@ public class GamePanel extends JPanel {
     private CraftingScreen craftingScreen;
     private GameState gameState = GameState.PLAYING;
     private final List<ResourceNode> resourceNodes = new ArrayList<>();
+    private String farmToastMessage = "";
+    private int farmToastFrames = 0;
 
     public GamePanel(TileMap map, MapRenderer renderer, Player player1, Player player2) {
         this.map = map;
@@ -96,6 +100,10 @@ public class GamePanel extends JPanel {
 
     private void update() {
         if (keyHandler == null) return;
+
+        if (farmToastFrames > 0) {
+            farmToastFrames--;
+        }
 
         // Crafting-screen toggle (I key) — single-press consumed once per press
         if (keyHandler.consumeCraftScreenToggle()) {
@@ -154,17 +162,39 @@ public class GamePanel extends JPanel {
 
         ResourceNode nearest = findNearestResourceInRange(player);
         if (nearest == null) {
+            farmToastMessage = "Too far from resource";
+            farmToastFrames = 50;
             return;
         }
 
         List<Item> drops = player.farm(nearest);
         if (drops == null) {
+            farmToastMessage = "Need correct tool for " + nearest.getClass().getSimpleName();
+            farmToastFrames = 60;
             return;
         }
 
         for (Item drop : drops) {
             player.getInventory().addItem(drop);
         }
+
+        farmToastMessage = "+ " + formatDrops(drops);
+        farmToastFrames = 75;
+
+        System.out.println("[Farm] player=" + player.getName()
+                + ", resource=" + nearest.getClass().getSimpleName()
+                + ", drops=" + formatDrops(drops));
+    }
+
+    private String formatDrops(List<Item> drops) {
+        StringBuilder sb = new StringBuilder();
+        for (int i = 0; i < drops.size(); i++) {
+            if (i > 0) {
+                sb.append(", ");
+            }
+            sb.append(drops.get(i).getType().name());
+        }
+        return sb.toString();
     }
 
     private ResourceNode findNearestResourceInRange(Player player) {
@@ -256,6 +286,15 @@ public class GamePanel extends JPanel {
                     player1 != null ? player1.getInventory() : null,
                     player2 != null ? player2.getInventory() : null,
                     isPlayerNearTable(player1), isPlayerNearTable(player2));
+        }
+
+        if (farmToastFrames > 0 && !farmToastMessage.isEmpty()) {
+            Graphics2D g2 = (Graphics2D) g;
+            g2.setColor(new Color(0, 0, 0, 150));
+            g2.fillRoundRect(20, 20, 380, 36, 10, 10);
+            g2.setFont(new Font("SansSerif", Font.BOLD, 18));
+            g2.setColor(new Color(120, 255, 120));
+            g2.drawString(farmToastMessage, 30, 44);
         }
     }
 }
