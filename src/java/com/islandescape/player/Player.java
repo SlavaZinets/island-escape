@@ -1,11 +1,14 @@
 package com.islandescape.player;
 
 import com.islandescape.inventory.Inventory;
+import com.islandescape.item.Item;
 import com.islandescape.map.TileMap;
+import com.islandescape.resources.ResourceNode;
 import com.islandescape.utilities.Direction;
 
 import java.awt.*;
 import java.awt.image.BufferedImage;
+import java.util.List;
 
 public class Player {
 
@@ -133,5 +136,17 @@ public class Player {
 
     public Inventory getInventory() {
         return inventory;
+    }
+
+    /**
+     * Attempt to farm a resource node.
+     * Returns a list of harvested items if successful (in range + has correct tool),
+     * or null if farming fails (out of range or missing tool).
+     */
+    public List<Item> farm(ResourceNode resource) {
+        if (resource.isPlayerInRange(position.getX(), position.getY())) {
+            return resource.harvest(inventory);
+        }
+        return null;
     }
 }
