@@ -14,8 +14,11 @@ import java.util.Map;
  */
 public class TileMap {
 
-    private static final String[] COLLISION_LAYERS = {
-        "seaToSand", "tree", "stones", "boat", "craftingTable", "bonfire", "chest"
+    private static final String[] WALKABLE_LAYERS = {
+        "ground(surface)", "ground(borders)", "bridges"
+    };
+    private static final String[] BLOCKING_LAYERS = {
+        "ground(cliffs)"
     };
     private static final int MASK_TILE_ID = 0x1FFFFFFF;
 
@@ -81,15 +84,23 @@ public class TileMap {
 
         for (int row = rowStart; row <= rowEnd; row++) {
             for (int col = colStart; col <= colEnd; col++) {
-                if (row < 0 || row >= height || col < 0 || col >= width) continue;
+                if (row < 0 || row >= height || col < 0 || col >= width) return true;
 
-                for (String layerName : COLLISION_LAYERS) {
+                for (String layerName : BLOCKING_LAYERS) {
                     TileLayer layer = getLayer(layerName);
                     if (layer == null) continue;
-
                     int tileId = layer.getTileAt(row, col) & MASK_TILE_ID;
                     if (tileId != 0) return true;
                 }
+
+                boolean walkable = false;
+                for (String layerName : WALKABLE_LAYERS) {
+                    TileLayer layer = getLayer(layerName);
+                    if (layer == null) continue;
+                    int tileId = layer.getTileAt(row, col) & MASK_TILE_ID;
+                    if (tileId != 0) { walkable = true; break; }
+                }
+                if (!walkable) return true;
             }
         }
         return false;

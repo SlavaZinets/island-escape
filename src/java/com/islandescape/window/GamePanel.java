@@ -16,12 +16,11 @@ import com.islandescape.structures.CraftingTable;
 import com.islandescape.ui.CraftingScreen;
 
 import javax.swing.*;
-import java.awt.Color;
-import java.awt.Font;
-import java.awt.Graphics;
-import java.awt.Graphics2D;
+
 import java.util.ArrayList;
 import java.util.List;
+import java.awt.*;
+
 
 /*
     GamePanel sits inside GameWindow.
@@ -268,7 +267,7 @@ public class GamePanel extends JPanel {
     @Override
     protected void paintComponent(Graphics g) {
         super.paintComponent(g);
-        g.setColor(java.awt.Color.BLACK);
+        g.setColor(new Color(77, 166, 255));
         g.fillRect(0, 0, getWidth(), getHeight());
 
         map.renderMapComponent(renderer, g, getWidth(), getHeight(), player1, player2);

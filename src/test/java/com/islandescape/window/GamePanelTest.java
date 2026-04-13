@@ -18,7 +18,7 @@ public class GamePanelTest {
     public void setUp() throws Exception {
         TileMap map = MapLoader.load(TMX_PATH);
         MapRenderer renderer = new MapRenderer();
-        panel = new GamePanel(map, renderer);
+        panel = new GamePanel(map, renderer, null, null);
     }
 
     // Panel should not be null after creation
