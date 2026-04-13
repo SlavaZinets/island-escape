@@ -25,7 +25,7 @@ public class MapRenderer {
 
     // render the map
     public void render(Graphics2D g, TileMap map){
-        String[] layers = {"water", "ground(cliffs)", "ground(surface)", "ground(borders)", "bridges"};
+        String[] layers = {"water", "ground(cliffs)", "ground(surface)", "ground(borders)", "bridges", "decoration", "trees", "stones"};
         for(String layer: layers){
             TileLayer tileLayer = map.getLayer(layer);
             if(tileLayer == null){

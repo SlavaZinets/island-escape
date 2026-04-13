@@ -18,7 +18,7 @@ public class TileMap {
         "ground(surface)", "ground(borders)", "bridges"
     };
     private static final String[] BLOCKING_LAYERS = {
-        "ground(cliffs)"
+        "ground(cliffs)", "trees", "stones"
     };
     private static final int MASK_TILE_ID = 0x1FFFFFFF;
 
