@@ -349,4 +349,50 @@ public class PlayerTest {
     void frameIndexWrapsAfterFullCycle() {
         assertEquals(0, movedBy(FRAMES_PER_STEP * FRAME_COUNT).getFrameIndex());
     }
+
+    // tests for farming resources
+
+    @Test
+    void farmTreeWhenInRangeWithAxe() {
+        Player p = new Player("Charlie", 3, 100, 100);
+        com.islandescape.resources.ResourceNode tree = new com.islandescape.resources.Tree(105, 105);
+        com.islandescape.item.Item axe = new com.islandescape.item.Item(
+                com.islandescape.item.ItemType.AXE,
+                com.islandescape.item.ItemCategory.TOOL,
+                "Axe",
+                "Chops trees");
+        p.getInventory().addItem(axe);
+        
+        java.util.List<com.islandescape.item.Item> harvest = p.farm(tree);
+        
+        assertNotNull(harvest, "Player should harvest items when in range with correct tool");
+        assertTrue(harvest.size() > 0, "Harvest should contain items");
+    }
+
+    @Test
+    void farmTreeOutOfRange() {
+        Player p = new Player("Charlie", 3, 100, 100);
+        com.islandescape.resources.ResourceNode tree = new com.islandescape.resources.Tree(300, 300);
+        com.islandescape.item.Item axe = new com.islandescape.item.Item(
+                com.islandescape.item.ItemType.AXE,
+                com.islandescape.item.ItemCategory.TOOL,
+                "Axe",
+                "Chops trees");
+        p.getInventory().addItem(axe);
+        
+        java.util.List<com.islandescape.item.Item> harvest = p.farm(tree);
+        
+        assertNull(harvest, "Player should not harvest when out of range");
+    }
+
+    @Test
+    void farmTreeWithoutCorrectTool() {
+        Player p = new Player("Charlie", 3, 100, 100);
+        com.islandescape.resources.ResourceNode tree = new com.islandescape.resources.Tree(105, 105);
+        // No axe in inventory
+        
+        java.util.List<com.islandescape.item.Item> harvest = p.farm(tree);
+        
+        assertNull(harvest, "Player should not harvest without correct tool");
+    }
 }

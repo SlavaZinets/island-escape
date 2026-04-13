@@ -9,11 +9,18 @@ import com.islandescape.item.Item;
 import com.islandescape.map.MapRenderer;
 import com.islandescape.map.TileMap;
 import com.islandescape.player.Player;
+import com.islandescape.resources.ResourceNode;
+import com.islandescape.resources.Stone;
+import com.islandescape.resources.Tree;
 import com.islandescape.structures.CraftingTable;
 import com.islandescape.ui.CraftingScreen;
 
 import javax.swing.*;
+
+import java.util.ArrayList;
+import java.util.List;
 import java.awt.*;
+
 
 /*
     GamePanel sits inside GameWindow.
@@ -35,6 +42,9 @@ public class GamePanel extends JPanel {
     private CraftingTable craftingTable;
     private CraftingScreen craftingScreen;
     private GameState gameState = GameState.PLAYING;
+    private final List<ResourceNode> resourceNodes = new ArrayList<>();
+    private String farmToastMessage = "";
+    private int farmToastFrames = 0;
 
     public GamePanel(TileMap map, MapRenderer renderer, Player player1, Player player2) {
         this.map = map;
@@ -47,6 +57,11 @@ public class GamePanel extends JPanel {
         InventoryMouseHandler mouseHandler = new InventoryMouseHandler(inventoryScreen, this);
         addMouseListener(mouseHandler);
         addMouseMotionListener(mouseHandler);
+
+        // MVP test setup: one tree and one stone at fixed world positions.
+        resourceNodes.add(new Tree(180, 160));
+        resourceNodes.add(new Stone(260, 160));
+
         setFocusable(true);
     }
 
@@ -85,6 +100,10 @@ public class GamePanel extends JPanel {
     private void update() {
         if (keyHandler == null) return;
 
+        if (farmToastFrames > 0) {
+            farmToastFrames--;
+        }
+
         // Crafting-screen toggle (I key) — single-press consumed once per press
         if (keyHandler.consumeCraftScreenToggle()) {
             if (gameState == GameState.INVENTORY_OPEN) {
@@ -100,6 +119,14 @@ public class GamePanel extends JPanel {
             }
             if (player2 != null) {
                 player2.move(keyHandler.getP2Direction());
+            }
+
+            // Reuse existing action keys: E for P1 and SPACE for P2.
+            if (keyHandler.consumeP1Action()) {
+                tryFarmNearestResource(player1);
+            }
+            if (keyHandler.consumeP2Action()) {
+                tryFarmNearestResource(player2);
             }
         } else if (gameState == GameState.INVENTORY_OPEN) {
             // Forward input to crafting screen for cursor movement and item placement
@@ -125,6 +152,70 @@ public class GamePanel extends JPanel {
                 }
             }
         }
+    }
+
+    private void tryFarmNearestResource(Player player) {
+        if (player == null) {
+            return;
+        }
+
+        ResourceNode nearest = findNearestResourceInRange(player);
+        if (nearest == null) {
+            farmToastMessage = "Too far from resource";
+            farmToastFrames = 50;
+            return;
+        }
+
+        List<Item> drops = player.farm(nearest);
+        if (drops == null) {
+            farmToastMessage = "Need correct tool for " + nearest.getClass().getSimpleName();
+            farmToastFrames = 60;
+            return;
+        }
+
+        for (Item drop : drops) {
+            player.getInventory().addItem(drop);
+        }
+
+        farmToastMessage = "+ " + formatDrops(drops);
+        farmToastFrames = 75;
+
+        System.out.println("[Farm] player=" + player.getName()
+                + ", resource=" + nearest.getClass().getSimpleName()
+                + ", drops=" + formatDrops(drops));
+    }
+
+    private String formatDrops(List<Item> drops) {
+        StringBuilder sb = new StringBuilder();
+        for (int i = 0; i < drops.size(); i++) {
+            if (i > 0) {
+                sb.append(", ");
+            }
+            sb.append(drops.get(i).getType().name());
+        }
+        return sb.toString();
+    }
+
+    private ResourceNode findNearestResourceInRange(Player player) {
+        ResourceNode nearest = null;
+        double nearestDistanceSq = Double.MAX_VALUE;
+
+        for (ResourceNode node : resourceNodes) {
+            if (!node.isPlayerInRange(player.getX(), player.getY())) {
+                continue;
+            }
+
+            double dx = node.getX() - player.getX();
+            double dy = node.getY() - player.getY();
+            double distanceSq = dx * dx + dy * dy;
+
+            if (distanceSq < nearestDistanceSq) {
+                nearestDistanceSq = distanceSq;
+                nearest = node;
+            }
+        }
+
+        return nearest;
     }
 
     private boolean isAnyPlayerNearTable() {
@@ -194,6 +285,15 @@ public class GamePanel extends JPanel {
                     player1 != null ? player1.getInventory() : null,
                     player2 != null ? player2.getInventory() : null,
                     isPlayerNearTable(player1), isPlayerNearTable(player2));
+        }
+
+        if (farmToastFrames > 0 && !farmToastMessage.isEmpty()) {
+            Graphics2D g2 = (Graphics2D) g;
+            g2.setColor(new Color(0, 0, 0, 150));
+            g2.fillRoundRect(20, 20, 380, 36, 10, 10);
+            g2.setFont(new Font("SansSerif", Font.BOLD, 18));
+            g2.setColor(new Color(120, 255, 120));
+            g2.drawString(farmToastMessage, 30, 44);
         }
     }
 }

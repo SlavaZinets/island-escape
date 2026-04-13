@@ -1,11 +1,14 @@
 package com.islandescape.player;
 
 import com.islandescape.inventory.Inventory;
+import com.islandescape.item.Item;
 import com.islandescape.map.TileMap;
+import com.islandescape.resources.ResourceNode;
 import com.islandescape.utilities.Direction;
 
 import java.awt.*;
 import java.awt.image.BufferedImage;
+import java.util.List;
 
 public class Player {
 
@@ -133,5 +136,14 @@ public class Player {
 
     public Inventory getInventory() {
         return inventory;
+    }
+
+    // Player side of gathering.
+    // We only check distance here and then delegate real harvest logic to the node.
+    public List<Item> farm(ResourceNode resource) {
+        if (resource.isPlayerInRange(position.getX(), position.getY())) {
+            return resource.harvest(inventory);
+        }
+        return null;
     }
 }
