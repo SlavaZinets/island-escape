@@ -3,6 +3,8 @@ package com.islandescape.inventory;
 import com.islandescape.item.Item;
 import com.islandescape.item.ItemType;
 
+import java.util.ArrayList;
+
 public class Inventory {
     Item[] slots;
     Item[] hotBarSlots;
@@ -16,6 +18,11 @@ public class Inventory {
         hotBarSlots = new Item[5];
         selectedHotBarSlot = 0;
 
+    }
+
+    // Accepted for compatibility with older crafting tests; slot sizing is fixed.
+    public Inventory(int slotCountHint){
+        this();
     }
     // add item to the array
     public boolean addItem(Item newItem){
@@ -176,6 +183,38 @@ public class Inventory {
         return taken;
     }
 
+    // --- Adapters for CraftingSystem / CraftingScreen ---
 
+    public boolean add(Item item) {
+        return addItem(item);
+    }
 
+    public ArrayList<Item> snapshot() {
+        ArrayList<Item> list = new ArrayList<>();
+        for (Item s : slots) if (s != null) list.add(s);
+        for (Item s : hotBarSlots) if (s != null) list.add(s);
+        return list;
+    }
+
+    public int countOf(ItemType type) {
+        return getItemCountByType(type);
+    }
+
+    public Item extract(ItemType type, int qty) {
+        if (qty <= 0 || getItemCountByType(type) < qty) return null;
+        Item template = null;
+        for (Item s : slots) {
+            if (s != null && s.getType() == type) { template = s; break; }
+        }
+        if (template == null) {
+            for (Item s : hotBarSlots) {
+                if (s != null && s.getType() == type) { template = s; break; }
+            }
+        }
+        if (template == null) return null;
+        Item result = new Item(template.getType(), template.getCategory(),
+                template.getName(), template.getDescription(), qty);
+        remove(type, qty);
+        return result;
+    }
 }

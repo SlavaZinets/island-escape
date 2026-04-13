@@ -27,23 +27,23 @@ public class InventoryTest {
 
     private void fillItemsArray(Item[] items) {
         for(int i = 0; i<items.length; i++){
-            items[i] = new Item(ItemType.BANANA, ItemCategory.FOOD, "Banana", "Nutritious fruit", 3);
+            items[i] = new Item(ItemType.VINES, ItemCategory.PRIMARY_RESOURCE, "Vines", "Stringy jungle vines", 3);
         }
     }
 
     @Test
     public void testAddItem(){
-        Item banana = new Item(ItemType.BANANA, ItemCategory.FOOD, "Banana", "Nutritious fruit", 3);
-        Item coconut= new Item(ItemType.COCONUT, ItemCategory.FOOD, "Coconut", "Nutritious fruit", 4);
+        Item banana = new Item(ItemType.VINES, ItemCategory.PRIMARY_RESOURCE, "Vines", "Stringy jungle vines", 3);
+        Item coconut= new Item(ItemType.STONE, ItemCategory.PRIMARY_RESOURCE, "Stone", "A solid stone", 4);
         Item axe = new Item(ItemType.AXE, ItemCategory.TOOL, "Axe", "Axe for wood extraction");
-        Item fish = new Item(ItemType.FISH , ItemCategory.FOOD, "Fish", "Fish", 2);
+        Item fish = new Item(ItemType.WOOD, ItemCategory.PRIMARY_RESOURCE, "Wood", "A piece of wood", 2);
 
         // add Item to inventory — goes to hotbar first (slot 15 in combined view)
         testInventory.addItem(banana);
         assertEquals(banana, testInventory.getSlot(15));
 
-        // add another Banana — should merge into existing stack (3+3=6)
-        Item yellowBanana = new Item(ItemType.BANANA, ItemCategory.FOOD, "Yellow banana", "Nutritious fruit", 3);
+        // add another Vines — should merge into existing stack (3+3=6)
+        Item yellowBanana = new Item(ItemType.VINES, ItemCategory.PRIMARY_RESOURCE, "Vines", "Stringy jungle vines", 3);
         testInventory.addItem(yellowBanana);
         assertEquals(6, testInventory.getSlot(15).getQuantity());
 
@@ -51,7 +51,7 @@ public class InventoryTest {
         testInventory.addItem(coconut);
         assertEquals(coconut, testInventory.getSlot(16));
 
-        // add Item fish
+        // add Item wood
         testInventory.addItem(fish);
         assertEquals(fish, testInventory.getSlot(17));
 
@@ -107,7 +107,7 @@ public class InventoryTest {
     }
     @Test
     public void testGetSlot(){
-        Item banana = new Item(ItemType.BANANA, ItemCategory.FOOD, "Banana", "Nutritious fruit", 10);
+        Item banana = new Item(ItemType.VINES, ItemCategory.PRIMARY_RESOURCE, "Vines", "Stringy jungle vines", 10);
         testInventory3.setSlot(3, banana);
 
         Item receivedSlot = testInventory3.getSlot(3);
@@ -120,7 +120,7 @@ public class InventoryTest {
     }
     @Test
     public void testSetSlot(){
-        Item coconut= new Item(ItemType.COCONUT, ItemCategory.FOOD, "Coconut", "Nutritious fruit", 4);
+        Item coconut= new Item(ItemType.STONE, ItemCategory.PRIMARY_RESOURCE, "Stone", "A solid stone", 4);
         assertNull(testInventory3.getSlot(2));
         testInventory3.setSlot(2, coconut);
         assertEquals(coconut, testInventory3.getSlot(2));
@@ -171,7 +171,7 @@ public class InventoryTest {
         // put Wood in two different main slots
         Item wood1 = new Item(ItemType.WOOD, ItemCategory.PRIMARY_RESOURCE, "Wood", "A piece of wood", 3);
         Item wood2 = new Item(ItemType.WOOD, ItemCategory.PRIMARY_RESOURCE, "Wood", "A piece of wood", 5);
-        Item banana = new Item(ItemType.BANANA, ItemCategory.FOOD, "Banana", "Nutritious fruit", 2);
+        Item banana = new Item(ItemType.VINES, ItemCategory.PRIMARY_RESOURCE, "Vines", "Stringy jungle vines", 2);
         testInventory3.setSlot(0, wood1);
         testInventory3.setSlot(7, wood2);
         testInventory3.setSlot(3, banana);
@@ -179,7 +179,7 @@ public class InventoryTest {
         // total Wood in main = 3 + 5 = 8
         assertEquals(8, testInventory3.getItemCount(wood1));
 
-        // total Banana = 2
+        // total Vines = 2
         assertEquals(2, testInventory3.getItemCount(banana));
 
         // Stone not present = 0
@@ -269,9 +269,4 @@ public class InventoryTest {
         assertEquals(2, hotbarTaken.getQuantity());
         assertEquals(4, testInventory3.getSlot(16).getQuantity());
     }
-
-
-
-
-
 }

@@ -18,13 +18,13 @@ public class InventoryCursorTest {
     }
     private void fillItemsArray(Item[] items) {
         for(int i = 0; i<items.length; i++){
-            items[i] = new Item(ItemType.BANANA, ItemCategory.FOOD, "Banana", "Nutritious fruit", 3);
+            items[i] = new Item(ItemType.VINES, ItemCategory.FOOD, "Banana", "Nutritious fruit", 3);
         }
     }
     @Test
     public void testPickUp(){
         // test whether the item picked correctly
-        Item banana = new Item(ItemType.BANANA, ItemCategory.FOOD, "Banana", "Nutritious fruit", 10);
+        Item banana = new Item(ItemType.VINES, ItemCategory.FOOD, "Banana", "Nutritious fruit", 10);
         inventory.setSlot(0, banana);
         inventoryCursor.pickUp(inventory, 0);
         assertEquals(banana, inventoryCursor.getHeldItem());
@@ -34,7 +34,7 @@ public class InventoryCursorTest {
     @Test
     public void testPickUpHalf(){
         // pickUpHalf with odd quantity: ceil(9/2) = 5 taken, 4 left in slot
-        Item banana = new Item(ItemType.BANANA, ItemCategory.FOOD, "Banana", "Nutritious fruit", 9);
+        Item banana = new Item(ItemType.VINES, ItemCategory.FOOD, "Banana", "Nutritious fruit", 9);
         inventory.setSlot(0, banana);
         inventoryCursor.pickUpHalf(inventory, 0);
         assertEquals(5, inventoryCursor.getHeldItem().getQuantity());
@@ -44,7 +44,7 @@ public class InventoryCursorTest {
         inventoryCursor.placeAll(inventory, 1);
 
         // pickUpHalf with even quantity: ceil(6/2) = 3 taken, 3 left in slot
-        Item coconut = new Item(ItemType.COCONUT, ItemCategory.FOOD, "Coconut", "Coconut", 6);
+        Item coconut = new Item(ItemType.TROPICAL_LEAVES, ItemCategory.FOOD, "Coconut", "Coconut", 6);
         inventory.setSlot(2, coconut);
         inventoryCursor.pickUpHalf(inventory, 2);
         assertEquals(3, inventoryCursor.getHeldItem().getQuantity());
@@ -79,9 +79,9 @@ public class InventoryCursorTest {
         // and if the target slot item has the same Item type as the item that is held in the cursor
         // and when the sum of item quantity in target slot + quantity of item in the cursor is less than MaxStackSize
 
-        Item fish = new Item(ItemType.FISH , ItemCategory.FOOD, "Fish", "Fish", 3); //cursor item
+        Item fish = new Item(ItemType.WOOD , ItemCategory.FOOD, "Fish", "Fish", 3); //cursor item
         inventory.setSlot(8,fish);
-        Item fish1 = new Item(ItemType.FISH , ItemCategory.FOOD, "Fish", "Fish", 5);// target slot
+        Item fish1 = new Item(ItemType.WOOD , ItemCategory.FOOD, "Fish", "Fish", 5);// target slot
         inventory.setSlot(9, fish1);
 
         // pick item at index 8
@@ -97,9 +97,9 @@ public class InventoryCursorTest {
         //Case 3 when the target slot is mot empty
         // and if the target slot item has the same Item type as the item that is held in the cursor
         // and when the sum of item quantity in target slot + quantity of item in the cursor is bigger than MaxStackSize
-        Item fish2 = new Item(ItemType.FISH , ItemCategory.FOOD, "Fish", "Fish", 11); //cursor item
+        Item fish2 = new Item(ItemType.WOOD , ItemCategory.FOOD, "Fish", "Fish", 11); //cursor item
         inventory.setSlot(10,fish2);
-        Item fish3 = new Item(ItemType.FISH , ItemCategory.FOOD, "Fish", "Fish", 5);// target slot
+        Item fish3 = new Item(ItemType.WOOD , ItemCategory.FOOD, "Fish", "Fish", 5);// target slot
         inventory.setSlot(11, fish3);
 
         // pick item at index 10
@@ -112,9 +112,9 @@ public class InventoryCursorTest {
         assertEquals((11 + 5) - Item.MAX_STACK_SIZE, inventoryCursor.getHeldItem().getQuantity());
         //Case 3 when the target slot is mot empty
         // and if the target slot item has the different Item type as the item that is held in the cursor
-        Item fish4 = new Item(ItemType.FISH , ItemCategory.FOOD, "Fish", "Fish", 11); //cursor item
+        Item fish4 = new Item(ItemType.WOOD , ItemCategory.FOOD, "Fish", "Fish", 11); //cursor item
         inventory.setSlot(12,fish4);
-        Item banana = new Item(ItemType.BANANA, ItemCategory.FOOD, "Banana", "Nutritious fruit", 9);
+        Item banana = new Item(ItemType.VINES, ItemCategory.FOOD, "Banana", "Nutritious fruit", 9);
         inventory.setSlot(13,banana);
 
         inventoryCursor.pickUp(inventory, 12);
@@ -129,7 +129,7 @@ public class InventoryCursorTest {
     @Test
     public void testPlaceOne(){
         //Case 1 if the target slot is empty
-        Item fish = new Item(ItemType.FISH , ItemCategory.FOOD, "Fish", "Fish", 3); //cursor item
+        Item fish = new Item(ItemType.WOOD , ItemCategory.FOOD, "Fish", "Fish", 3); //cursor item
         inventory.setSlot(1,fish);
 
         // pick item at index 1
@@ -148,9 +148,9 @@ public class InventoryCursorTest {
         //case 2 when the target slot is not empty and has the same Item type
         // and target slot quantity + 1 is less or equal than MAX_STACK_SIZE
 
-        Item fish1 = new Item(ItemType.FISH , ItemCategory.FOOD, "Fish", "Fish", 8); //cursor item
+        Item fish1 = new Item(ItemType.WOOD , ItemCategory.FOOD, "Fish", "Fish", 8); //cursor item
         inventory.setSlot(3,fish1);
-        Item fish2 = new Item(ItemType.FISH , ItemCategory.FOOD, "Fish", "Fish", 7);// target slot
+        Item fish2 = new Item(ItemType.WOOD , ItemCategory.FOOD, "Fish", "Fish", 7);// target slot
         inventory.setSlot(4, fish2);
 
 
@@ -165,9 +165,9 @@ public class InventoryCursorTest {
         //case 3 when the target slot is not empty and has the same Item type
         // and target slot quantity + 1 is bigger than MAX_STACK_SIZE
 
-        Item fish3 = new Item(ItemType.FISH , ItemCategory.FOOD, "Fish", "Fish", 1); //cursor item
+        Item fish3 = new Item(ItemType.WOOD , ItemCategory.FOOD, "Fish", "Fish", 1); //cursor item
         inventory.setSlot(5,fish3);
-        Item fish4 = new Item(ItemType.FISH , ItemCategory.FOOD, "Fish", "Fish", 10);// target slot
+        Item fish4 = new Item(ItemType.WOOD , ItemCategory.FOOD, "Fish", "Fish", 10);// target slot
         inventory.setSlot(6, fish4);
 
 
@@ -182,9 +182,9 @@ public class InventoryCursorTest {
         //case 4 when the target slot is not empty and has the different Item type
         // and target slot quantity + 1 is bigger than MAX_STACK_SIZE
 
-        Item fish5 = new Item(ItemType.FISH , ItemCategory.FOOD, "Fish", "Fish", 1); //cursor item
+        Item fish5 = new Item(ItemType.WOOD , ItemCategory.FOOD, "Fish", "Fish", 1); //cursor item
         inventory.setSlot(7,fish5);
-        Item coconut= new Item(ItemType.COCONUT, ItemCategory.FOOD, "Coconut", "Nutritious fruit", 4);
+        Item coconut= new Item(ItemType.TROPICAL_LEAVES, ItemCategory.FOOD, "Coconut", "Nutritious fruit", 4);
         inventory.setSlot(8, coconut);
 
 

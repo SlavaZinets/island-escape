@@ -15,56 +15,56 @@ public class ItemTest {
 
     @Test
     public void testIsStackable(){
-       Item banana = new Item(ItemType.BANANA, ItemCategory.FOOD, "Banana", "Nutritious fruit", 3);
+       Item wood = new Item(ItemType.WOOD, ItemCategory.PRIMARY_RESOURCE, "Wood", "A piece of wood", 3);
        Item axe = new Item(ItemType.AXE, ItemCategory.TOOL, "Axe", "Axe for stone extraction");
 
-        assertTrue(banana.isStackable()); // true
+        assertTrue(wood.isStackable()); // true
         assertFalse(axe.isStackable()); // false
     }
     @Test
     public void testSplitItem(){
-        Item banana = new Item(ItemType.BANANA, ItemCategory.FOOD, "Banana", "Nutritious fruit", 8);
-        Item coconut= new Item(ItemType.COCONUT, ItemCategory.FOOD, "Banana", "Nutritious fruit", 4);
-        Item fish = new Item(ItemType.FISH , ItemCategory.FOOD, "Fish", "Fish", 10);
+        Item wood = new Item(ItemType.WOOD, ItemCategory.PRIMARY_RESOURCE, "Wood", "A piece of wood", 8);
+        Item stone = new Item(ItemType.STONE, ItemCategory.PRIMARY_RESOURCE, "Stone", "A solid stone", 4);
+        Item vines = new Item(ItemType.VINES, ItemCategory.PRIMARY_RESOURCE, "Vines", "Flexible vines", 10);
         Item axe = new Item(ItemType.AXE, ItemCategory.TOOL, "Axe", "Axe for stone extraction");
 
 
         // check cases when the amount is less than the item quantity
-        Item splitBananaResult = banana.split(2);
-        assertEquals(2,splitBananaResult.getQuantity()); // new split item with quantity 2
-        assertEquals(6, banana.getQuantity()); // new banana quantity after split
+        Item splitWoodResult = wood.split(2);
+        assertEquals(2,splitWoodResult.getQuantity()); // new split item with quantity 2
+        assertEquals(6, wood.getQuantity()); // new wood quantity after split
 
         // check when the amount is bigger than the item quantity
-        Item splitCoconutResult = coconut.split(5);
-        assertEquals(4,splitCoconutResult.getQuantity()); // new split item with quantity 4,
-        assertEquals(0, coconut.getQuantity()); // new coconut quantity after split
+        Item splitStoneResult = stone.split(5);
+        assertEquals(4,splitStoneResult.getQuantity()); // new split item with quantity 4,
+        assertEquals(0, stone.getQuantity()); // new stone quantity after split
 
         //check case when we pass an unstackable item
 
         assertEquals(1, axe.split(12).getQuantity());
 
         //check case when amount equals to 0
-        assertNull(fish.split(0));
+        assertNull(vines.split(0));
 
     }
     @Test
     public void testMergeItem(){
-        Item banana = new Item(ItemType.BANANA, ItemCategory.FOOD, "Banana", "Nutritious fruit", 8);
-        Item coconut= new Item(ItemType.COCONUT, ItemCategory.FOOD, "Banana", "Nutritious fruit", 4);
+        Item wood = new Item(ItemType.WOOD, ItemCategory.PRIMARY_RESOURCE, "Wood", "A piece of wood", 8);
+        Item stone = new Item(ItemType.STONE, ItemCategory.PRIMARY_RESOURCE, "Stone", "A solid stone", 4);
         Item axe = new Item(ItemType.AXE, ItemCategory.TOOL, "Axe", "Axe for tree extraction");
 
 
         // check case when the quantity + merge quantity <= stackSize and the same ItemType
-        Item mergeBanana1 = new Item(ItemType.BANANA, ItemCategory.FOOD, "Banana", "Nutritious fruit", 2);
-        assertTrue(banana.merge(mergeBanana1)); // true
+        Item mergeWood1 = new Item(ItemType.WOOD, ItemCategory.PRIMARY_RESOURCE, "Wood", "A piece of wood", 2);
+        assertTrue(wood.merge(mergeWood1)); // true
 
 
         // check case when the quantity + merge quantity > stackSize
-        Item mergeBanana2 = new Item(ItemType.BANANA, ItemCategory.FOOD, "Banana", "Nutritious fruit", 8);
-        assertFalse(banana.merge(mergeBanana2)); // false
+        Item mergeWood2 = new Item(ItemType.WOOD, ItemCategory.PRIMARY_RESOURCE, "Wood", "A piece of wood", 8);
+        assertFalse(wood.merge(mergeWood2)); // false
 
         // check case when ItemType is different
-        assertFalse(coconut.merge(axe)); // false
+        assertFalse(stone.merge(axe)); // false
 
         // check case when merge two unstackable items
         Item axe1 = new Item(ItemType.AXE, ItemCategory.TOOL, "Axe", "Axe for stone extraction");
@@ -75,28 +75,28 @@ public class ItemTest {
 
     @Test
     public void testHasSpace(){
-        Item banana = new Item(ItemType.BANANA, ItemCategory.FOOD, "Banana", "Nutritious fruit", 7);
+        Item vines = new Item(ItemType.VINES, ItemCategory.PRIMARY_RESOURCE, "Vines", "Stringy jungle vines", 7);
         Item axe = new Item(ItemType.AXE, ItemCategory.TOOL, "Axe", "Axe for chopping");
 
         // 7 + 3 = 10 = MAX_STACK_SIZE, fits exactly
-        Item smallBanana = new Item(ItemType.BANANA, ItemCategory.FOOD, "Banana", "Nutritious fruit", 3);
-        assertTrue(banana.hasSpace(smallBanana));
+        Item smallVines = new Item(ItemType.VINES, ItemCategory.PRIMARY_RESOURCE, "Vines", "Stringy jungle vines", 3);
+        assertTrue(vines.hasSpace(smallVines));
 
         // 7 + 4 = 11 > MAX_STACK_SIZE, does not fit
-        Item bigBanana = new Item(ItemType.BANANA, ItemCategory.FOOD, "Banana", "Nutritious fruit", 4);
-        assertFalse(banana.hasSpace(bigBanana));
+        Item bigVines = new Item(ItemType.VINES, ItemCategory.PRIMARY_RESOURCE, "Vines", "Stringy jungle vines", 4);
+        assertFalse(vines.hasSpace(bigVines));
 
         // same type check — axe + axe: 1 + 1 = 2 <= 10, same type → true
         Item anotherAxe = new Item(ItemType.AXE, ItemCategory.TOOL, "Axe", "Axe for chopping");
         assertTrue(axe.hasSpace(anotherAxe));
 
-        // different type — banana + coconut: same category but different ItemType → false
-        Item coconut = new Item(ItemType.COCONUT, ItemCategory.FOOD, "Coconut", "A hard coconut", 1);
-        assertFalse(banana.hasSpace(coconut));
+        // different type — vines + leaves: different ItemType → false
+        Item leaves = new Item(ItemType.TROPICAL_LEAVES, ItemCategory.PRIMARY_RESOURCE, "Tropical Tree Leaves", "Large tropical leaves", 1);
+        assertFalse(vines.hasSpace(leaves));
 
         // 7 + 1 = 8 <= 10, fits
-        Item oneBanana = new Item(ItemType.BANANA, ItemCategory.FOOD, "Banana", "Nutritious fruit", 1);
-        assertTrue(banana.hasSpace(oneBanana));
+        Item oneVines = new Item(ItemType.VINES, ItemCategory.PRIMARY_RESOURCE, "Vines", "Stringy jungle vines", 1);
+        assertTrue(vines.hasSpace(oneVines));
     }
 
 
