@@ -10,54 +10,15 @@ import java.awt.image.BufferedImage;
 
 public class CraftingScreen {
 
-    private static final Color P1_CURSOR_COLOR = new Color(50, 150, 255, 120);
-    private static final Color P2_CURSOR_COLOR = new Color(255, 100, 50, 120);
     private static final Color TEXT_COLOR = new Color(60, 40, 20);
-    private static final Color TEXT_DISABLED = new Color(150, 130, 110);
     private static final Color OVERLAY_DIM = new Color(0, 0, 0, 150);
-    private static final Color OVERLAY_DISABLED = new Color(0, 0, 0, 140);
 
     private final UIAssets assets;
     private final SlotRenderer slotRenderer;
-    private final PlayerCursor p1Cursor;
-    private final PlayerCursor p2Cursor;
 
     public CraftingScreen() {
         this.assets = new UIAssets();
         this.slotRenderer = new SlotRenderer(assets);
-        this.p1Cursor = new PlayerCursor(
-                CraftingScreenLayout.GRID_COLS, CraftingScreenLayout.GRID_ROWS,
-                CraftingScreenLayout.GRID_COLS, CraftingScreenLayout.GRID_ROWS);
-        this.p2Cursor = new PlayerCursor(
-                CraftingScreenLayout.GRID_COLS, CraftingScreenLayout.GRID_ROWS,
-                CraftingScreenLayout.GRID_COLS, CraftingScreenLayout.GRID_ROWS);
-    }
-
-    // --- Input handling ---
-
-    public void handleInput(boolean p1Action, boolean p2Action,
-                            int p1DirX, int p1DirY, int p2DirX, int p2DirY,
-                            boolean p1InRange, boolean p2InRange,
-                            CraftingSystem cs, Inventory p1Inv, Inventory p2Inv) {
-        if (p1InRange) {
-            p1Cursor.move(p1DirX, p1DirY);
-            if (p1Action) handleAction(p1Cursor, cs, p1Inv, 0);
-        }
-        if (p2InRange) {
-            p2Cursor.move(p2DirX, p2DirY);
-            if (p2Action) handleAction(p2Cursor, cs, p2Inv, 1);
-        }
-    }
-
-    private void handleAction(PlayerCursor cursor, CraftingSystem cs,
-                               Inventory inv, int playerId) {
-        if (inv == null || cs == null) return;
-
-        // Return grid item to player inventory
-        Item taken = cs.takeOut(cursor.getIndex());
-        if (taken != null) {
-            inv.add(taken);
-        }
     }
 
     // --- Rendering ---
@@ -73,7 +34,6 @@ public class CraftingScreen {
         drawCraftingGrid(g, layout, cs);
         drawArrow(g, layout);
         drawResultPreview(g, layout, cs);
-        drawCursors(g, layout, p1InRange, p2InRange);
         drawHint(g, layout);
     }
 
@@ -158,26 +118,10 @@ public class CraftingScreen {
         }
     }
 
-    private void drawCursors(Graphics2D g, CraftingScreenLayout layout,
-                              boolean p1InRange, boolean p2InRange) {
-        // Grid cursors
-        if (p1InRange && p1Cursor.isOnGrid()) {
-            slotRenderer.drawCursorHighlight(g, layout.craftingStartX, layout.gridY,
-                    p1Cursor.getIndex(), CraftingScreenLayout.GRID_COLS,
-                    P1_CURSOR_COLOR, layout.slotSize, layout.slotGap);
-        }
-        if (p2InRange && p2Cursor.isOnGrid()) {
-            slotRenderer.drawCursorHighlight(g, layout.craftingStartX, layout.gridY,
-                    p2Cursor.getIndex(), CraftingScreenLayout.GRID_COLS,
-                    P2_CURSOR_COLOR, layout.slotSize, layout.slotGap);
-        }
-
-    }
-
     private void drawHint(Graphics2D g, CraftingScreenLayout layout) {
         g.setFont(new Font("SansSerif", Font.PLAIN, 12));
         g.setColor(TEXT_COLOR);
-        String hint = "P1: WASD + E  |  P2: Arrows + Space  |  Enter: Craft  |  I: Close";
+        String hint = "Left-click: place/take items  |  Right-click: place/take one  |  I / Esc: Close";
         int hintW = g.getFontMetrics().stringWidth(hint);
         g.drawString(hint, layout.centerX - hintW / 2, layout.hintY);
     }

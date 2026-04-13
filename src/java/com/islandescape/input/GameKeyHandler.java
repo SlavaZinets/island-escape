@@ -2,6 +2,7 @@ package com.islandescape.input;
 
 import com.islandescape.utilities.Direction;
 import com.islandescape.window.GamePanel;
+import com.islandescape.window.GameState;
 
 import java.awt.event.KeyEvent;
 import java.awt.event.KeyListener;
@@ -49,7 +50,11 @@ public class GameKeyHandler implements KeyListener {
             // P1/P2 action (interact + place-in-grid)
             case KeyEvent.VK_E:
                 p1ActionToggled = true;
-                gamePanel.toggleInventoryScreen();
+                // Only toggle inventory when crafting is NOT open
+                // (when crafting is open, E is consumed as P1 action by the crafting screen)
+                if (gamePanel.getGameState() != GameState.INVENTORY_OPEN) {
+                    gamePanel.toggleInventoryScreen();
+                }
                 break;
             case KeyEvent.VK_SPACE: p2ActionToggled = true; break;
             // Crafting screen toggle / commit
@@ -57,11 +62,18 @@ public class GameKeyHandler implements KeyListener {
             case KeyEvent.VK_ENTER: craftCommitted = true; break;
         }
 
-        // If dev's mouse inventory is open, only ESC closes it
-        if (gamePanel.isInventoryScreenOpen()) {
-            if (key == KeyEvent.VK_ESCAPE) {
+        // ESC closes whatever is open
+        if (key == KeyEvent.VK_ESCAPE) {
+            if (gamePanel.getGameState() == GameState.INVENTORY_OPEN) {
+                gamePanel.closeCraftingScreen();
+            } else if (gamePanel.isInventoryScreenOpen()) {
                 gamePanel.toggleInventoryScreen();
             }
+            return;
+        }
+
+        // Block hotbar keys while inventory/crafting is open
+        if (gamePanel.isInventoryScreenOpen()) {
             return;
         }
 

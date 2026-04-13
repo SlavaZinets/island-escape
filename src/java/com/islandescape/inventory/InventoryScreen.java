@@ -1,5 +1,6 @@
 package com.islandescape.inventory;
 
+import com.islandescape.crafting.CraftingRecipe;
 import com.islandescape.crafting.CraftingSystem;
 import com.islandescape.item.Item;
 import com.islandescape.player.Player;
@@ -33,6 +34,8 @@ public class InventoryScreen {
 
     private boolean open;
     private boolean craftingOpen;
+    private boolean p1NearTable = true;
+    private boolean p2NearTable = true;
     private int mouseX;
     private int mouseY;
 
@@ -60,6 +63,11 @@ public class InventoryScreen {
         this.craftingSystem = craftingSystem;
     }
 
+    public void setPlayerNearTable(boolean p1Near, boolean p2Near) {
+        this.p1NearTable = p1Near;
+        this.p2NearTable = p2Near;
+    }
+
     public void updateMouse(int x, int y) {
         this.mouseX = x;
         this.mouseY = y;
@@ -70,22 +78,51 @@ public class InventoryScreen {
     public void handleClick(int screenX, int screenY, boolean isLeftClick, int panelW, int panelH) {
         if (!open) return;
 
-        // When crafting is open, check if click is on the crafting grid first
+        // When crafting is open, check crafting areas first
         if (craftingOpen && craftingSystem != null) {
+            // Check result slot — click to pick up crafted item
+            if (isClickOnResultSlot(screenX, screenY, panelW, panelH)) {
+                handleResultSlotClick();
+                return;
+            }
+
+            // Check crafting grid slots
             int craftSlot = pixelToCraftingSlot(screenX, screenY, panelW, panelH);
             if (craftSlot >= 0) {
-                handleCraftingGridClick(craftSlot, isLeftClick, screenX, panelW);
+                handleCraftingGridClick(craftSlot, isLeftClick, screenX, panelW, panelH);
                 return;
             }
         }
 
-        int xBorder = getXBorder(panelW);
-        int gridTop = getGridTop(panelH);
+        int xBorder;
+        int gridTop;
+        int p1Left;
+        int p2Left;
+
+        if (craftingOpen) {
+            CraftingScreenLayout layout = new CraftingScreenLayout(panelW, panelH);
+            xBorder = layout.invXBorder;
+            gridTop = layout.invAreaTop + 22;
+            p1Left = layout.invP1Left;
+            p2Left = layout.invP2Left;
+        } else {
+            xBorder = getXBorder(panelW);
+            gridTop = getGridTop(panelH);
+            p1Left = getP1Left(panelW);
+            p2Left = getP2Left(panelW);
+        }
 
         // determine player by X position
         boolean isPlayer1 = screenX < xBorder;
+
+        // Block inventory clicks for players not near the crafting table
+        if (craftingOpen) {
+            if (isPlayer1 && !p1NearTable) return;
+            if (!isPlayer1 && !p2NearTable) return;
+        }
+
         Inventory inventory = isPlayer1 ? player1.getInventory() : player2.getInventory();
-        int gridLeft = isPlayer1 ? getP1Left(panelW) : getP2Left(panelW);
+        int gridLeft = isPlayer1 ? p1Left : p2Left;
 
         int slotIndex = pixelToSlot(screenX, screenY, gridLeft, gridTop);
         if (slotIndex < 0) return;
@@ -126,20 +163,43 @@ public class InventoryScreen {
         return row * CraftingScreenLayout.GRID_COLS + col;
     }
 
-    // Handle a click on a crafting grid slot
-    private void handleCraftingGridClick(int craftSlot, boolean isLeftClick, int screenX, int panelW) {
-        int xBorder = getXBorder(panelW);
-        int playerId = screenX < xBorder ? 0 : 1;
+    // Handle a click on a crafting grid slot — mirrors inventory click behavior
+    private void handleCraftingGridClick(int craftSlot, boolean isLeftClick, int screenX, int panelW, int panelH) {
+        CraftingScreenLayout layout = new CraftingScreenLayout(panelW, panelH);
+        int playerId = screenX < layout.invXBorder ? 0 : 1;
 
         if (cursor.isEmpty()) {
-            // Pick up from crafting grid
-            cursor.pickUpFromCraftingGrid(craftingSystem, craftSlot);
+            if (isLeftClick) {
+                cursor.pickUpFromCraftingGrid(craftingSystem, craftSlot);
+            } else {
+                cursor.pickUpHalfFromCraftingGrid(craftingSystem, craftSlot);
+            }
         } else {
             if (isLeftClick) {
                 cursor.placeIntoCraftingGrid(craftingSystem, craftSlot, playerId);
             } else {
                 cursor.placeOneIntoCraftingGrid(craftingSystem, craftSlot, playerId);
             }
+        }
+    }
+
+    // Check if click is on the crafting result slot
+    private boolean isClickOnResultSlot(int px, int py, int panelW, int panelH) {
+        CraftingScreenLayout layout = new CraftingScreenLayout(panelW, panelH);
+        return px >= layout.resultX && px <= layout.resultX + layout.resultSlotSize
+                && py >= layout.resultY && py <= layout.resultY + layout.resultSlotSize;
+    }
+
+    // Click on result slot — craft the item and put it on the cursor
+    private void handleResultSlotClick() {
+        if (!cursor.isEmpty()) return; // cursor must be empty to pick up result
+
+        CraftingRecipe preview = craftingSystem.preview();
+        if (preview == null) return; // no valid recipe
+
+        Item result = craftingSystem.craft(null);
+        if (result != null) {
+            cursor.setHeldItem(result);
         }
     }
 
@@ -213,39 +273,54 @@ public class InventoryScreen {
         }
     }
 
-    private void drawFullInventory(Graphics2D g2d, int panelW, int panelH) {
-        int p1Left = getP1Left(panelW);
-        int p2Left = getP2Left(panelW);
-        int gridTop = getGridTop(panelH);
-
-        // Player 1 label
-        g2d.setColor(Color.WHITE);
-        g2d.setFont(new Font("SansSerif", Font.BOLD, 18));
-        g2d.drawString(player1.getName(), p1Left, gridTop - 8);
-
-        // Player 1 grid
-        drawPlayerGrid(g2d, player1.getInventory(), p1Left, gridTop);
-
-        // Vertical separator
-        int xBorder = getXBorder(panelW);
-        g2d.setColor(new Color(200, 200, 200, 150));
-        g2d.fillRect(xBorder - 1, gridTop, 2, getPlayerGridHeight());
-
-        // Player 2 label
-        g2d.setColor(Color.WHITE);
-        g2d.setFont(new Font("SansSerif", Font.BOLD, 18));
-        g2d.drawString(player2.getName(), p2Left, gridTop - 8);
-
-        // Player 2 grid
-        drawPlayerGrid(g2d, player2.getInventory(), p2Left, gridTop);
-
-        // Held item on cursor
+    // Draw held item on cursor — call LAST in paint order so it's always on top
+    public void drawHeldItem(Graphics2D g2d) {
         if (!cursor.isEmpty()) {
             drawItem(g2d, cursor.getHeldItem(), mouseX - SLOT_SIZE / 2, mouseY - SLOT_SIZE / 2);
         }
     }
 
-    private void drawPlayerGrid(Graphics2D g2d, Inventory inventory, int gridLeft, int gridTop) {
+    private void drawFullInventory(Graphics2D g2d, int panelW, int panelH) {
+        int p1Left, p2Left, gridTop, xBorder;
+
+        if (craftingOpen) {
+            CraftingScreenLayout layout = new CraftingScreenLayout(panelW, panelH);
+            p1Left = layout.invP1Left;
+            p2Left = layout.invP2Left;
+            gridTop = layout.invAreaTop + 22;
+            xBorder = layout.invXBorder;
+        } else {
+            p1Left = getP1Left(panelW);
+            p2Left = getP2Left(panelW);
+            gridTop = getGridTop(panelH);
+            xBorder = getXBorder(panelW);
+        }
+
+        boolean p1Blocked = craftingOpen && !p1NearTable;
+        boolean p2Blocked = craftingOpen && !p2NearTable;
+
+        // Player 1 label
+        g2d.setColor(p1Blocked ? new Color(120, 100, 80) : new Color(60, 40, 20));
+        g2d.setFont(new Font("SansSerif", Font.BOLD, 18));
+        g2d.drawString(player1.getName(), p1Left, gridTop - 8);
+
+        // Player 1 grid
+        drawPlayerGrid(g2d, player1.getInventory(), p1Left, gridTop, p1Blocked);
+
+        // Vertical separator
+        g2d.setColor(new Color(101, 67, 33, 150));
+        g2d.fillRect(xBorder - 1, gridTop, 2, getPlayerGridHeight());
+
+        // Player 2 label
+        g2d.setColor(p2Blocked ? new Color(120, 100, 80) : new Color(60, 40, 20));
+        g2d.setFont(new Font("SansSerif", Font.BOLD, 18));
+        g2d.drawString(player2.getName(), p2Left, gridTop - 8);
+
+        // Player 2 grid
+        drawPlayerGrid(g2d, player2.getInventory(), p2Left, gridTop, p2Blocked);
+    }
+
+    private void drawPlayerGrid(Graphics2D g2d, Inventory inventory, int gridLeft, int gridTop, boolean blocked) {
         int cellSize = SLOT_SIZE + SLOT_GAP;
 
         for (int row = 0; row < ROWS_PER_PLAYER; row++) {
@@ -254,14 +329,14 @@ public class InventoryScreen {
                 int y = gridTop + row * cellSize;
                 int slotIndex = row * COLS + col;
 
-                // slot background
-                g2d.setColor(new Color(60, 60, 60, 200));
+                // slot background — dimmer when blocked
+                g2d.setColor(blocked ? new Color(40, 40, 40, 160) : new Color(60, 60, 60, 200));
                 g2d.fillRoundRect(x, y, SLOT_SIZE, SLOT_SIZE, 8, 8);
-                g2d.setColor(new Color(120, 120, 120));
+                g2d.setColor(blocked ? new Color(80, 80, 80) : new Color(120, 120, 120));
                 g2d.drawRoundRect(x, y, SLOT_SIZE, SLOT_SIZE, 8, 8);
 
-                // highlight hotbar row
-                if (row == 3) {
+                // highlight hotbar row (only if not blocked)
+                if (!blocked && row == 3) {
                     int selectedGlobal = inventory.getSelectedHotBarSlot();
                     int selectedLocal = selectedGlobal - 15;
                     if (col == selectedLocal) {
@@ -278,6 +353,14 @@ public class InventoryScreen {
                     drawItem(g2d, item, x, y);
                 }
             }
+        }
+
+        // Dark overlay on top of blocked grid
+        if (blocked) {
+            int gridW = COLS * cellSize - SLOT_GAP;
+            int gridH = ROWS_PER_PLAYER * cellSize - SLOT_GAP;
+            g2d.setColor(new Color(0, 0, 0, 100));
+            g2d.fillRoundRect(gridLeft - 4, gridTop - 4, gridW + 8, gridH + 8, 8, 8);
         }
     }
 
@@ -306,7 +389,7 @@ public class InventoryScreen {
         int hotbarY = panelH - SLOT_SIZE - 20;
 
         // Player 1 hotbar — left side
-        int p1HotbarX = panelW / 2 - hotbarWidth - 30;
+        int p1HotbarX = panelW / 2 - hotbarWidth - 120;
         drawHotbarRow(g2d, player1.getInventory(), p1HotbarX, hotbarY);
 
         g2d.setColor(Color.WHITE);
@@ -314,7 +397,7 @@ public class InventoryScreen {
         g2d.drawString(player1.getName(), p1HotbarX, hotbarY - 6);
 
         // Player 2 hotbar — right side
-        int p2HotbarX = panelW / 2 + 30;
+        int p2HotbarX = panelW / 2 + 120;
         drawHotbarRow(g2d, player2.getInventory(), p2HotbarX, hotbarY);
 
         g2d.setColor(Color.WHITE);

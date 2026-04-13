@@ -8,7 +8,7 @@ public enum ItemType {
     AXE,
     PICKAXE,
     ROPE,
-    PLANKS,
+    PLANK,
     PADDLE,
     MAST,
     FRAME,

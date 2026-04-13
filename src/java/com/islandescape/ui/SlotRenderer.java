@@ -87,7 +87,7 @@ public class SlotRenderer {
             case VINES:            return new Color(34, 139, 34);
             case TROPICAL_LEAVES:  return new Color(0, 180, 60);
             case ROPE:             return new Color(194, 178, 128);
-            case PLANKS:           return new Color(210, 170, 100);
+            case PLANK:           return new Color(210, 170, 100);
             case AXE:              return new Color(100, 100, 160);
             case PICKAXE:          return new Color(120, 120, 170);
             case PADDLE:           return new Color(180, 140, 80);

@@ -5,7 +5,6 @@ import com.islandescape.input.GameKeyHandler;
 import com.islandescape.input.InventoryMouseHandler;
 import com.islandescape.inventory.InventoryCursor;
 import com.islandescape.inventory.InventoryScreen;
-import com.islandescape.item.Item;
 import com.islandescape.map.MapRenderer;
 import com.islandescape.map.TileMap;
 import com.islandescape.player.Player;
@@ -108,29 +107,12 @@ public class GamePanel extends JPanel {
             if (player2 != null) {
                 player2.move(keyHandler.getP2Direction());
             }
-        } else if (gameState == GameState.INVENTORY_OPEN) {
-            // Forward input to crafting screen for cursor movement and item placement
-            if (craftingScreen != null && craftingSystem != null) {
-                boolean p1Near = isPlayerNearTable(player1);
-                boolean p2Near = isPlayerNearTable(player2);
+        }
 
-                craftingScreen.handleInput(
-                        keyHandler.consumeP1Action(), keyHandler.consumeP2Action(),
-                        keyHandler.getP1Direction().getX(), keyHandler.getP1Direction().getY(),
-                        keyHandler.getP2Direction().getX(), keyHandler.getP2Direction().getY(),
-                        p1Near, p2Near,
-                        craftingSystem,
-                        player1 != null ? player1.getInventory() : null,
-                        player2 != null ? player2.getInventory() : null);
-            }
-
-            // Craft commit (Enter key) — route output to P1 inventory by default
-            if (keyHandler.consumeCraftCommit() && craftingSystem != null && player1 != null) {
-                Item result = craftingSystem.craft(player1.getInventory());
-                if (result != null) {
-                    player1.getInventory().add(result);
-                }
-            }
+        // Update proximity flags for inventory blocking
+        if (gameState == GameState.INVENTORY_OPEN && inventoryScreen != null) {
+            inventoryScreen.setPlayerNearTable(
+                    isPlayerNearTable(player1), isPlayerNearTable(player2));
         }
     }
 
@@ -143,7 +125,7 @@ public class GamePanel extends JPanel {
                 && craftingTable.isPlayerNearby(p.getX(), p.getY());
     }
 
-    private void closeCraftingScreen() {
+    public void closeCraftingScreen() {
         if (craftingSystem != null && player1 != null && player2 != null) {
             craftingSystem.clearGrid(player1.getInventory(), player2.getInventory());
         }
@@ -188,24 +170,35 @@ public class GamePanel extends JPanel {
     @Override
     protected void paintComponent(Graphics g) {
         super.paintComponent(g);
+        Graphics2D g2 = (Graphics2D) g;
         g.setColor(new Color(77, 166, 255));
         g.fillRect(0, 0, getWidth(), getHeight());
 
         map.renderMapComponent(renderer, g, getWidth(), getHeight(), player1, player2);
 
-        // Dev inventory (mouse-driven) overlay
-        if (inventoryScreen != null) {
-            inventoryScreen.renderInventoryComponent(g, getWidth(), getHeight());
-        }
-
-        // Crafting overlay when open (keyboard-driven)
         if (gameState == GameState.INVENTORY_OPEN && craftingScreen != null) {
-            Graphics2D g2 = (Graphics2D) g;
+            // 1. Crafting panel (dim overlay + brown background + crafting grid)
             craftingScreen.render(g2, getWidth(), getHeight(),
                     craftingSystem,
                     player1 != null ? player1.getInventory() : null,
                     player2 != null ? player2.getInventory() : null,
                     isPlayerNearTable(player1), isPlayerNearTable(player2));
+
+            // 2. Inventory grids (drawn ON TOP of the brown panel)
+            if (inventoryScreen != null) {
+                inventoryScreen.renderInventoryComponent(g, getWidth(), getHeight());
+            }
+
+            // 3. Held item on cursor — always drawn LAST so it's on top
+            if (inventoryScreen != null) {
+                inventoryScreen.drawHeldItem(g2);
+            }
+        } else {
+            // Normal mode — just inventory (hotbar or full grid)
+            if (inventoryScreen != null) {
+                inventoryScreen.renderInventoryComponent(g, getWidth(), getHeight());
+                inventoryScreen.drawHeldItem(g2);
+            }
         }
     }
 }
