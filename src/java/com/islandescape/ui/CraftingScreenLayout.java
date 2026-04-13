@@ -10,13 +10,8 @@ public class CraftingScreenLayout {
     // Grid / inventory dimensions (cells)
     static final int GRID_COLS = 2;
     static final int GRID_ROWS = 2;
-    static final int INV_COLS = 5;
-    static final int INV_ROWS = 2;
-
     private static final int MAX_SLOT_SIZE = 64;
     private static final int MIN_SLOT_SIZE = 32;
-    private static final int SECTION_GAP = 24;
-    private static final int INV_LABEL_HEIGHT = 22;
     private static final int CONTENT_TOP_OFFSET = 25; // vertical nudge
 
     // Panel
@@ -39,10 +34,6 @@ public class CraftingScreenLayout {
     public int arrowX, arrowY, arrowW;
     public int resultX, resultY, resultSlotSize;
 
-    // Player inventories
-    public int invY;
-    public int p1InvX, p2InvX;
-    public int invLabelHeight;
 
     // Controls hint
     public int hintY;
@@ -53,8 +44,8 @@ public class CraftingScreenLayout {
 
     private void compute(int screenW, int screenH) {
         // Panel rectangle
-        panelW = (int) (screenW * 0.75);
-        panelH = (int) (screenH * 0.85);
+        panelW = (int) (screenW * 0.50);
+        panelH = (int) (screenH * 0.45);
         panelX = (screenW - panelW) / 2;
         panelY = (screenH - panelH) / 2;
 
@@ -70,7 +61,7 @@ public class CraftingScreenLayout {
         centerX = contentX + contentW / 2;
 
         // Slot sizing — fit two 5-col inventories side by side
-        int availSlotSize = Math.min(MAX_SLOT_SIZE, contentW / (INV_COLS * 2 + 3));
+        int availSlotSize = Math.min(MAX_SLOT_SIZE, contentW / (GRID_COLS * 3 + 3));
         slotSize = Math.max(MIN_SLOT_SIZE, availSlotSize);
         slotGap = slotSize / 8;
 
@@ -92,14 +83,6 @@ public class CraftingScreenLayout {
 
         resultX = arrowX + arrowW + gap;
         resultY = gridY + gridTotalH / 2 - resultSlotSize / 2;
-
-        // Inventories
-        invY = gridY + gridTotalH + SECTION_GAP;
-        int invTotalW = INV_COLS * slotSize + (INV_COLS - 1) * slotGap;
-        int invSectionGap = slotSize / 2;
-        p1InvX = centerX - invTotalW - invSectionGap / 2;
-        p2InvX = centerX + invSectionGap / 2;
-        invLabelHeight = INV_LABEL_HEIGHT;
 
         // Hint
         hintY = contentY + contentH - 5;

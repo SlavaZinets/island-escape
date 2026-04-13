@@ -7,7 +7,6 @@ import com.islandescape.item.Item;
 
 import java.awt.*;
 import java.awt.image.BufferedImage;
-import java.util.ArrayList;
 
 public class CraftingScreen {
 
@@ -27,10 +26,10 @@ public class CraftingScreen {
         this.assets = new UIAssets();
         this.slotRenderer = new SlotRenderer(assets);
         this.p1Cursor = new PlayerCursor(
-                CraftingScreenLayout.INV_COLS, CraftingScreenLayout.INV_ROWS,
+                CraftingScreenLayout.GRID_COLS, CraftingScreenLayout.GRID_ROWS,
                 CraftingScreenLayout.GRID_COLS, CraftingScreenLayout.GRID_ROWS);
         this.p2Cursor = new PlayerCursor(
-                CraftingScreenLayout.INV_COLS, CraftingScreenLayout.INV_ROWS,
+                CraftingScreenLayout.GRID_COLS, CraftingScreenLayout.GRID_ROWS,
                 CraftingScreenLayout.GRID_COLS, CraftingScreenLayout.GRID_ROWS);
     }
 
@@ -54,24 +53,10 @@ public class CraftingScreen {
                                Inventory inv, int playerId) {
         if (inv == null || cs == null) return;
 
-        if (cursor.isOnInventory()) {
-            // Move item from inventory to first empty grid slot
-            ArrayList<Item> snapshot = inv.snapshot();
-            if (cursor.getIndex() < snapshot.size()) {
-                int emptySlot = cs.firstEmptySlot();
-                if (emptySlot >= 0) {
-                    Item removed = inv.extract(snapshot.get(cursor.getIndex()).getType(), 1);
-                    if (removed != null) {
-                        cs.placeIn(emptySlot, removed, playerId);
-                    }
-                }
-            }
-        } else {
-            // Return grid item to player inventory
-            Item taken = cs.takeOut(cursor.getIndex());
-            if (taken != null) {
-                inv.add(taken);
-            }
+        // Return grid item to player inventory
+        Item taken = cs.takeOut(cursor.getIndex());
+        if (taken != null) {
+            inv.add(taken);
         }
     }
 
@@ -88,8 +73,6 @@ public class CraftingScreen {
         drawCraftingGrid(g, layout, cs);
         drawArrow(g, layout);
         drawResultPreview(g, layout, cs);
-        drawPlayerInventory(g, layout.p1InvX, layout.invY, p1Inv, p1InRange, "P1", layout);
-        drawPlayerInventory(g, layout.p2InvX, layout.invY, p2Inv, p2InRange, "P2", layout);
         drawCursors(g, layout, p1InRange, p2InRange);
         drawHint(g, layout);
     }
@@ -175,51 +158,6 @@ public class CraftingScreen {
         }
     }
 
-    private void drawPlayerInventory(Graphics2D g, int x, int y, Inventory inv,
-                                      boolean inRange, String label,
-                                      CraftingScreenLayout layout) {
-        // Label
-        g.setFont(new Font("SansSerif", Font.BOLD, 14));
-        g.setColor(inRange ? TEXT_COLOR : TEXT_DISABLED);
-        g.drawString(label + " Inventory", x, y + 14);
-        int slotsY = y + layout.invLabelHeight;
-
-        ArrayList<Item> items = inv != null ? inv.snapshot() : new ArrayList<>();
-
-        for (int row = 0; row < CraftingScreenLayout.INV_ROWS; row++) {
-            for (int col = 0; col < CraftingScreenLayout.INV_COLS; col++) {
-                int slotX = x + col * (layout.slotSize + layout.slotGap);
-                int slotY = slotsY + row * (layout.slotSize + layout.slotGap);
-                int index = row * CraftingScreenLayout.INV_COLS + col;
-
-                slotRenderer.drawSlot(g, slotX, slotY, layout.slotSize);
-
-                if (index < items.size()) {
-                    Item item = items.get(index);
-                    int pad = layout.slotSize / 16 + 2;
-                    slotRenderer.drawItemIcon(g, item.getType(),
-                            slotX + pad, slotY + pad,
-                            layout.slotSize - pad * 2, item.getQuantity());
-                }
-            }
-        }
-
-        // Grey-out overlay when player not in range
-        if (!inRange) {
-            int totalW = CraftingScreenLayout.INV_COLS * layout.slotSize
-                    + (CraftingScreenLayout.INV_COLS - 1) * layout.slotGap;
-            int totalH = CraftingScreenLayout.INV_ROWS * layout.slotSize
-                    + (CraftingScreenLayout.INV_ROWS - 1) * layout.slotGap;
-            g.setColor(OVERLAY_DISABLED);
-            g.fillRect(x, slotsY, totalW, totalH);
-            g.setFont(new Font("SansSerif", Font.BOLD, 12));
-            g.setColor(new Color(200, 200, 200));
-            String msg = label + " not at table";
-            int msgW = g.getFontMetrics().stringWidth(msg);
-            g.drawString(msg, x + totalW / 2 - msgW / 2, slotsY + totalH / 2 + 5);
-        }
-    }
-
     private void drawCursors(Graphics2D g, CraftingScreenLayout layout,
                               boolean p1InRange, boolean p2InRange) {
         // Grid cursors
@@ -234,18 +172,6 @@ public class CraftingScreen {
                     P2_CURSOR_COLOR, layout.slotSize, layout.slotGap);
         }
 
-        // Inventory cursors
-        int invSlotsY = layout.invY + layout.invLabelHeight;
-        if (p1InRange && p1Cursor.isOnInventory()) {
-            slotRenderer.drawCursorHighlight(g, layout.p1InvX, invSlotsY,
-                    p1Cursor.getIndex(), CraftingScreenLayout.INV_COLS,
-                    P1_CURSOR_COLOR, layout.slotSize, layout.slotGap);
-        }
-        if (p2InRange && p2Cursor.isOnInventory()) {
-            slotRenderer.drawCursorHighlight(g, layout.p2InvX, invSlotsY,
-                    p2Cursor.getIndex(), CraftingScreenLayout.INV_COLS,
-                    P2_CURSOR_COLOR, layout.slotSize, layout.slotGap);
-        }
     }
 
     private void drawHint(Graphics2D g, CraftingScreenLayout layout) {
