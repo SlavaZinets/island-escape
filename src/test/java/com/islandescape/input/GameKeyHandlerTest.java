@@ -9,7 +9,9 @@ import java.awt.Component;
 import java.awt.event.KeyEvent;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertFalse;
 import static org.junit.jupiter.api.Assertions.assertNotNull;
+import static org.junit.jupiter.api.Assertions.assertTrue;
 
 public class GameKeyHandlerTest {
 
@@ -160,6 +162,53 @@ public class GameKeyHandlerTest {
         handler.keyPressed(press(KeyEvent.VK_J));
         assertEquals(0, handler.getDirection().getX());
         assertEquals(0, handler.getDirection().getY());
+    }
+
+
+
+    // gather keys
+    @Test
+    void testGatherKeysStartFalse() {
+        assertFalse(handler.consumeP1Gather());
+        assertFalse(handler.consumeP2Gather());
+    }
+
+    @Test
+    void testGKeySetsP1Gather() {
+        handler.keyPressed(press(KeyEvent.VK_G));
+        assertTrue(handler.consumeP1Gather());
+    }
+
+    @Test
+    void testMKeySetsP2Gather() {
+        handler.keyPressed(press(KeyEvent.VK_M));
+        assertTrue(handler.consumeP2Gather());
+    }
+
+    @Test
+    void testP1GatherConsumeIsOneShot() {
+        handler.keyPressed(press(KeyEvent.VK_G));
+        assertTrue(handler.consumeP1Gather());
+        assertFalse(handler.consumeP1Gather());
+    }
+
+    @Test
+    void testP2GatherConsumeIsOneShot() {
+        handler.keyPressed(press(KeyEvent.VK_M));
+        assertTrue(handler.consumeP2Gather());
+        assertFalse(handler.consumeP2Gather());
+    }
+
+    @Test
+    void testGDoesNotSetP2Gather() {
+        handler.keyPressed(press(KeyEvent.VK_G));
+        assertFalse(handler.consumeP2Gather());
+    }
+
+    @Test
+    void testMDoesNotSetP1Gather() {
+        handler.keyPressed(press(KeyEvent.VK_M));
+        assertFalse(handler.consumeP1Gather());
     }
 
 

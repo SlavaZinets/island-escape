@@ -26,18 +26,20 @@ public class Main {
 		int worldW = map.getWidth() * map.getTileSize();
 		int worldH = map.getHeight() * map.getTileSize();
 
-		Player player1 = new Player("Player1", 1, 128, 128);
+		Player player1 = new Player("Player1", 1, 320, 192);
 		player1.setWorldBounds(worldW, worldH);
 		player1.setTileMap(map);
 		player1.setSprite(new PlayerSprite("src/resources/player/player_walking.png"));
 
-		Player player2 = new Player("Player2", 2, 200, 128);
+		Player player2 = new Player("Player2", 2, 352, 192);
 		player2.setWorldBounds(worldW, worldH);
 		player2.setTileMap(map);
 		player2.setSprite(new PlayerSprite("src/resources/player/player_walking.png"));
 
 		player1.getInventory().addItem(new Item(ItemType.WOOD, ItemCategory.PRIMARY_RESOURCE, "Wood", "A piece of wood", 5));
 		player1.getInventory().addItem(new Item(ItemType.STONE, ItemCategory.PRIMARY_RESOURCE, "Stone", "A solid stone", 3));
+		player1.getInventory().addItem(new Item(ItemType.AXE, ItemCategory.TOOL, "Axe", "Chops trees for wood", 1));
+		player2.getInventory().addItem(new Item(ItemType.PICKAXE, ItemCategory.TOOL, "Pickaxe", "Mines stone", 1));
 
 		// 4. Create crafting system, crafting table, and crafting screen overlay
 		CraftingSystem craftingSystem = new CraftingSystem();

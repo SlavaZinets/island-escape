@@ -10,8 +10,7 @@ import com.islandescape.map.MapRenderer;
 import com.islandescape.map.TileMap;
 import com.islandescape.player.Player;
 import com.islandescape.resources.ResourceNode;
-import com.islandescape.resources.Stone;
-import com.islandescape.resources.Tree;
+import com.islandescape.resources.ResourceSpawner;
 import com.islandescape.structures.CraftingTable;
 import com.islandescape.ui.CraftingScreen;
 
@@ -19,6 +18,7 @@ import javax.swing.*;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Set;
 import java.awt.*;
 
 
@@ -58,9 +58,7 @@ public class GamePanel extends JPanel {
         addMouseListener(mouseHandler);
         addMouseMotionListener(mouseHandler);
 
-        // MVP test setup: one tree and one stone at fixed world positions.
-        resourceNodes.add(new Tree(180, 160));
-        resourceNodes.add(new Stone(260, 160));
+        resourceNodes.addAll(ResourceSpawner.spawnFromMap(map));
 
         setFocusable(true);
     }
@@ -107,6 +105,10 @@ public class GamePanel extends JPanel {
             farmToastFrames--;
         }
 
+        for (ResourceNode node : resourceNodes) {
+            node.tick();
+        }
+
         // Crafting-screen toggle (I key) — single-press consumed once per press
         if (keyHandler.consumeCraftScreenToggle()) {
             if (gameState == GameState.INVENTORY_OPEN) {
@@ -128,11 +130,11 @@ public class GamePanel extends JPanel {
                 player2.move(keyHandler.getP2Direction());
             }
 
-            // Reuse existing action keys: E for P1 and SPACE for P2.
-            if (keyHandler.consumeP1Action()) {
+            // Gather keys: G for P1, M for P2.
+            if (keyHandler.consumeP1Gather()) {
                 tryFarmNearestResource(player1);
             }
-            if (keyHandler.consumeP2Action()) {
+            if (keyHandler.consumeP2Gather()) {
                 tryFarmNearestResource(player2);
             }
         }
@@ -168,6 +170,7 @@ public class GamePanel extends JPanel {
         for (Item drop : drops) {
             player.getInventory().addItem(drop);
         }
+        nearest.disable();
 
         farmToastMessage = "+ " + formatDrops(drops);
         farmToastFrames = 75;
@@ -193,6 +196,9 @@ public class GamePanel extends JPanel {
         double nearestDistanceSq = Double.MAX_VALUE;
 
         for (ResourceNode node : resourceNodes) {
+            if (node.isDisabled()) {
+                continue;
+            }
             if (!node.isPlayerInRange(player.getX(), player.getY())) {
                 continue;
             }
@@ -268,7 +274,8 @@ public class GamePanel extends JPanel {
         g.setColor(new Color(77, 166, 255));
         g.fillRect(0, 0, getWidth(), getHeight());
 
-        map.renderMapComponent(renderer, g, getWidth(), getHeight(), player1, player2);
+        Set<Point> disabledTiles = ResourceSpawner.disabledTileCoords(resourceNodes);
+        map.renderMapComponent(renderer, g, getWidth(), getHeight(), player1, player2, disabledTiles);
 
         if (gameState == GameState.INVENTORY_OPEN && craftingScreen != null) {
             // 1. Crafting panel (dim overlay + brown background + crafting grid)
