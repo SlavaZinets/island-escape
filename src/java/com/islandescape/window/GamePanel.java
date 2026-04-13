@@ -18,6 +18,7 @@ import javax.swing.*;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Set;
 import java.awt.*;
 
 
@@ -57,8 +58,6 @@ public class GamePanel extends JPanel {
         addMouseListener(mouseHandler);
         addMouseMotionListener(mouseHandler);
 
-        // Spawn tree/stone resource nodes from the TMX "trees" / "stones" layers,
-        // merging contiguous tiles into one node per cluster.
         resourceNodes.addAll(ResourceSpawner.spawnFromMap(map));
 
         setFocusable(true);
@@ -175,6 +174,7 @@ public class GamePanel extends JPanel {
         for (Item drop : drops) {
             player.getInventory().addItem(drop);
         }
+        nearest.disable();
 
         farmToastMessage = "+ " + formatDrops(drops);
         farmToastFrames = 75;
@@ -200,6 +200,9 @@ public class GamePanel extends JPanel {
         double nearestDistanceSq = Double.MAX_VALUE;
 
         for (ResourceNode node : resourceNodes) {
+            if (node.isDisabled()) {
+                continue;
+            }
             if (!node.isPlayerInRange(player.getX(), player.getY())) {
                 continue;
             }
@@ -269,7 +272,8 @@ public class GamePanel extends JPanel {
         g.setColor(new Color(77, 166, 255));
         g.fillRect(0, 0, getWidth(), getHeight());
 
-        map.renderMapComponent(renderer, g, getWidth(), getHeight(), player1, player2);
+        Set<Point> disabledTiles = ResourceSpawner.disabledTileCoords(resourceNodes);
+        map.renderMapComponent(renderer, g, getWidth(), getHeight(), player1, player2, disabledTiles);
 
         // Dev inventory (mouse-driven) overlay
         if (inventoryScreen != null) {

@@ -1,8 +1,11 @@
 package com.islandescape.map;
 
 import java.awt.Graphics2D;
+import java.awt.Point;
 import java.awt.geom.AffineTransform;
 import java.awt.image.BufferedImage;
+import java.util.Collections;
+import java.util.Set;
 
 
 public class MapRenderer {
@@ -24,7 +27,7 @@ public class MapRenderer {
     }
 
     // render the map
-    public void render(Graphics2D g, TileMap map){
+    public void render(Graphics2D g, TileMap map, Set<Point> disabledResourceTiles){
         String[] layers = {"water", "ground(cliffs)", "ground(surface)", "ground(borders)", "bridges", "decoration", "trees", "stones"};
         for(String layer: layers){
             TileLayer tileLayer = map.getLayer(layer);
@@ -32,15 +35,18 @@ public class MapRenderer {
                 System.out.println("WARNING: Layer not found: " + layer);
                 continue;
             }
-            renderLayer(g, map, tileLayer);
+            boolean isResourceLayer = layer.equals("trees") || layer.equals("stones");
+            Set<Point> skipTiles = isResourceLayer ? disabledResourceTiles : Collections.emptySet();
+            renderLayer(g, map, tileLayer, skipTiles);
         }
     }
     // draw the layer on the screen
-    private void renderLayer(Graphics2D g, TileMap map, TileLayer layer) {
+    private void renderLayer(Graphics2D g, TileMap map, TileLayer layer, Set<Point> skipTiles) {
         for (int row = 0; row < map.getHeight(); row++) {
             for(int col = 0; col < map.getWidth(); col++){
                 int rawTileId = layer.getTileAt(row, col);
                 if(isEmpty(rawTileId)) continue;
+                if(!skipTiles.isEmpty() && skipTiles.contains(new Point(col, row))) continue;
 
                 int tileId = getTileId(rawTileId);
                 boolean flipH = (rawTileId & FLAG_HORIZONTAL) != 0;

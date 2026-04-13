@@ -13,12 +13,31 @@ import java.util.List;
 // Base class for all gatherable nodes in the world.
 // It keeps shared rules: required tool and drop flow.
 public abstract class ResourceNode extends WorldStructure {
+
+    private static final double GATHER_RADIUS = 16.0;
+
     protected ItemType requiredTool;
     private List<Point> tileCoords = Collections.emptyList();
+    private boolean disabled = false;
 
     public ResourceNode(double x, double y, String name, ItemType requiredTool) {
         super(x, y, name);
         this.requiredTool = requiredTool;
+    }
+
+    @Override
+    public boolean isPlayerInRange(double playerX, double playerY) {
+        double dx = this.x - playerX;
+        double dy = this.y - playerY;
+        return (dx * dx + dy * dy) <= GATHER_RADIUS * GATHER_RADIUS;
+    }
+
+    public boolean isDisabled() {
+        return disabled;
+    }
+
+    public void disable() {
+        this.disabled = true;
     }
 
     public void setTileCoords(List<Point> coords) {

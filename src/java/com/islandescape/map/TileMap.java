@@ -5,9 +5,11 @@ import com.islandescape.player.Player;
 import java.awt.*;
 import java.awt.image.BufferedImage;
 import java.util.ArrayList;
+import java.util.Collections;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+import java.util.Set;
 
 /*
     TileMap holds map dimensions, tile size and a collection of layers and tilesets
@@ -107,7 +109,7 @@ public class TileMap {
     }
 
     public void renderMapComponent(MapRenderer renderer, Graphics g, int screenWidth, int screenHeight,
-                                   Player player1, Player player2) {
+                                   Player player1, Player player2, Set<Point> disabledResourceTiles) {
 
         int nativeWidth = this.getWidth() * this.getTileSize();
         int nativeHeight = this.getHeight() * this.getTileSize();
@@ -116,7 +118,7 @@ public class TileMap {
             // Render map at native resolution onto an off-screen buffer
             BufferedImage buffer = new BufferedImage(nativeWidth, nativeHeight, BufferedImage.TYPE_INT_ARGB);
             Graphics2D bufferG = buffer.createGraphics();
-            renderer.render(bufferG, this);
+            renderer.render(bufferG, this, disabledResourceTiles);
 
             // Render players on the same buffer so they scale with the map
             if (player1 != null) {
