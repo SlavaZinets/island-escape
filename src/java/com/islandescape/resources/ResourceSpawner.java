@@ -6,6 +6,9 @@ import com.islandescape.map.TileMap;
 import java.awt.Point;
 import java.util.ArrayList;
 import java.util.Collections;
+import java.util.HashSet;
+import java.util.List;
+import java.util.Set;
 
 // Walks tile layers and emits one ResourceNode per non-zero tile.
 public final class ResourceSpawner {
@@ -13,6 +16,10 @@ public final class ResourceSpawner {
     private static final int MASK_TILE_ID = 0x1FFFFFFF;
 
     private ResourceSpawner() {}
+
+    public static Set<Point> disabledTileCoords(List<ResourceNode> nodes) {
+        return null;
+    }
 
     public static ArrayList<ResourceNode> spawnFromMap(TileMap map) {
         ArrayList<ResourceNode> nodes = new ArrayList<>();
