@@ -60,6 +60,9 @@ public class GamePanel extends JPanel {
 
     public void setCraftingSystem(CraftingSystem craftingSystem) {
         this.craftingSystem = craftingSystem;
+        if (inventoryScreen != null) {
+            inventoryScreen.setCraftingSystem(craftingSystem);
+        }
     }
 
     public void setCraftingTable(CraftingTable craftingTable) {

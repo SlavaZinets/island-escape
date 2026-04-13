@@ -1,5 +1,6 @@
 package com.islandescape.inventory;
 
+import com.islandescape.crafting.CraftingSystem;
 import com.islandescape.item.Item;
 
 /*
@@ -111,6 +112,45 @@ public class InventoryCursor {
     // clear cursor
     public void clear(){
         heldItem = null;
+    }
+
+    // Pick up item from a crafting grid slot into the cursor
+    public void pickUpFromCraftingGrid(CraftingSystem cs, int slot) {
+        if (!isEmpty()) return;
+        Item taken = cs.takeOut(slot);
+        if (taken != null) {
+            heldItem = taken;
+        }
+    }
+
+    // Place held item into a crafting grid slot (left-click)
+    public void placeIntoCraftingGrid(CraftingSystem cs, int slot, int playerId) {
+        if (heldItem == null) return;
+
+        Item existing = cs.getSlot(slot);
+        if (existing == null) {
+            // Empty slot — place entire held item
+            cs.placeIn(slot, heldItem, playerId);
+            heldItem = null;
+        } else {
+            // Occupied — swap
+            cs.placeIn(slot, heldItem, playerId);
+            heldItem = existing;
+        }
+    }
+
+    // Place one item into a crafting grid slot (right-click)
+    public void placeOneIntoCraftingGrid(CraftingSystem cs, int slot, int playerId) {
+        if (heldItem == null) return;
+
+        Item existing = cs.getSlot(slot);
+        if (existing != null) return; // can't place one into occupied slot
+
+        Item one = heldItem.split(1);
+        cs.placeIn(slot, one, playerId);
+        if (heldItem.getQuantity() <= 0) {
+            heldItem = null;
+        }
     }
 
 }

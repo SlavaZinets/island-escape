@@ -8,8 +8,8 @@ package com.islandescape.ui;
 public class CraftingScreenLayout {
 
     // Grid / inventory dimensions (cells)
-    static final int GRID_COLS = 2;
-    static final int GRID_ROWS = 2;
+    public static final int GRID_COLS = 2;
+    public static final int GRID_ROWS = 2;
     private static final int MAX_SLOT_SIZE = 64;
     private static final int MIN_SLOT_SIZE = 32;
     private static final int CONTENT_TOP_OFFSET = 25; // vertical nudge

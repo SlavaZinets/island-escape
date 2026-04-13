@@ -1,7 +1,9 @@
 package com.islandescape.inventory;
 
+import com.islandescape.crafting.CraftingSystem;
 import com.islandescape.item.Item;
 import com.islandescape.player.Player;
+import com.islandescape.ui.CraftingScreenLayout;
 
 import javax.imageio.ImageIO;
 import java.awt.Color;
@@ -26,6 +28,8 @@ public class InventoryScreen {
     private final Player player2;
     private final InventoryCursor cursor;
     private final Map<String, BufferedImage> itemIcons;
+
+    private CraftingSystem craftingSystem;
 
     private boolean open;
     private boolean craftingOpen;
@@ -52,6 +56,10 @@ public class InventoryScreen {
         this.craftingOpen = craftingOpen;
     }
 
+    public void setCraftingSystem(CraftingSystem craftingSystem) {
+        this.craftingSystem = craftingSystem;
+    }
+
     public void updateMouse(int x, int y) {
         this.mouseX = x;
         this.mouseY = y;
@@ -61,6 +69,15 @@ public class InventoryScreen {
 
     public void handleClick(int screenX, int screenY, boolean isLeftClick, int panelW, int panelH) {
         if (!open) return;
+
+        // When crafting is open, check if click is on the crafting grid first
+        if (craftingOpen && craftingSystem != null) {
+            int craftSlot = pixelToCraftingSlot(screenX, screenY, panelW, panelH);
+            if (craftSlot >= 0) {
+                handleCraftingGridClick(craftSlot, isLeftClick, screenX, panelW);
+                return;
+            }
+        }
 
         int xBorder = getXBorder(panelW);
         int gridTop = getGridTop(panelH);
@@ -84,6 +101,44 @@ public class InventoryScreen {
                 cursor.placeAll(inventory, slotIndex);
             } else {
                 cursor.placeOne(inventory, slotIndex);
+            }
+        }
+    }
+
+    // Determine which crafting grid slot was clicked, or -1 if none
+    int pixelToCraftingSlot(int px, int py, int panelW, int panelH) {
+        CraftingScreenLayout layout = new CraftingScreenLayout(panelW, panelH);
+
+        int relX = px - layout.craftingStartX;
+        int relY = py - layout.gridY;
+        if (relX < 0 || relY < 0) return -1;
+
+        int cellSize = layout.slotSize + layout.slotGap;
+        int col = relX / cellSize;
+        int row = relY / cellSize;
+
+        if (col >= CraftingScreenLayout.GRID_COLS || row >= CraftingScreenLayout.GRID_ROWS) return -1;
+
+        // Check click is inside the slot, not in the gap
+        if (relX % cellSize >= layout.slotSize) return -1;
+        if (relY % cellSize >= layout.slotSize) return -1;
+
+        return row * CraftingScreenLayout.GRID_COLS + col;
+    }
+
+    // Handle a click on a crafting grid slot
+    private void handleCraftingGridClick(int craftSlot, boolean isLeftClick, int screenX, int panelW) {
+        int xBorder = getXBorder(panelW);
+        int playerId = screenX < xBorder ? 0 : 1;
+
+        if (cursor.isEmpty()) {
+            // Pick up from crafting grid
+            cursor.pickUpFromCraftingGrid(craftingSystem, craftSlot);
+        } else {
+            if (isLeftClick) {
+                cursor.placeIntoCraftingGrid(craftingSystem, craftSlot, playerId);
+            } else {
+                cursor.placeOneIntoCraftingGrid(craftingSystem, craftSlot, playerId);
             }
         }
     }
