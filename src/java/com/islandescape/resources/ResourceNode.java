@@ -6,16 +6,27 @@ import com.islandescape.item.ItemType;
 import com.islandescape.item.ItemCategory;
 import com.islandescape.inventory.Inventory;
 
+import java.awt.Point;
+import java.util.Collections;
 import java.util.List;
 
 // Base class for all gatherable nodes in the world.
 // It keeps shared rules: required tool and drop flow.
 public abstract class ResourceNode extends WorldStructure {
     protected ItemType requiredTool;
+    private List<Point> tileCoords = Collections.emptyList();
 
     public ResourceNode(double x, double y, String name, ItemType requiredTool) {
         super(x, y, name);
         this.requiredTool = requiredTool;
+    }
+
+    public void setTileCoords(List<Point> coords) {
+        this.tileCoords = coords;
+    }
+
+    public List<Point> getTileCoords() {
+        return tileCoords;
     }
 
     // Main gather method used by the player.

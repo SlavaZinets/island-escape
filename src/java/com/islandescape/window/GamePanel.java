@@ -10,8 +10,7 @@ import com.islandescape.map.MapRenderer;
 import com.islandescape.map.TileMap;
 import com.islandescape.player.Player;
 import com.islandescape.resources.ResourceNode;
-import com.islandescape.resources.Stone;
-import com.islandescape.resources.Tree;
+import com.islandescape.resources.ResourceSpawner;
 import com.islandescape.structures.CraftingTable;
 import com.islandescape.ui.CraftingScreen;
 
@@ -58,9 +57,9 @@ public class GamePanel extends JPanel {
         addMouseListener(mouseHandler);
         addMouseMotionListener(mouseHandler);
 
-        // MVP test setup: one tree and one stone at fixed world positions.
-        resourceNodes.add(new Tree(180, 160));
-        resourceNodes.add(new Stone(260, 160));
+        // Spawn tree/stone resource nodes from the TMX "trees" / "stones" layers,
+        // merging contiguous tiles into one node per cluster.
+        resourceNodes.addAll(ResourceSpawner.spawnFromMap(map));
 
         setFocusable(true);
     }
