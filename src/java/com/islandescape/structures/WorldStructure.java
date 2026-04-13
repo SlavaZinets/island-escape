@@ -1,3 +1,5 @@
+package com.islandescape.structures;
+
 import java.awt.Graphics2D;
 
 
@@ -48,6 +50,6 @@ public abstract class WorldStructure {
 
     // handles the visual representation of the structure
     public void render(Graphics2D g2) {
-    
+
     }
 }

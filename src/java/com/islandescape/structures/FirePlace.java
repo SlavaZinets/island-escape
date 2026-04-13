@@ -1,10 +1,12 @@
-//this class is fireplace that is used for warmth and cooking on island
+package com.islandescape.structures;//this class is fireplace that is used for warmth and cooking on island
  // as it is providing  heat source to prevent player from freezing and allowing food processin
  //so in technical this class manages the fire state, burn time duration and heat radiation area
 
+import com.islandescape.item.Item;
+
 public class FirePlace extends WorldStructure {
     private boolean lit;          //current state - burning/extinguished
-    double burnTimer;     //remaining time before the fire goes out
+    public double burnTimer;     //remaining time before the fire goes out
     private double warmthRadius;  //distance at which players feel the heat
     
     //constructor
@@ -127,9 +129,9 @@ public class FirePlace extends WorldStructure {
 
         if (this.lit && food != null) {
 
-            //chhange name to cooked state
+            //change name to cooked state
             String newName = food.getName().replace("Raw", "Cooked");
-            return new Item(newName, "Custom");
+            return new Item(food.getType(), food.getCategory(), newName, "Cooked " + food.getDescription());
         }
         return null;
     }
