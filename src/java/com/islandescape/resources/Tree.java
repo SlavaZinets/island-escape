@@ -7,11 +7,7 @@ import com.islandescape.item.ItemType;
 import java.util.ArrayList;
 import java.util.List;
 
-/**
- * Tree resource node.
- * Requires AXE to harvest.
- * Returns: WOOD, TROPICAL_LEAVES, VINES
- */
+// Tree node: player can gather it only with an axe.
 public class Tree extends ResourceNode {
     
     public Tree(double x, double y) {
@@ -20,6 +16,7 @@ public class Tree extends ResourceNode {
 
     @Override
     protected List<Item> generateDrops() {
+        // For MVP tree gives 3 basic materials.
         List<Item> drops = new ArrayList<>();
         drops.add(new Item(ItemType.WOOD, ItemCategory.PRIMARY_RESOURCE, "Wood", "Wood from tree"));
         drops.add(new Item(ItemType.TROPICAL_LEAVES, ItemCategory.PRIMARY_RESOURCE, "Tropical Leaves", "Leaves from tree"));

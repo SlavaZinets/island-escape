@@ -8,10 +8,8 @@ import com.islandescape.inventory.Inventory;
 
 import java.util.List;
 
-/**
- * Abstract base class for all harvestable resource nodes.
- * Extends WorldStructure to reuse position and range checking.
- */
+// Base class for all gatherable nodes in the world.
+// It keeps shared rules: required tool and drop flow.
 public abstract class ResourceNode extends WorldStructure {
     protected ItemType requiredTool;
 
@@ -20,11 +18,8 @@ public abstract class ResourceNode extends WorldStructure {
         this.requiredTool = requiredTool;
     }
 
-    /**
-     * Attempt to harvest this resource node.
-     * Returns a list of items if successful (player has correct tool),
-     * or null if harvest fails (missing tool).
-     */
+    // Main gather method used by the player.
+    // If player has the correct tool, we return drops from this node.
     public List<Item> harvest(Inventory playerInventory) {
         if (hasRequiredTool(playerInventory)) {
             return generateDrops();
@@ -32,15 +27,13 @@ public abstract class ResourceNode extends WorldStructure {
         return null;
     }
 
-    /**
-     * Check if the player's inventory contains the required tool.
-     */
+    // Simple check: does inventory contain the tool this node needs?
     protected boolean hasRequiredTool(Inventory inventory) {
         if (inventory == null) {
             return false;
         }
         
-        // Check all items in inventory for the required tool
+        // We scan all inventory slots and stop at first valid tool.
         Item[] allItems = inventory.getItems();
         for (Item item : allItems) {
             if (item != null 
@@ -52,22 +45,14 @@ public abstract class ResourceNode extends WorldStructure {
         return false;
     }
 
-    /**
-     * Generate the drops for this resource node.
-     * Implemented by subclasses.
-     */
+    // Each concrete node defines its own drop list.
     protected abstract List<Item> generateDrops();
 
-    /**
-     * Helper method to get X position.
-     */
+    // Small helpers used by tests and gameplay checks.
     public double getX() {
         return x;
     }
 
-    /**
-     * Helper method to get Y position.
-     */
     public double getY() {
         return y;
     }

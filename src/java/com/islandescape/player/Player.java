@@ -138,11 +138,8 @@ public class Player {
         return inventory;
     }
 
-    /**
-     * Attempt to farm a resource node.
-     * Returns a list of harvested items if successful (in range + has correct tool),
-     * or null if farming fails (out of range or missing tool).
-     */
+    // Player side of gathering.
+    // We only check distance here and then delegate real harvest logic to the node.
     public List<Item> farm(ResourceNode resource) {
         if (resource.isPlayerInRange(position.getX(), position.getY())) {
             return resource.harvest(inventory);
