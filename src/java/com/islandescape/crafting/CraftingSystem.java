@@ -43,9 +43,9 @@ public class CraftingSystem {
         for (int i = 0; i < 4; i++) {
             if (grid[i] != null) {
                 if (gridSlotOwner[i] == 0) {
-                    p1Inv.add(grid[i]);
+                    p1Inv.addItem(grid[i]);
                 } else {
-                    p2Inv.add(grid[i]);
+                    p2Inv.addItem(grid[i]);
                 }
                 grid[i] = null;
             }

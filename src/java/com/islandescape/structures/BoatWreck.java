@@ -4,6 +4,7 @@ import com.islandescape.inventory.Inventory;
 import com.islandescape.item.Item;
 
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.List;
 
 //this class will be structure of boatwreck wich we will need to repair
@@ -67,10 +68,13 @@ public class BoatWreck extends WorldStructure{
             }
         }
     }
-    //loads everything player needs on boat
+    //loads everything player needs on bout
     public void loadItems(Inventory playerInventory) {
-        this.boatInventory.addAll(playerInventory.getItems());
-        playerInventory.clear();//clear player invertory after replacing
+        for (Item item : playerInventory.getItems()) {
+            if (item != null) this.boatInventory.add(item);
+            playerInventory.clearItem(item);
+        }
+        //clear player inventory after replacing
         System.out.println("items transferred to boat");
     }
     // method for depart the boat from island
@@ -80,8 +84,8 @@ public class BoatWreck extends WorldStructure{
             return false;
         }
 
-       //check that player invertory is empmty
-        if (!playerInventory.isEmpty()) {
+       //check that player inventory is full
+        if (playerInventory.isFull()) {
             System.out.println("Still items in invertory");
             return false;
         }

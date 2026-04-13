@@ -50,6 +50,6 @@ public abstract class WorldStructure {
 
     // handles the visual representation of the structure
     public void render(Graphics2D g2) {
-    
+
     }
 }

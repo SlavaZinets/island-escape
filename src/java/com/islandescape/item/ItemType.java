@@ -13,5 +13,8 @@ public enum ItemType {
     MAST,
     FRAME,
     RUDDER,
-    FITTINGS
+    FITTINGS,
+    COCONUT,
+    BANANA
+
 }

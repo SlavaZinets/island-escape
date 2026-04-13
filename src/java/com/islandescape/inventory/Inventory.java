@@ -183,17 +183,31 @@ public class Inventory {
         return taken;
     }
 
-    // --- Adapters for CraftingSystem / CraftingScreen ---
 
-    public boolean add(Item item) {
-        return addItem(item);
-    }
 
     public ArrayList<Item> snapshot() {
         ArrayList<Item> list = new ArrayList<>();
         for (Item s : slots) if (s != null) list.add(s);
         for (Item s : hotBarSlots) if (s != null) list.add(s);
         return list;
+    }
+
+
+
+    public void clearItem(Item item) {
+        if (item == null) return;
+        for (int i = 0; i < slots.length; i++) {
+            if (slots[i] == item) {
+                slots[i] = null;
+                return;
+            }
+        }
+        for (int i = 0; i < hotBarSlots.length; i++) {
+            if (hotBarSlots[i] == item) {
+                hotBarSlots[i] = null;
+                return;
+            }
+        }
     }
 
     public int countOf(ItemType type) {
