@@ -28,6 +28,7 @@ public class InventoryScreen {
     private final Map<String, BufferedImage> itemIcons;
 
     private boolean open;
+    private boolean craftingOpen;
     private int mouseX;
     private int mouseY;
 
@@ -45,6 +46,10 @@ public class InventoryScreen {
 
     public void setOpen(boolean open) {
         this.open = open;
+    }
+
+    public void setCraftingOpen(boolean craftingOpen) {
+        this.craftingOpen = craftingOpen;
     }
 
     public void updateMouse(int x, int y) {
@@ -133,7 +138,12 @@ public class InventoryScreen {
     }
 
     // Both grids share the same top Y
+    // When crafting is open, push inventory to bottom half of screen
     int getGridTop(int panelH) {
+        if (craftingOpen) {
+            int craftingPanelBottom = (int) (panelH * 0.45) + (panelH - (int)(panelH * 0.45)) / 2;
+            return craftingPanelBottom + 20;
+        }
         return (panelH - getPlayerGridHeight()) / 2;
     }
 

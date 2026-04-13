@@ -91,7 +91,10 @@ public class GamePanel extends JPanel {
                 closeCraftingScreen();
             } else if (isAnyPlayerNearTable()) {
                 gameState = GameState.INVENTORY_OPEN;
-                if (inventoryScreen != null) inventoryScreen.setOpen(true);
+                if (inventoryScreen != null) {
+                    inventoryScreen.setCraftingOpen(true);
+                    inventoryScreen.setOpen(true);
+                }
             }
         }
 
@@ -143,6 +146,7 @@ public class GamePanel extends JPanel {
         }
         if (inventoryScreen != null) {
             inventoryScreen.returnHeldItem();
+            inventoryScreen.setCraftingOpen(false);
             inventoryScreen.setOpen(false);
         }
         gameState = GameState.PLAYING;
