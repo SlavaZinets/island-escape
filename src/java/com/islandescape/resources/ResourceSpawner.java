@@ -15,14 +15,55 @@ public final class ResourceSpawner {
     private ResourceSpawner() {}
 
     public static ArrayList<ResourceNode> spawnFromMap(TileMap map) {
-       return null;
+        ArrayList<ResourceNode> nodes = new ArrayList<>();
+        nodes.addAll(spawnTrees(map));
+        nodes.addAll(spawnStones(map));
+        return nodes;
     }
 
     private static ArrayList<ResourceNode> spawnTrees(TileMap map) {
-        return null;
+        ArrayList<ResourceNode> out = new ArrayList<>();
+        TileLayer layer = map.getLayer("trees");
+        if (layer == null) return out;
+
+        int width = map.getWidth();
+        int height = map.getHeight();
+        int tileSize = map.getTileSize();
+
+        for (int row = 0; row < height; row++) {
+            for (int col = 0; col < width; col++) {
+                if ((layer.getTileAt(row, col) & MASK_TILE_ID) == 0) continue;
+
+                double cx = col * tileSize + tileSize / 2.0;
+                double cy = row * tileSize + tileSize / 2.0;
+                Tree node = new Tree(cx, cy);
+                node.setTileCoords(Collections.singletonList(new Point(col, row)));
+                out.add(node);
+            }
+        }
+        return out;
     }
 
     private static ArrayList<ResourceNode> spawnStones(TileMap map) {
-        return null;
+        ArrayList<ResourceNode> out = new ArrayList<>();
+        TileLayer layer = map.getLayer("stones");
+        if (layer == null) return out;
+
+        int width = map.getWidth();
+        int height = map.getHeight();
+        int tileSize = map.getTileSize();
+
+        for (int row = 0; row < height; row++) {
+            for (int col = 0; col < width; col++) {
+                if ((layer.getTileAt(row, col) & MASK_TILE_ID) == 0) continue;
+
+                double cx = col * tileSize + tileSize / 2.0;
+                double cy = row * tileSize + tileSize / 2.0;
+                Stone node = new Stone(cx, cy);
+                node.setTileCoords(Collections.singletonList(new Point(col, row)));
+                out.add(node);
+            }
+        }
+        return out;
     }
 }
