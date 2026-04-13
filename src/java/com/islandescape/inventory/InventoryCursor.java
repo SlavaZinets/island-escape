@@ -1,5 +1,6 @@
 package com.islandescape.inventory;
 
+import com.islandescape.crafting.CraftingSystem;
 import com.islandescape.item.Item;
 
 /*
@@ -108,9 +109,95 @@ public class InventoryCursor {
         return heldItem == null;
     }
 
+    // set held item directly (used for crafted results)
+    public void setHeldItem(Item item) {
+        this.heldItem = item;
+    }
+
     // clear cursor
     public void clear(){
         heldItem = null;
+    }
+
+    // Pick up all items from a crafting grid slot into the cursor (left-click)
+    public void pickUpFromCraftingGrid(CraftingSystem cs, int slot) {
+        if (!isEmpty()) return;
+        Item taken = cs.takeOut(slot);
+        if (taken != null) {
+            heldItem = taken;
+        }
+    }
+
+    // Pick up half items from a crafting grid slot into the cursor (right-click)
+    public void pickUpHalfFromCraftingGrid(CraftingSystem cs, int slot) {
+        if (!isEmpty()) return;
+        Item existing = cs.getSlot(slot);
+        if (existing == null) return;
+
+        int total = existing.getQuantity();
+        int takeAmount = (int) Math.ceil(total / 2.0);
+
+        if (takeAmount >= total) {
+            // Take everything
+            heldItem = cs.takeOut(slot);
+        } else {
+            // Split — take half, leave rest in grid
+            heldItem = existing.split(takeAmount);
+            if (existing.getQuantity() <= 0) {
+                cs.takeOut(slot);
+            }
+        }
+    }
+
+    // Place held item into a crafting grid slot (left-click)
+    public void placeIntoCraftingGrid(CraftingSystem cs, int slot, int playerId) {
+        if (heldItem == null) return;
+
+        Item existing = cs.getSlot(slot);
+        if (existing == null) {
+            // Empty slot — place entire held item
+            cs.placeIn(slot, heldItem, playerId);
+            heldItem = null;
+        } else if (existing.getType() == heldItem.getType()) {
+            // Same type — try to merge
+            int space = Item.MAX_STACK_SIZE - existing.getQuantity();
+            if (heldItem.getQuantity() <= space) {
+                // Fits entirely
+                existing.merge(heldItem);
+                heldItem = null;
+            } else {
+                // Partial merge — fill slot to max, keep rest on cursor
+                Item partial = heldItem.split(space);
+                existing.merge(partial);
+            }
+        } else {
+            // Different type — swap
+            cs.placeIn(slot, heldItem, playerId);
+            heldItem = existing;
+        }
+    }
+
+    // Place one item into a crafting grid slot (right-click)
+    public void placeOneIntoCraftingGrid(CraftingSystem cs, int slot, int playerId) {
+        if (heldItem == null) return;
+
+        Item existing = cs.getSlot(slot);
+        if (existing == null) {
+            // Empty slot — place one
+            Item one = heldItem.split(1);
+            cs.placeIn(slot, one, playerId);
+        } else if (existing.getType() == heldItem.getType()
+                && existing.getQuantity() < Item.MAX_STACK_SIZE) {
+            // Same type with space — merge one
+            Item one = heldItem.split(1);
+            existing.merge(one);
+        } else {
+            return; // Different type or full — do nothing
+        }
+
+        if (heldItem.getQuantity() <= 0) {
+            heldItem = null;
+        }
     }
 
 }

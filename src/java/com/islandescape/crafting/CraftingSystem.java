@@ -99,7 +99,7 @@ public class CraftingSystem {
             case PICKAXE:
                 return ItemCategory.TOOL;
             case ROPE:
-            case PLANKS:
+            case PLANK:
             case FRAME:
             case MAST:
             case RUDDER:
@@ -117,11 +117,11 @@ public class CraftingSystem {
         list.add(recipe(Map.of(ItemType.VINES, 2), ItemType.ROPE, 1));
         list.add(recipe(Map.of(ItemType.STONE, 1, ItemType.WOOD, 1, ItemType.ROPE, 1), ItemType.AXE, 1));
         list.add(recipe(Map.of(ItemType.STONE, 2, ItemType.WOOD, 1, ItemType.ROPE, 1), ItemType.PICKAXE, 1));
-        list.add(recipe(Map.of(ItemType.WOOD, 2), ItemType.PLANKS, 3));
-        list.add(recipe(Map.of(ItemType.PLANKS, 2), ItemType.PADDLE, 1));
-        list.add(recipe(Map.of(ItemType.PLANKS, 2, ItemType.ROPE, 2), ItemType.FRAME, 1));
+        list.add(recipe(Map.of(ItemType.WOOD, 2), ItemType.PLANK, 3));
+        list.add(recipe(Map.of(ItemType.PLANK, 2), ItemType.PADDLE, 1));
+        list.add(recipe(Map.of(ItemType.PLANK, 2, ItemType.ROPE, 2), ItemType.FRAME, 1));
         list.add(recipe(Map.of(ItemType.WOOD, 3, ItemType.ROPE, 1), ItemType.MAST, 1));
-        list.add(recipe(Map.of(ItemType.PLANKS, 2, ItemType.STONE, 1, ItemType.ROPE, 1), ItemType.RUDDER, 1));
+        list.add(recipe(Map.of(ItemType.PLANK, 2, ItemType.STONE, 1, ItemType.ROPE, 1), ItemType.RUDDER, 1));
         list.add(recipe(Map.of(ItemType.STONE, 2, ItemType.ROPE, 1, ItemType.WOOD, 1), ItemType.FITTINGS, 1));
 
         return Collections.unmodifiableList(list);

@@ -75,6 +75,9 @@ public class GamePanel extends JPanel {
 
     public void setCraftingSystem(CraftingSystem craftingSystem) {
         this.craftingSystem = craftingSystem;
+        if (inventoryScreen != null) {
+            inventoryScreen.setCraftingSystem(craftingSystem);
+        }
     }
 
     public void setCraftingTable(CraftingTable craftingTable) {
@@ -110,6 +113,10 @@ public class GamePanel extends JPanel {
                 closeCraftingScreen();
             } else if (isAnyPlayerNearTable()) {
                 gameState = GameState.INVENTORY_OPEN;
+                if (inventoryScreen != null) {
+                    inventoryScreen.setCraftingOpen(true);
+                    inventoryScreen.setOpen(true);
+                }
             }
         }
 
@@ -128,29 +135,14 @@ public class GamePanel extends JPanel {
             if (keyHandler.consumeP2Action()) {
                 tryFarmNearestResource(player2);
             }
-        } else if (gameState == GameState.INVENTORY_OPEN) {
-            // Forward input to crafting screen for cursor movement and item placement
-            if (craftingScreen != null && craftingSystem != null) {
-                boolean p1Near = isPlayerNearTable(player1);
-                boolean p2Near = isPlayerNearTable(player2);
+        }
+        // When INVENTORY_OPEN, all crafting interaction is mouse-driven
+        // (handled by InventoryScreen.handleClick)
 
-                craftingScreen.handleInput(
-                        keyHandler.consumeP1Action(), keyHandler.consumeP2Action(),
-                        keyHandler.getP1Direction().getX(), keyHandler.getP1Direction().getY(),
-                        keyHandler.getP2Direction().getX(), keyHandler.getP2Direction().getY(),
-                        p1Near, p2Near,
-                        craftingSystem,
-                        player1 != null ? player1.getInventory() : null,
-                        player2 != null ? player2.getInventory() : null);
-            }
-
-            // Craft commit (Enter key) — route output to P1 inventory by default
-            if (keyHandler.consumeCraftCommit() && craftingSystem != null && player1 != null) {
-                Item result = craftingSystem.craft(player1.getInventory());
-                if (result != null) {
-                    player1.getInventory().add(result);
-                }
-            }
+        // Update proximity flags for inventory blocking
+        if (gameState == GameState.INVENTORY_OPEN && inventoryScreen != null) {
+            inventoryScreen.setPlayerNearTable(
+                    isPlayerNearTable(player1), isPlayerNearTable(player2));
         }
     }
 
@@ -227,9 +219,14 @@ public class GamePanel extends JPanel {
                 && craftingTable.isPlayerNearby(p.getX(), p.getY());
     }
 
-    private void closeCraftingScreen() {
+    public void closeCraftingScreen() {
         if (craftingSystem != null && player1 != null && player2 != null) {
             craftingSystem.clearGrid(player1.getInventory(), player2.getInventory());
+        }
+        if (inventoryScreen != null) {
+            inventoryScreen.returnHeldItem();
+            inventoryScreen.setCraftingOpen(false);
+            inventoryScreen.setOpen(false);
         }
         gameState = GameState.PLAYING;
     }
@@ -267,28 +264,38 @@ public class GamePanel extends JPanel {
     @Override
     protected void paintComponent(Graphics g) {
         super.paintComponent(g);
+        Graphics2D g2 = (Graphics2D) g;
         g.setColor(new Color(77, 166, 255));
         g.fillRect(0, 0, getWidth(), getHeight());
 
         map.renderMapComponent(renderer, g, getWidth(), getHeight(), player1, player2);
 
-        // Dev inventory (mouse-driven) overlay
-        if (inventoryScreen != null) {
-            inventoryScreen.renderInventoryComponent(g, getWidth(), getHeight());
-        }
-
-        // Crafting overlay when open (keyboard-driven)
         if (gameState == GameState.INVENTORY_OPEN && craftingScreen != null) {
-            Graphics2D g2 = (Graphics2D) g;
+            // 1. Crafting panel (dim overlay + brown background + crafting grid)
             craftingScreen.render(g2, getWidth(), getHeight(),
                     craftingSystem,
                     player1 != null ? player1.getInventory() : null,
                     player2 != null ? player2.getInventory() : null,
                     isPlayerNearTable(player1), isPlayerNearTable(player2));
+
+            // 2. Inventory grids (drawn ON TOP of the brown panel)
+            if (inventoryScreen != null) {
+                inventoryScreen.renderInventoryComponent(g, getWidth(), getHeight());
+            }
+
+            // 3. Held item on cursor — always drawn LAST so it's on top
+            if (inventoryScreen != null) {
+                inventoryScreen.drawHeldItem(g2);
+            }
+        } else {
+            // Normal mode — just inventory (hotbar or full grid)
+            if (inventoryScreen != null) {
+                inventoryScreen.renderInventoryComponent(g, getWidth(), getHeight());
+                inventoryScreen.drawHeldItem(g2);
+            }
         }
 
         if (farmToastFrames > 0 && !farmToastMessage.isEmpty()) {
-            Graphics2D g2 = (Graphics2D) g;
             g2.setColor(new Color(0, 0, 0, 150));
             g2.fillRoundRect(20, 20, 380, 36, 10, 10);
             g2.setFont(new Font("SansSerif", Font.BOLD, 18));

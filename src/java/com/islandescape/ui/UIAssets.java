@@ -40,9 +40,7 @@ public class UIAssets {
         for (ItemType type : ItemType.values()) {
             String fileName = "item_" + type.name().toLowerCase() + ".png";
             BufferedImage icon = loadImage(itemBase + fileName);
-            if (icon == null && type == ItemType.PLANKS) {
-                icon = loadImage(itemBase + "item_plank.png");
-            }
+            // PLANK enum now matches file name, no fallback needed
             if (icon != null) {
                 icons.put(type, icon);
             }

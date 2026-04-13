@@ -69,14 +69,14 @@ public class CraftingSystemTest {
         cs.placeIn(1, item(ItemType.WOOD), 0);
         CraftingRecipe match = cs.preview();
         assertNotNull(match);
-        assertEquals(ItemType.PLANKS, match.getOutput());
+        assertEquals(ItemType.PLANK, match.getOutput());
         assertEquals(3, match.getOutputQty());
     }
 
     @Test
     public void testPaddleRecipe() {
-        cs.placeIn(0, item(ItemType.PLANKS), 0);
-        cs.placeIn(1, item(ItemType.PLANKS), 0);
+        cs.placeIn(0, item(ItemType.PLANK), 0);
+        cs.placeIn(1, item(ItemType.PLANK), 0);
         CraftingRecipe match = cs.preview();
         assertNotNull(match);
         assertEquals(ItemType.PADDLE, match.getOutput());
@@ -84,8 +84,8 @@ public class CraftingSystemTest {
 
     @Test
     public void testFrameRecipe() {
-        cs.placeIn(0, item(ItemType.PLANKS), 0);
-        cs.placeIn(1, item(ItemType.PLANKS), 0);
+        cs.placeIn(0, item(ItemType.PLANK), 0);
+        cs.placeIn(1, item(ItemType.PLANK), 0);
         cs.placeIn(2, item(ItemType.ROPE), 0);
         cs.placeIn(3, item(ItemType.ROPE), 0);
         CraftingRecipe match = cs.preview();
@@ -106,8 +106,8 @@ public class CraftingSystemTest {
 
     @Test
     public void testRudderRecipe() {
-        cs.placeIn(0, item(ItemType.PLANKS), 0);
-        cs.placeIn(1, item(ItemType.PLANKS), 0);
+        cs.placeIn(0, item(ItemType.PLANK), 0);
+        cs.placeIn(1, item(ItemType.PLANK), 0);
         cs.placeIn(2, item(ItemType.STONE), 0);
         cs.placeIn(3, item(ItemType.ROPE), 0);
         CraftingRecipe match = cs.preview();
@@ -179,7 +179,7 @@ public class CraftingSystemTest {
         cs.placeIn(1, item(ItemType.WOOD), 0);
         Item result = cs.craft(p1Inv);
         assertNotNull(result);
-        assertEquals(ItemType.PLANKS, result.getType());
+        assertEquals(ItemType.PLANK, result.getType());
         assertEquals(3, result.getQuantity());
     }
 
