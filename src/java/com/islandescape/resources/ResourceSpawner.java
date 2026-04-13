@@ -18,7 +18,13 @@ public final class ResourceSpawner {
     private ResourceSpawner() {}
 
     public static Set<Point> disabledTileCoords(List<ResourceNode> nodes) {
-        return null;
+        Set<Point> out = new HashSet<>();
+        for (ResourceNode node : nodes) {
+            if (node.isDisabled()) {
+                out.addAll(node.getTileCoords());
+            }
+        }
+        return out;
     }
 
     public static ArrayList<ResourceNode> spawnFromMap(TileMap map) {
