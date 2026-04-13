@@ -1,5 +1,7 @@
 package com.islandescape.map;
 
+import java.awt.AlphaComposite;
+import java.awt.Composite;
 import java.awt.Graphics2D;
 import java.awt.Point;
 import java.awt.geom.AffineTransform;
@@ -36,17 +38,18 @@ public class MapRenderer {
                 continue;
             }
             boolean isResourceLayer = layer.equals("trees") || layer.equals("stones");
-            Set<Point> skipTiles = isResourceLayer ? disabledResourceTiles : Collections.emptySet();
-            renderLayer(g, map, tileLayer, skipTiles);
+            Set<Point> fadedTiles = isResourceLayer ? disabledResourceTiles : Collections.emptySet();
+            renderLayer(g, map, tileLayer, fadedTiles);
         }
     }
     // draw the layer on the screen
-    private void renderLayer(Graphics2D g, TileMap map, TileLayer layer, Set<Point> skipTiles) {
+    private void renderLayer(Graphics2D g, TileMap map, TileLayer layer, Set<Point> fadedTiles) {
         for (int row = 0; row < map.getHeight(); row++) {
             for(int col = 0; col < map.getWidth(); col++){
                 int rawTileId = layer.getTileAt(row, col);
                 if(isEmpty(rawTileId)) continue;
-                if(!skipTiles.isEmpty() && skipTiles.contains(new Point(col, row))) continue;
+
+                boolean faded = !fadedTiles.isEmpty() && fadedTiles.contains(new Point(col, row));
 
                 int tileId = getTileId(rawTileId);
                 boolean flipH = (rawTileId & FLAG_HORIZONTAL) != 0;
@@ -65,6 +68,12 @@ public class MapRenderer {
 
                 int destX = col * tileSize;
                 int destY = row * tileSize;
+
+                Composite oldComposite = null;
+                if (faded) {
+                    oldComposite = g.getComposite();
+                    g.setComposite(AlphaComposite.getInstance(AlphaComposite.SRC_OVER, 0.5f));
+                }
 
                 if (!flipH && !flipV && !flipD) {
                     // No transform — draw directly
@@ -99,6 +108,10 @@ public class MapRenderer {
                     g.setTransform(transform);
                     g.drawImage(tileImage, 0, 0, null);
                     g.setTransform(oldTransform);
+                }
+
+                if (faded) {
+                    g.setComposite(oldComposite);
                 }
             }
         }

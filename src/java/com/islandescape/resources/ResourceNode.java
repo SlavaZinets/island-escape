@@ -14,7 +14,7 @@ import java.util.List;
 // It keeps shared rules: required tool and drop flow.
 public abstract class ResourceNode extends WorldStructure {
 
-    private static final double GATHER_RADIUS = 16.0;
+    private static final double GATHER_RADIUS = 32.0;
 
     protected ItemType requiredTool;
     private List<Point> tileCoords = Collections.emptyList();
