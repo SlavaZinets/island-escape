@@ -6,6 +6,7 @@ import org.junit.jupiter.api.Test;
 
 import java.awt.Point;
 import java.util.List;
+import java.util.Set;
 
 import static org.junit.jupiter.api.Assertions.*;
 
@@ -93,6 +94,40 @@ public class ResourceSpawnerTest {
         assertEquals(1, coords.size());
         assertEquals(2, coords.get(0).x); // col
         assertEquals(1, coords.get(0).y); // row
+    }
+
+    @Test
+    public void disabledTileCoordsIsEmptyWhenNoNodesDisabled() {
+        TileMap map = buildMap(4, 4);
+        int[][] trees = new int[4][4];
+        trees[0][0] = 1;
+        trees[2][2] = 1;
+        addLayer(map, "trees", trees);
+
+        List<ResourceNode> nodes = ResourceSpawner.spawnFromMap(map);
+
+        Set<Point> disabled = ResourceSpawner.disabledTileCoords(nodes);
+        assertTrue(disabled.isEmpty());
+    }
+
+    @Test
+    public void disabledTileCoordsReturnsOnlyTilesOfDisabledNodes() {
+        TileMap map = buildMap(4, 4);
+        int[][] trees = new int[4][4];
+        trees[0][0] = 1;
+        trees[2][2] = 1;
+        addLayer(map, "trees", trees);
+
+        List<ResourceNode> nodes = ResourceSpawner.spawnFromMap(map);
+        // Disable exactly one node; the other stays active.
+        ResourceNode toDisable = nodes.stream()
+                .filter(n -> n.getTileCoords().get(0).equals(new Point(2, 2)))
+                .findFirst().orElseThrow();
+        toDisable.disable();
+
+        Set<Point> disabled = ResourceSpawner.disabledTileCoords(nodes);
+        assertEquals(1, disabled.size());
+        assertTrue(disabled.contains(new Point(2, 2)));
     }
 
     @Test

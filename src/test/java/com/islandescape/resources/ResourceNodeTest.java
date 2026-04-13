@@ -12,34 +12,46 @@ import static org.junit.jupiter.api.Assertions.*;
 
 public class ResourceNodeTest {
 
-    /**
-     * Test that a resource node detects when player is in range
-     */
     @Test
     public void testIsPlayerInRange_PlayerClose() {
         ResourceNode node = new Tree(100, 100);
-        
-        // Player at (110, 110) - distance ~14 units, should be in range (50)
-        assertTrue(node.isPlayerInRange(110, 110), 
-                   "Player should be in range when close to resource node");
+
+        // Player at (110, 110) - distance ~14 units, in range (16)
+        assertTrue(node.isPlayerInRange(110, 110),
+                   "Player should be in range when within 16 px");
     }
 
-    /**
-     * Test that a resource node detects when player is out of range
-     */
     @Test
     public void testIsPlayerInRange_PlayerFar() {
         ResourceNode node = new Tree(100, 100);
-        
-        // Player at (200, 200) - distance ~141 units, should be out of range (50)
-        assertFalse(node.isPlayerInRange(200, 200), 
+
+        // Player at (200, 200) - distance ~141 units, out of range (16)
+        assertFalse(node.isPlayerInRange(200, 200),
                     "Player should be out of range when far from resource node");
     }
 
-    /**
-     * Test that harvesting requires correct tool
-     * Tree requires AXE
-     */
+    @Test
+    public void testIsPlayerInRange_JustOutsideGatherRadius() {
+        ResourceNode node = new Tree(100, 100);
+
+        // 17 px to the right of the node center -> out of range (16)
+        assertFalse(node.isPlayerInRange(117, 100),
+                    "Player 17 px away should be out of gather range");
+    }
+
+    @Test
+    public void testNewNodeIsNotDisabled() {
+        ResourceNode node = new Tree(100, 100);
+        assertFalse(node.isDisabled(), "New node should not be disabled");
+    }
+
+    @Test
+    public void testDisableMarksNodeDisabled() {
+        ResourceNode node = new Tree(100, 100);
+        node.disable();
+        assertTrue(node.isDisabled(), "disable() should mark node as disabled");
+    }
+
     @Test
     public void testCanHarvest_WithCorrectTool() {
         ResourceNode tree = new Tree(100, 100);
@@ -53,9 +65,6 @@ public class ResourceNodeTest {
         assertTrue(harvest.size() > 0, "Harvest should return at least one item");
     }
 
-    /**
-     * Test that harvesting fails without correct tool
-     */
     @Test
     public void testCanHarvest_WithoutCorrectTool() {
         ResourceNode tree = new Tree(100, 100);
@@ -67,9 +76,6 @@ public class ResourceNodeTest {
         assertNull(harvest, "Harvest should return null without correct tool");
     }
 
-    /**
-     * Test that stone requires PICKAXE
-     */
     @Test
     public void testStoneRequiresPickaxe() {
         ResourceNode stone = new Stone(100, 100);
@@ -83,9 +89,6 @@ public class ResourceNodeTest {
         assertTrue(harvest.size() > 0, "Stone harvest should return items");
     }
 
-    /**
-     * Test that stone harvest fails without pickaxe
-     */
     @Test
     public void testStoneRequiresPickaxe_NoTool() {
         ResourceNode stone = new Stone(100, 100);
