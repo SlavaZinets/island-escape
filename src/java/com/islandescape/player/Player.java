@@ -12,8 +12,8 @@ import java.util.List;
 
 public class Player {
 
-    private static final int WIDTH =16;
-    private static final int HEIGHT = 26;
+    public static final int WIDTH = 16;
+    public static final int HEIGHT = 26;
 
     // Walk-cycle tuning. FRAME_COUNT must match PlayerSprite.COLS.
     // FRAMES_PER_STEP is how many game ticks a single visible frame is held for.

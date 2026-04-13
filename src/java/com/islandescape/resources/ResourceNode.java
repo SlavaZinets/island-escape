@@ -5,9 +5,10 @@ import com.islandescape.item.Item;
 import com.islandescape.item.ItemType;
 import com.islandescape.item.ItemCategory;
 import com.islandescape.inventory.Inventory;
+import com.islandescape.player.Player;
 
 import java.awt.Point;
-import java.util.Collections;
+import java.util.ArrayList;
 import java.util.List;
 
 // Base class for all gatherable nodes in the world.
@@ -17,7 +18,7 @@ public abstract class ResourceNode extends WorldStructure {
     private static final double GATHER_RADIUS = 32.0;
 
     protected ItemType requiredTool;
-    private List<Point> tileCoords = Collections.emptyList();
+    private ArrayList<Point> tileCoords = new ArrayList<>();
     private boolean disabled = false;
 
     public ResourceNode(double x, double y, String name, ItemType requiredTool) {
@@ -27,8 +28,11 @@ public abstract class ResourceNode extends WorldStructure {
 
     @Override
     public boolean isPlayerInRange(double playerX, double playerY) {
-        double dx = this.x - playerX;
-        double dy = this.y - playerY;
+        // Player coords are top-left; shift to the player's visual center.
+        double centerX = playerX + Player.WIDTH / 2.0;
+        double centerY = playerY + Player.HEIGHT / 2.0;
+        double dx = this.x - centerX;
+        double dy = this.y - centerY;
         return (dx * dx + dy * dy) <= GATHER_RADIUS * GATHER_RADIUS;
     }
 
@@ -40,11 +44,11 @@ public abstract class ResourceNode extends WorldStructure {
         this.disabled = true;
     }
 
-    public void setTileCoords(List<Point> coords) {
+    public void setTileCoords(ArrayList<Point> coords) {
         this.tileCoords = coords;
     }
 
-    public List<Point> getTileCoords() {
+    public ArrayList<Point> getTileCoords() {
         return tileCoords;
     }
 

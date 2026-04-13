@@ -48,11 +48,38 @@ public class ResourceSpawnerTest {
     }
 
     @Test
-    public void twoAdjacentTreeTilesProduceTwoNodes() {
+    public void twoAdjacentTreeTilesMergeIntoOneNode() {
         TileMap map = buildMap(4, 4);
         int[][] trees = new int[4][4];
         trees[1][1] = 7;
         trees[1][2] = 7;
+        addLayer(map, "trees", trees);
+
+        List<ResourceNode> nodes = ResourceSpawner.spawnFromMap(map);
+
+        assertEquals(1, nodes.size());
+        assertEquals(2, nodes.get(0).getTileCoords().size());
+    }
+
+    @Test
+    public void twoNonAdjacentTreeTilesProduceTwoNodes() {
+        TileMap map = buildMap(4, 4);
+        int[][] trees = new int[4][4];
+        trees[0][0] = 7;
+        trees[3][3] = 7;
+        addLayer(map, "trees", trees);
+
+        List<ResourceNode> nodes = ResourceSpawner.spawnFromMap(map);
+
+        assertEquals(2, nodes.size());
+    }
+
+    @Test
+    public void diagonalTreeTilesDoNotMerge() {
+        TileMap map = buildMap(4, 4);
+        int[][] trees = new int[4][4];
+        trees[1][1] = 7;
+        trees[2][2] = 7;
         addLayer(map, "trees", trees);
 
         List<ResourceNode> nodes = ResourceSpawner.spawnFromMap(map);
