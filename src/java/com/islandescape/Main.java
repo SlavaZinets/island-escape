@@ -38,6 +38,8 @@ public class Main {
 
 		player1.getInventory().addItem(new Item(ItemType.WOOD, ItemCategory.PRIMARY_RESOURCE, "Wood", "A piece of wood", 5));
 		player1.getInventory().addItem(new Item(ItemType.STONE, ItemCategory.PRIMARY_RESOURCE, "Stone", "A solid stone", 3));
+		player1.getInventory().addItem(new Item(ItemType.AXE, ItemCategory.TOOL, "Axe", "Chops trees for wood", 1));
+		player2.getInventory().addItem(new Item(ItemType.PICKAXE, ItemCategory.TOOL, "Pickaxe", "Mines stone", 1));
 
 		// 4. Create crafting system, crafting table, and crafting screen overlay
 		CraftingSystem craftingSystem = new CraftingSystem();
