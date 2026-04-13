@@ -9,12 +9,17 @@ import com.islandescape.item.Item;
 import com.islandescape.map.MapRenderer;
 import com.islandescape.map.TileMap;
 import com.islandescape.player.Player;
+import com.islandescape.resources.ResourceNode;
+import com.islandescape.resources.Stone;
+import com.islandescape.resources.Tree;
 import com.islandescape.structures.CraftingTable;
 import com.islandescape.ui.CraftingScreen;
 
 import javax.swing.*;
 import java.awt.Graphics;
 import java.awt.Graphics2D;
+import java.util.ArrayList;
+import java.util.List;
 
 /*
     GamePanel sits inside GameWindow.
@@ -36,6 +41,7 @@ public class GamePanel extends JPanel {
     private CraftingTable craftingTable;
     private CraftingScreen craftingScreen;
     private GameState gameState = GameState.PLAYING;
+    private final List<ResourceNode> resourceNodes = new ArrayList<>();
 
     public GamePanel(TileMap map, MapRenderer renderer, Player player1, Player player2) {
         this.map = map;
@@ -48,6 +54,11 @@ public class GamePanel extends JPanel {
         InventoryMouseHandler mouseHandler = new InventoryMouseHandler(inventoryScreen, this);
         addMouseListener(mouseHandler);
         addMouseMotionListener(mouseHandler);
+
+        // MVP test setup: one tree and one stone at fixed world positions.
+        resourceNodes.add(new Tree(180, 160));
+        resourceNodes.add(new Stone(260, 160));
+
         setFocusable(true);
     }
 
@@ -102,6 +113,14 @@ public class GamePanel extends JPanel {
             if (player2 != null) {
                 player2.move(keyHandler.getP2Direction());
             }
+
+            // Reuse existing action keys: E for P1 and SPACE for P2.
+            if (keyHandler.consumeP1Action()) {
+                tryFarmNearestResource(player1);
+            }
+            if (keyHandler.consumeP2Action()) {
+                tryFarmNearestResource(player2);
+            }
         } else if (gameState == GameState.INVENTORY_OPEN) {
             // Forward input to crafting screen for cursor movement and item placement
             if (craftingScreen != null && craftingSystem != null) {
@@ -126,6 +145,48 @@ public class GamePanel extends JPanel {
                 }
             }
         }
+    }
+
+    private void tryFarmNearestResource(Player player) {
+        if (player == null) {
+            return;
+        }
+
+        ResourceNode nearest = findNearestResourceInRange(player);
+        if (nearest == null) {
+            return;
+        }
+
+        List<Item> drops = player.farm(nearest);
+        if (drops == null) {
+            return;
+        }
+
+        for (Item drop : drops) {
+            player.getInventory().addItem(drop);
+        }
+    }
+
+    private ResourceNode findNearestResourceInRange(Player player) {
+        ResourceNode nearest = null;
+        double nearestDistanceSq = Double.MAX_VALUE;
+
+        for (ResourceNode node : resourceNodes) {
+            if (!node.isPlayerInRange(player.getX(), player.getY())) {
+                continue;
+            }
+
+            double dx = node.getX() - player.getX();
+            double dy = node.getY() - player.getY();
+            double distanceSq = dx * dx + dy * dy;
+
+            if (distanceSq < nearestDistanceSq) {
+                nearestDistanceSq = distanceSq;
+                nearest = node;
+            }
+        }
+
+        return nearest;
     }
 
     private boolean isAnyPlayerNearTable() {
