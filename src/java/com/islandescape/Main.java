@@ -41,7 +41,7 @@ public class Main {
 
 		// 4. Create crafting system, crafting table, and crafting screen overlay
 		CraftingSystem craftingSystem = new CraftingSystem();
-		CraftingTable craftingTable = new CraftingTable(0, 0);
+		CraftingTable craftingTable = new CraftingTable(128, 128);
 		CraftingScreen craftingScreen = new CraftingScreen();
 
 		// 5. Create the panel that draws the map
