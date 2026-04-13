@@ -23,6 +23,8 @@ public class GameKeyHandler implements KeyListener {
     // Action / toggle edges (single-press: true for one poll cycle, then auto-cleared)
     private boolean p1ActionToggled = false;
     private boolean p2ActionToggled = false;
+    private boolean p1GatherToggled = false;
+    private boolean p2GatherToggled = false;
     private boolean craftScreenToggled = false;
     private boolean craftCommitted = false;
 
@@ -52,6 +54,9 @@ public class GameKeyHandler implements KeyListener {
                 gamePanel.toggleInventoryScreen();
                 break;
             case KeyEvent.VK_SPACE: p2ActionToggled = true; break;
+            // Resource gathering: G for P1, M for P2
+            case KeyEvent.VK_G:     p1GatherToggled = true; break;
+            case KeyEvent.VK_M:     p2GatherToggled = true; break;
             // Crafting screen toggle / commit
             case KeyEvent.VK_I:     craftScreenToggled = true; break;
             case KeyEvent.VK_ENTER: craftCommitted = true; break;
@@ -141,6 +146,18 @@ public class GameKeyHandler implements KeyListener {
     public boolean consumeP2Action() {
         boolean val = p2ActionToggled;
         p2ActionToggled = false;
+        return val;
+    }
+
+    public boolean consumeP1Gather() {
+        boolean val = p1GatherToggled;
+        p1GatherToggled = false;
+        return val;
+    }
+
+    public boolean consumeP2Gather() {
+        boolean val = p2GatherToggled;
+        p2GatherToggled = false;
         return val;
     }
 }

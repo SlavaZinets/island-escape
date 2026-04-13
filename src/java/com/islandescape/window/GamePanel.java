@@ -121,11 +121,11 @@ public class GamePanel extends JPanel {
                 player2.move(keyHandler.getP2Direction());
             }
 
-            // Reuse existing action keys: E for P1 and SPACE for P2.
-            if (keyHandler.consumeP1Action()) {
+            // Gather keys: G for P1, M for P2.
+            if (keyHandler.consumeP1Gather()) {
                 tryFarmNearestResource(player1);
             }
-            if (keyHandler.consumeP2Action()) {
+            if (keyHandler.consumeP2Gather()) {
                 tryFarmNearestResource(player2);
             }
         } else if (gameState == GameState.INVENTORY_OPEN) {
