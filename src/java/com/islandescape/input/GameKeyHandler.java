@@ -19,9 +19,11 @@ public class GameKeyHandler implements KeyListener {
     private boolean isPressedDown = false;
     private boolean isPressedRight = false;
 
-    // Action keys (hold-style)
+    // Action keys
     private boolean isPressedE = false;
     private boolean isPressedSpace = false;
+    private boolean p1ActionToggled = false;
+    private boolean p2ActionToggled = false;
 
     // Toggle keys (single-press: true for one poll cycle, then auto-cleared)
     private boolean inventoryToggled = false;
@@ -41,8 +43,8 @@ public class GameKeyHandler implements KeyListener {
             case KeyEvent.VK_DOWN:  isPressedDown = true; break;
             case KeyEvent.VK_RIGHT: isPressedRight = true; break;
             // Actions
-            case KeyEvent.VK_E:     isPressedE = true; break;
-            case KeyEvent.VK_SPACE: isPressedSpace = true; break;
+            case KeyEvent.VK_E:     isPressedE = true; p1ActionToggled = true; break;
+            case KeyEvent.VK_SPACE: isPressedSpace = true; p2ActionToggled = true; break;
             // Toggles (single-press)
             case KeyEvent.VK_I:     inventoryToggled = true; break;
             case KeyEvent.VK_ENTER: craftCommitted = true; break;
@@ -104,6 +106,18 @@ public class GameKeyHandler implements KeyListener {
     public boolean consumeCraftCommit() {
         boolean val = craftCommitted;
         craftCommitted = false;
+        return val;
+    }
+
+    public boolean consumeP1Action() {
+        boolean val = p1ActionToggled;
+        p1ActionToggled = false;
+        return val;
+    }
+
+    public boolean consumeP2Action() {
+        boolean val = p2ActionToggled;
+        p2ActionToggled = false;
         return val;
     }
 }

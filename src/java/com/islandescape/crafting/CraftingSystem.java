@@ -27,6 +27,11 @@ public class CraftingSystem {
         gridSlotOwner[slot] = ownerPlayerId;
     }
 
+    public Item getSlot(int slot) {
+        if (slot < 0 || slot >= 4) return null;
+        return grid[slot];
+    }
+
     public Item takeOut(int slot) {
         if (slot < 0 || slot >= 4) return null;
         Item item = grid[slot];
@@ -45,6 +50,13 @@ public class CraftingSystem {
                 grid[i] = null;
             }
         }
+    }
+
+    public int firstEmptySlot() {
+        for (int i = 0; i < 4; i++) {
+            if (grid[i] == null) return i;
+        }
+        return -1;
     }
 
     public CraftingRecipe preview() {

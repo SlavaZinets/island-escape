@@ -8,6 +8,7 @@ import com.islandescape.map.MapRenderer;
 import com.islandescape.map.TileMap;
 import com.islandescape.player.Player;
 import com.islandescape.structures.CraftingTable;
+import com.islandescape.ui.CraftingScreen;
 
 import javax.swing.JPanel;
 import javax.swing.Timer;
@@ -33,6 +34,7 @@ public class GamePanel extends JPanel {
     private Inventory p2Inventory;
     private CraftingSystem craftingSystem;
     private CraftingTable craftingTable;
+    private CraftingScreen craftingScreen;
     private GameState gameState = GameState.PLAYING;
 
     public GamePanel(TileMap map, MapRenderer renderer) {
@@ -70,6 +72,10 @@ public class GamePanel extends JPanel {
         this.craftingTable = craftingTable;
     }
 
+    public void setCraftingScreen(CraftingScreen craftingScreen) {
+        this.craftingScreen = craftingScreen;
+    }
+
     public GameState getGameState() {
         return gameState;
     }
@@ -103,6 +109,19 @@ public class GamePanel extends JPanel {
                 player2.move(keyHandler.getP2Direction());
             }
         } else if (gameState == GameState.INVENTORY_OPEN) {
+            // Forward input to crafting screen for cursor movement and item placement
+            if (craftingScreen != null) {
+                boolean p1Near = isPlayerNearTable(player);
+                boolean p2Near = isPlayerNearTable(player2);
+
+                craftingScreen.handleInput(
+                        keyHandler.consumeP1Action(), keyHandler.consumeP2Action(),
+                        keyHandler.getP1Direction().getX(), keyHandler.getP1Direction().getY(),
+                        keyHandler.getP2Direction().getX(), keyHandler.getP2Direction().getY(),
+                        p1Near, p2Near,
+                        craftingSystem, p1Inventory, p2Inventory);
+            }
+
             // Handle craft commit (Enter key)
             if (keyHandler.consumeCraftCommit() && craftingSystem != null) {
                 Item result = craftingSystem.craft(p1Inventory);
@@ -114,12 +133,12 @@ public class GamePanel extends JPanel {
     }
 
     private boolean isAnyPlayerNearTable() {
-        if (craftingTable == null) return false;
-        boolean p1Near = player != null
-                && craftingTable.isPlayerNearby(player.getX(), player.getY());
-        boolean p2Near = player2 != null
-                && craftingTable.isPlayerNearby(player2.getX(), player2.getY());
-        return p1Near || p2Near;
+        return isPlayerNearTable(player) || isPlayerNearTable(player2);
+    }
+
+    private boolean isPlayerNearTable(Player p) {
+        return craftingTable != null && p != null
+                && craftingTable.isPlayerNearby(p.getX(), p.getY());
     }
 
     private void closeInventory() {
@@ -145,5 +164,13 @@ public class GamePanel extends JPanel {
         g.fillRect(0, 0, getWidth(), getHeight());
 
         map.renderMapComponent(renderer, g, getWidth(), getHeight(), player, player2);
+
+        // Draw crafting UI overlay on top (pixel-crisp, not in the world buffer)
+        if (gameState == GameState.INVENTORY_OPEN && craftingScreen != null) {
+            Graphics2D g2 = (Graphics2D) g;
+            craftingScreen.render(g2, getWidth(), getHeight(),
+                    craftingSystem, p1Inventory, p2Inventory,
+                    isPlayerNearTable(player), isPlayerNearTable(player2));
+        }
     }
 }

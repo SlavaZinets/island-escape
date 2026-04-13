@@ -14,6 +14,4 @@ public enum ItemType {
     FRAME,
     RUDDER,
     FITTINGS
-
-
 }
