@@ -15,5 +15,20 @@ public class SurvivalStats {
 //increasing states when eat or dring sonething
     public void consume(Item item) {
 
-    }
+            if (!isAlive) return;
+
+            //if banan
+            if (item.getType() == ItemType.BANANA) {
+                this.hunger += 20.0;
+            }
+
+            //if coconut
+            if (item.getType() == ItemType.COCONUT) {
+                this.hunger += 10.0;
+                this.thirst += 25.0;
+            }
+            //limit of state
+            if (this.hunger > 100) this.hunger = 100;
+            if (this.thirst > 100) this.thirst = 100;
+        }
 }
