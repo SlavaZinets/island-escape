@@ -10,7 +10,26 @@ public class SurvivalStats {
 
     //update hunger/thirst state after 60 sec or if states are 0 - no alive automaticaly
     public void update() {
+        if (!isAlive) return;
 
+        // check if 60 sencds passed
+        if (System.currentTimeMillis() > nextDropTime) {
+
+            //decrease by 0.1
+            this.hunger -= 0.1;
+            this.thirst -= 0.1;
+
+            //set time fpr next decrease
+            this.nextDropTime = System.currentTimeMillis() + 60000;
+        }
+
+        //check for death if states are 0 both
+        if (this.hunger <= 0 || this.thirst <= 0) {
+            this.isAlive = false;
+            this.hunger = 0;
+            this.thirst = 0;
+            System.out.println("Player  died from hunger/dehydration");
+        }
     }
 //increasing states when eat or dring sonething
     public void consume(Item item) {
