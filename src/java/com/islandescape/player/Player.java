@@ -20,6 +20,11 @@ public class Player {
     private static final int FRAMES_PER_STEP = 8;
     private static final int FRAME_COUNT = 4;
 
+    //variables for thirst/hunger and state alive actually or not
+    private double hunger = 100.0;
+    private double thirst = 100.0;
+    private boolean isAlive = true;
+
     private String name;
     private int id;
     private Point position;
