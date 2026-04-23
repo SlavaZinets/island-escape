@@ -27,49 +27,47 @@ public class BoatRepairSystem {
 
     private final Item[] repairedItems = new Item[TOTAL_SLOTS];
 
-    public BoatRepairSystem() {
-
-    }
 
     public ItemType getRequiredType(int slot) {
-
-        return null;
+        if (slot < 0 || slot >= TOTAL_SLOTS) return null;
+        return REQUIRED_TYPES[slot];
     }
 
     public int getRequiredQty(int slot) {
-
-        return 0;
+        if (slot < 0 || slot >= TOTAL_SLOTS) return 0;
+        return REQUIRED_QTYS[slot];
     }
 
     public Item getSlot(int slot) {
-
-        return null;
+        if (slot < 0 || slot >= TOTAL_SLOTS) return null;
+        return repairedItems[slot];
     }
 
-    // true iff slot has an item AND its quantity >= required quantity.
+    // true if a slot has an item AND its quantity >= required quantity.
     public boolean isSlotComplete(int slot) {
-
-        return false;
+        if (slot < 0 || slot >= TOTAL_SLOTS) return false;
+        Item held = repairedItems[slot];
+        return held != null && held.getQuantity() >= REQUIRED_QTYS[slot];
     }
 
     public int getCompletedCount() {
-
-        return 0;
+        int count = 0;
+        for (int i = 0; i < TOTAL_SLOTS; i++) {
+            if (isSlotComplete(i)) count++;
+        }
+        return count;
     }
 
     public int getTotalSlots() {
-
-        return 0;
+        return TOTAL_SLOTS;
     }
 
     public double getProgress() {
-
-        return 0.0;
+        return (double) getCompletedCount() / TOTAL_SLOTS;
     }
 
     public boolean isFullyRepaired() {
-
-        return false;
+        return getCompletedCount() == TOTAL_SLOTS;
     }
 
 
@@ -85,8 +83,28 @@ public class BoatRepairSystem {
     // excess (if any) is returned so the caller can keep it on the cursor.
     // Returns null if the whole item was consumed.
     public Item placeIn(int slot, Item item) {
-        // stub
-        return item;
+        if (slot < 0 || slot >= TOTAL_SLOTS) return item;
+        if (item == null) return null;
+        if (item.getType() != REQUIRED_TYPES[slot]) return item;
+        if (isSlotComplete(slot)) return item;
+
+        int currentQty = repairedItems[slot] == null ? 0 : repairedItems[slot].getQuantity();
+        int need = REQUIRED_QTYS[slot] - currentQty;
+        int deposit = Math.min(item.getQuantity(), need);
+
+        if (deposit <= 0) return item;
+
+
+        Item deposited = item.split(deposit);
+
+        if (repairedItems[slot] == null) {
+            repairedItems[slot] = deposited;
+        } else {
+
+            repairedItems[slot].merge(deposited);
+        }
+
+        return item.getQuantity() > 0 ? item : null;
     }
 
 
@@ -94,7 +112,12 @@ public class BoatRepairSystem {
     // Returns null if the slot is empty, out of range, or already complete
     // (completed deposits are permanent and cannot be taken back).
     public Item takeOut(int slot) {
-        // stub
-        return null;
+        if (slot < 0 || slot >= TOTAL_SLOTS) return null;
+        if (repairedItems[slot] == null) return null;
+        if (isSlotComplete(slot)) return null;
+
+        Item taken = repairedItems[slot];
+        repairedItems[slot] = null;
+        return taken;
     }
 }
