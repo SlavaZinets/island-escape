@@ -1,5 +1,6 @@
 package com.islandescape.inventory;
 
+import com.islandescape.boat.BoatRepairSystem;
 import com.islandescape.crafting.CraftingSystem;
 import com.islandescape.item.Item;
 
@@ -198,6 +199,27 @@ public class InventoryCursor {
         if (heldItem.getQuantity() <= 0) {
             heldItem = null;
         }
+    }
+
+
+    // Left-click with a full cursor on a boat-repair slot.
+    public void placeIntoBoatSlot(BoatRepairSystem brs, int slot) {
+
+    }
+
+    // Right-click with a full cursor on a boat-repair slot.
+    public void placeOneIntoBoatSlot(BoatRepairSystem brs, int slot) {
+
+    }
+
+    // Left-click with an empty cursor on a boat-repair slot.
+    public void pickUpFromBoatSlot(BoatRepairSystem brs, int slot) {
+
+    }
+
+    // Right-click with an empty cursor on a boat-repair slot.
+    public void pickUpHalfFromBoatSlot(BoatRepairSystem brs, int slot) {
+
     }
 
 }
