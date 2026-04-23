@@ -15,6 +15,8 @@ import com.islandescape.map.MapLoader;
 import com.islandescape.map.MapRenderer;
 import com.islandescape.map.TileMap;
 
+import java.awt.*;
+
 public class Main {
 	public static void main(String[] args) throws Exception {
 		TileMap map = MapLoader.load("src/resources/maps/IslandMap.tmx");
@@ -26,12 +28,12 @@ public class Main {
 		int worldW = map.getWidth() * map.getTileSize();
 		int worldH = map.getHeight() * map.getTileSize();
 
-		Player player1 = new Player("Player1", 1, 320, 192);
+		Player player1 = new Player("Player1", 1, 320, 192, Color.BLUE);
 		player1.setWorldBounds(worldW, worldH);
 		player1.setTileMap(map);
 		player1.setSprite(new PlayerSprite("src/resources/player/player_walking.png"));
 
-		Player player2 = new Player("Player2", 2, 352, 192);
+		Player player2 = new Player("Player2", 2, 352, 192, Color.RED);
 		player2.setWorldBounds(worldW, worldH);
 		player2.setTileMap(map);
 		player2.setSprite(new PlayerSprite("src/resources/player/player_walking.png"));

@@ -25,6 +25,8 @@ public class Player {
     private double thirst = 100.0;
     private boolean isAlive = true;
 
+    private Color nameColor;
+
     private String name;
     private int id;
     private Point position;
@@ -39,10 +41,11 @@ public class Player {
     private int animationTick = 0;
     private PlayerSprite sprite = null;
 
-    public Player(String name, int id, int x, int y) {
+    public Player(String name, int id, int x, int y, Color nameColor) {
         this.name = name;
         this.id = id;
         this.position = new Point(x, y);
+        this.nameColor = nameColor;
     }
 
     public void move (Direction direction) {
@@ -130,6 +133,12 @@ public class Player {
             g.fillRect(x, y, WIDTH, HEIGHT);
             return;
         }
+
+        //show name of player above
+        g.setColor(nameColor);//color for text
+        g.setFont(new Font("Arial", Font.PLAIN, 10));
+        //draw name centered above player head
+        g.drawString(name, x + WIDTH / 2 - g.getFontMetrics().stringWidth(name) / 2, y - 4);
 
         int row = facing.getSpriteRow();
         int col = getFrameIndex();
