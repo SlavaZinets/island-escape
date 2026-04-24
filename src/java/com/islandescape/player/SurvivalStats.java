@@ -17,7 +17,7 @@ public class SurvivalStats {
 
             //decrease by 0.1
             this.hunger -= 0.1;
-            this.thirst -= 0.1;
+            this.thirst -= 0.2;
 
             //set time fpr next decrease
             this.nextDropTime = System.currentTimeMillis() + 60000;
