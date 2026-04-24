@@ -2,5 +2,6 @@ package com.islandescape.window;
 
 public enum GameState {
     PLAYING,
-    INVENTORY_OPEN
+    INVENTORY_OPEN,
+    GAME_WON
 }
