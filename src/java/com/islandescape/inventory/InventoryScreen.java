@@ -74,7 +74,7 @@ public class InventoryScreen {
         this.p2NearTable = p2Near;
     }
 
-    // --- Boat repair extensions (stubs — wired up in Step 10) ---
+    // Boat repair
 
     public void setBoatRepairSystem(BoatRepairSystem boatRepairSystem) {
         this.boatRepairSystem = boatRepairSystem;
@@ -90,8 +90,25 @@ public class InventoryScreen {
     }
 
     // Determine which boat-repair slot was clicked, or -1 if none
+
     int pixelToBoatSlot(int px, int py, int panelW, int panelH) {
-        return -1;
+        BoatRepairLayout layout = new BoatRepairLayout(panelW, panelH);
+
+        int relX = px - layout.repairSlotsStartX;
+        int relY = py - layout.repairSlotsY;
+        if (relX < 0 || relY < 0) return -1;
+
+        // One row only — click must be within the slot height vertically.
+        if (relY >= layout.slotSize) return -1;
+
+        int cellSize = layout.slotSize + layout.slotGap;
+        int col = relX / cellSize;
+        if (col >= BoatRepairLayout.SLOT_COUNT) return -1;
+
+        // Click must be inside the slot horizontally, not in the gap between slots.
+        if (relX % cellSize >= layout.slotSize) return -1;
+
+        return col;
     }
 
     public void updateMouse(int x, int y) {
@@ -134,7 +151,13 @@ public class InventoryScreen {
         int p1Left;
         int p2Left;
 
-        if (craftingOpen) {
+        if (boatRepairOpen) {
+            BoatRepairLayout layout = new BoatRepairLayout(panelW, panelH);
+            xBorder = layout.invXBorder;
+            gridTop = layout.invAreaTop + 22;
+            p1Left = layout.invP1Left;
+            p2Left = layout.invP2Left;
+        } else if (craftingOpen) {
             CraftingScreenLayout layout = new CraftingScreenLayout(panelW, panelH);
             xBorder = layout.invXBorder;
             gridTop = layout.invAreaTop + 22;
@@ -150,8 +173,11 @@ public class InventoryScreen {
         // determine player by X position
         boolean isPlayer1 = screenX < xBorder;
 
-        // Block inventory clicks for players not near the crafting table
-        if (craftingOpen) {
+        // Block inventory clicks for players not near the active structure.
+        if (boatRepairOpen) {
+            if (isPlayer1 && !p1NearBoat) return;
+            if (!isPlayer1 && !p2NearBoat) return;
+        } else if (craftingOpen) {
             if (isPlayer1 && !p1NearTable) return;
             if (!isPlayer1 && !p2NearTable) return;
         }
@@ -199,8 +225,21 @@ public class InventoryScreen {
     }
 
     // Handle a click on a boat-repair slot.
-    private void handleBoatRepairClick(int slot, boolean isLeftClick, int screenX, int panelW, int panelH) {
 
+    private void handleBoatRepairClick(int slot, boolean isLeftClick, int screenX, int panelW, int panelH) {
+        if (cursor.isEmpty()) {
+            if (isLeftClick) {
+                cursor.pickUpFromBoatSlot(boatRepairSystem, slot);
+            } else {
+                cursor.pickUpHalfFromBoatSlot(boatRepairSystem, slot);
+            }
+        } else {
+            if (isLeftClick) {
+                cursor.placeIntoBoatSlot(boatRepairSystem, slot);
+            } else {
+                cursor.placeOneIntoBoatSlot(boatRepairSystem, slot);
+            }
+        }
     }
 
     // Handle a click on a crafting grid slot — mirrors inventory click behavior
