@@ -1,5 +1,6 @@
 package com.islandescape;
 
+import com.islandescape.boat.BoatWreck;
 import com.islandescape.crafting.CraftingSystem;
 import com.islandescape.input.GameKeyHandler;
 import com.islandescape.item.Item;
@@ -8,6 +9,7 @@ import com.islandescape.item.ItemType;
 import com.islandescape.player.Player;
 import com.islandescape.player.PlayerSprite;
 import com.islandescape.structures.CraftingTable;
+import com.islandescape.ui.BoatRepairScreen;
 import com.islandescape.ui.CraftingScreen;
 import com.islandescape.window.GamePanel;
 import com.islandescape.window.GameWindow;
@@ -46,11 +48,19 @@ public class Main {
 		CraftingTable craftingTable = new CraftingTable(128, 128);
 		CraftingScreen craftingScreen = new CraftingScreen();
 
+
+		// Placed on a beach tile — hardcoded fallback so the win condition
+		// never silently disables if map lookup fails.
+		BoatWreck boatWreck = new BoatWreck(1600, 1600, "Boat");
+		BoatRepairScreen boatRepairScreen = new BoatRepairScreen();
+
 		// 5. Create the panel that draws the map
 		GamePanel panel = new GamePanel(map, renderer, player1, player2);
 		panel.setCraftingSystem(craftingSystem);
 		panel.setCraftingTable(craftingTable);
 		panel.setCraftingScreen(craftingScreen);
+		panel.setBoatWreck(boatWreck);
+		panel.setBoatRepairScreen(boatRepairScreen);
 
 		// 6. Register key handler
 		panel.setFocusable(true);

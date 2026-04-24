@@ -28,6 +28,8 @@ public class GameKeyHandler implements KeyListener {
     private boolean p2GatherToggled = false;
     private boolean craftScreenToggled = false;
     private boolean craftCommitted = false;
+    private boolean boatRepairToggled = false;
+    private boolean boardKeyPressed = false;
 
     private final GamePanel gamePanel;
 
@@ -65,11 +67,17 @@ public class GameKeyHandler implements KeyListener {
             // Crafting screen toggle / commit
             case KeyEvent.VK_I:     craftScreenToggled = true; break;
             case KeyEvent.VK_ENTER: craftCommitted = true; break;
+            // Boat repair: R toggles the repair panel, B boards the boat.
+            // Ignored by GamePanel.update() when crafting is the open panel.
+            case KeyEvent.VK_R:     boatRepairToggled = true; break;
+            case KeyEvent.VK_B:     boardKeyPressed = true; break;
         }
 
         // ESC closes whatever is open
         if (key == KeyEvent.VK_ESCAPE) {
-            if (gamePanel.getGameState() == GameState.INVENTORY_OPEN) {
+            if (gamePanel.isBoatRepairOpen()) {
+                gamePanel.closeBoatRepairScreen();
+            } else if (gamePanel.getGameState() == GameState.INVENTORY_OPEN) {
                 gamePanel.closeCraftingScreen();
             } else if (gamePanel.isInventoryScreenOpen()) {
                 gamePanel.toggleInventoryScreen();
@@ -146,6 +154,18 @@ public class GameKeyHandler implements KeyListener {
     public boolean consumeCraftCommit() {
         boolean val = craftCommitted;
         craftCommitted = false;
+        return val;
+    }
+
+    public boolean consumeBoatRepairToggle() {
+        boolean val = boatRepairToggled;
+        boatRepairToggled = false;
+        return val;
+    }
+
+    public boolean consumeBoardKey() {
+        boolean val = boardKeyPressed;
+        boardKeyPressed = false;
         return val;
     }
 

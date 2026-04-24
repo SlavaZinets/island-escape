@@ -362,7 +362,13 @@ public class InventoryScreen {
     private void drawFullInventory(Graphics2D g2d, int panelW, int panelH) {
         int p1Left, p2Left, gridTop, xBorder;
 
-        if (craftingOpen) {
+        if (boatRepairOpen) {
+            BoatRepairLayout layout = new BoatRepairLayout(panelW, panelH);
+            p1Left = layout.invP1Left;
+            p2Left = layout.invP2Left;
+            gridTop = layout.invAreaTop + 22;
+            xBorder = layout.invXBorder;
+        } else if (craftingOpen) {
             CraftingScreenLayout layout = new CraftingScreenLayout(panelW, panelH);
             p1Left = layout.invP1Left;
             p2Left = layout.invP2Left;
@@ -375,8 +381,8 @@ public class InventoryScreen {
             xBorder = getXBorder(panelW);
         }
 
-        boolean p1Blocked = craftingOpen && !p1NearTable;
-        boolean p2Blocked = craftingOpen && !p2NearTable;
+        boolean p1Blocked = (craftingOpen && !p1NearTable) || (boatRepairOpen && !p1NearBoat);
+        boolean p2Blocked = (craftingOpen && !p2NearTable) || (boatRepairOpen && !p2NearBoat);
 
         // Player 1 label
         g2d.setColor(p1Blocked ? new Color(120, 100, 80) : new Color(60, 40, 20));
