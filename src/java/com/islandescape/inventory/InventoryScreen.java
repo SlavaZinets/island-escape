@@ -1,9 +1,11 @@
 package com.islandescape.inventory;
 
+import com.islandescape.boat.BoatRepairSystem;
 import com.islandescape.crafting.CraftingRecipe;
 import com.islandescape.crafting.CraftingSystem;
 import com.islandescape.item.Item;
 import com.islandescape.player.Player;
+import com.islandescape.ui.BoatRepairLayout;
 import com.islandescape.ui.CraftingScreenLayout;
 
 import javax.imageio.ImageIO;
@@ -31,11 +33,15 @@ public class InventoryScreen {
     private final Map<String, BufferedImage> itemIcons;
 
     private CraftingSystem craftingSystem;
+    private BoatRepairSystem boatRepairSystem;
 
     private boolean open;
     private boolean craftingOpen;
+    private boolean boatRepairOpen;
     private boolean p1NearTable = true;
     private boolean p2NearTable = true;
+    private boolean p1NearBoat = true;
+    private boolean p2NearBoat = true;
     private int mouseX;
     private int mouseY;
 
@@ -68,6 +74,26 @@ public class InventoryScreen {
         this.p2NearTable = p2Near;
     }
 
+    // --- Boat repair extensions (stubs — wired up in Step 10) ---
+
+    public void setBoatRepairSystem(BoatRepairSystem boatRepairSystem) {
+        this.boatRepairSystem = boatRepairSystem;
+    }
+
+    public void setBoatRepairOpen(boolean boatRepairOpen) {
+        this.boatRepairOpen = boatRepairOpen;
+    }
+
+    public void setPlayerNearBoat(boolean p1Near, boolean p2Near) {
+        this.p1NearBoat = p1Near;
+        this.p2NearBoat = p2Near;
+    }
+
+    // Determine which boat-repair slot was clicked, or -1 if none
+    int pixelToBoatSlot(int px, int py, int panelW, int panelH) {
+        return -1;
+    }
+
     public void updateMouse(int x, int y) {
         this.mouseX = x;
         this.mouseY = y;
@@ -77,6 +103,15 @@ public class InventoryScreen {
 
     public void handleClick(int screenX, int screenY, boolean isLeftClick, int panelW, int panelH) {
         if (!open) return;
+
+        // When boat repair is open, check boat-repair slots first
+        if (boatRepairOpen && boatRepairSystem != null) {
+            int boatSlot = pixelToBoatSlot(screenX, screenY, panelW, panelH);
+            if (boatSlot >= 0) {
+                handleBoatRepairClick(boatSlot, isLeftClick, screenX, panelW, panelH);
+                return;
+            }
+        }
 
         // When crafting is open, check crafting areas first
         if (craftingOpen && craftingSystem != null) {
@@ -161,6 +196,11 @@ public class InventoryScreen {
         if (relY % cellSize >= layout.slotSize) return -1;
 
         return row * CraftingScreenLayout.GRID_COLS + col;
+    }
+
+    // Handle a click on a boat-repair slot.
+    private void handleBoatRepairClick(int slot, boolean isLeftClick, int screenX, int panelW, int panelH) {
+
     }
 
     // Handle a click on a crafting grid slot — mirrors inventory click behavior
