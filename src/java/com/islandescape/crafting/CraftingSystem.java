@@ -122,8 +122,8 @@ public class CraftingSystem {
         list.add(recipe(Map.of(ItemType.PLANK, 2, ItemType.ROPE, 2), ItemType.FRAME, 1));
         list.add(recipe(Map.of(ItemType.WOOD, 3, ItemType.ROPE, 1), ItemType.MAST, 1));
         list.add(recipe(Map.of(ItemType.PLANK, 2, ItemType.STONE, 1, ItemType.ROPE, 1), ItemType.RUDDER, 1));
-        list.add(recipe(Map.of(ItemType.STONE, 2, ItemType.ROPE, 1, ItemType.WOOD, 1), ItemType.FITTINGS, 1));
-        list.add(recipe(Map.of(ItemType.TROPICAL_LEAVES, 2, ItemType.ROPE, 2, ItemType.WOOD, 2), ItemType.SAIL, 1));
+        list.add(recipe(Map.of(ItemType.STONE, 1, ItemType.ROPE, 1, ItemType.WOOD, 2), ItemType.FITTINGS, 1));
+        list.add(recipe(Map.of(ItemType.TROPICAL_LEAVES, 2, ItemType.ROPE, 1, ItemType.WOOD, 1), ItemType.SAIL, 1));
 
         return Collections.unmodifiableList(list);
     }
