@@ -1,5 +1,7 @@
 package com.islandescape.ui;
 
+import java.awt.Color;
+import java.awt.Font;
 import java.awt.Graphics2D;
 
 public class MainMenu {
@@ -78,7 +80,60 @@ public class MainMenu {
         this.onQuit = onQuit;
     }
 
-    public void render(Graphics2D g, int screenW, int screenH) {
+    private static final Color DIM = new Color(0, 0, 0, 210);
+    private static final Color TITLE_COLOR = new Color(255, 215, 80);
+    private static final Color SELECTED_COLOR = new Color(255, 215, 80);
+    private static final Color NORMAL_COLOR = new Color(230, 230, 230);
+    private static final Color DISABLED_COLOR = new Color(120, 120, 120);
 
+    private static final String TITLE_TEXT = "ISLAND ESCAPE";
+
+    public void render(Graphics2D g, int screenW, int screenH) {
+        g.setColor(DIM);
+        g.fillRect(0, 0, screenW, screenH);
+
+        g.setFont(new Font("SansSerif", Font.BOLD, 72));
+        int titleW = g.getFontMetrics().stringWidth(TITLE_TEXT);
+        g.setColor(TITLE_COLOR);
+        g.drawString(TITLE_TEXT, screenW / 2 - titleW / 2, screenH / 3);
+
+        MenuOption[] options = MenuOption.values();
+        int optionFontSize = 36;
+        int spacing = 60;
+        int firstY = screenH / 2 + 20;
+
+        for (int i = 0; i < options.length; i++) {
+            MenuOption option = options[i];
+            boolean isSelected = (i == selectedIndex);
+            boolean isDisabledLoad = (option == MenuOption.LOAD_GAME) && !loadEnabled;
+
+            Color color;
+            int style;
+            if (isDisabledLoad) {
+                color = DISABLED_COLOR;
+                style = Font.PLAIN;
+            } else if (isSelected) {
+                color = SELECTED_COLOR;
+                style = Font.BOLD;
+            } else {
+                color = NORMAL_COLOR;
+                style = Font.PLAIN;
+            }
+
+            g.setFont(new Font("SansSerif", style, optionFontSize));
+            String label = labelFor(option);
+            int w = g.getFontMetrics().stringWidth(label);
+            g.setColor(color);
+            g.drawString(label, screenW / 2 - w / 2, firstY + i * spacing);
+        }
+    }
+
+    private static String labelFor(MenuOption option) {
+        switch (option) {
+            case NEW_GAME:  return "New Game";
+            case LOAD_GAME: return "Load Game";
+            case QUIT:      return "Quit";
+            default:        return option.name();
+        }
     }
 }

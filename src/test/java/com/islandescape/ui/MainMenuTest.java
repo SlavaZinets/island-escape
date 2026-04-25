@@ -22,6 +22,7 @@ public class MainMenuTest {
         assertEquals(MenuOption.NEW_GAME, menu.getSelected());
     }
 
+    // test moving through menu
     @Test
     public void moveDownAdvancesThroughOptions() {
         menu.moveDown();
@@ -69,6 +70,7 @@ public class MainMenuTest {
         assertEquals(MenuOption.NEW_GAME, menu.getSelected());
     }
 
+    // test confirm
     @Test
     public void confirmInvokesNewGameHook() {
         AtomicBoolean fired = new AtomicBoolean(false);
@@ -107,6 +109,7 @@ public class MainMenuTest {
         assertFalse(quitFired.get());
     }
 
+    // test if the load enabled state is working properly
     @Test
     public void isLoadEnabledReflectsSetter() {
         menu.setLoadEnabled(true);
