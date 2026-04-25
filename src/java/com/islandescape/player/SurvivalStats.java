@@ -1,53 +1,75 @@
 package com.islandescape.player;
-import com.islandescape.item.Item;
-import com.islandescape.item.ItemType;
+
+
 public class SurvivalStats {
-    public double hunger = 100.0;//variable of hunger level
-    public double thirst = 100.0;//variable of thirst level
-    public boolean isAlive = true;//alive state true or false
-    // Timestamp for next hunger/thirst state decrease in one minute after current time (in 60 seconds)
-    public long nextDropTime = System.currentTimeMillis() + 60000;
 
-    //update hunger/thirst state after 60 sec or if states are 0 - no alive automaticaly
-    public void update() {
-        if (!isAlive) return;
+    // Maximum value for both hunger and thirst
+    public static final int MAX = 100;
 
-        // check if 60 sencds passed
-        if (System.currentTimeMillis() > nextDropTime) {
+    // At or below this value, the player is "low" and moves at half speed
+    public static final int LOW_THRESHOLD = 20;
 
-            //decrease by 0.1
-            this.hunger -= 0.1;
-            this.thirst -= 0.2;
+    public static final int GAME_OVER_TICKS = 1875;
 
-            //set time fpr next decrease
-            this.nextDropTime = System.currentTimeMillis() + 60000;
-        }
 
-        //check for death if states are 0 both
-        if (this.hunger <= 0 || this.thirst <= 0) {
-            this.isAlive = false;
-            this.hunger = 0;
-            this.thirst = 0;
-            System.out.println("Player  died from hunger/dehydration");
-        }
+     // Hunger and thirst depletion per tick. 0.5 per second / 62.5 fps = 0.008
+
+    public static final double DEPLETION_PER_TICK = 0.5 / 62.5;
+
+    private double hunger;
+    private double thirst;
+    private int ticksAtZero;
+
+    public SurvivalStats() {
+
     }
-//increasing states when eat or dring sonething
-    public void consume(Item item) {
 
-            if (!isAlive) return;
+    // Decrements both stats by DEPLETION_PER_TICK; bumps ticksAtZero when starving.
+    public void tickDown() {
 
-            //if banan
-            if (item.getType() == ItemType.BANANA) {
-                this.hunger += 20.0;
-            }
+    }
 
-            //if coconut
-            if (item.getType() == ItemType.COCONUT) {
-                this.hunger += 10.0;
-                this.thirst += 25.0;
-            }
-            //limit of state
-            if (this.hunger > 100) this.hunger = 100;
-            if (this.thirst > 100) this.thirst = 100;
-        }
+    // Restores hunger by amount, capped at MAX. Negative amounts ignored
+    public void eat(int amount) {
+
+    }
+
+    // Restores thirst by amount, capped at MAX. Negative amounts ignored
+    public void drink(int amount) {
+        // Stub: no-op until Step 3.
+    }
+
+    // Current hunger, floored to an int in [0, MAX].
+    public int getHunger() {
+        return (int) hunger;
+    }
+
+    // Current thirst, floored to an int in [0, MAX].
+    public int getThirst() {
+        return (int) thirst;
+    }
+
+
+     // Movement speed multiplier based on the worse of hunger/thirst:
+    public double getSpeedMultiplier() {
+        // Stub: returns 1.0 until Step 3.
+        return 1.0;
+    }
+
+    // True if hunger == 0 OR thirst == 0.
+    public boolean isStarving() {
+
+        return false;
+    }
+
+    //Number of consecutive ticks the player has been starving. Resets when both stats > 0.
+    public int getTicksAtZero() {
+        return ticksAtZero;
+    }
+
+    // True once getTicksAtZero() ≥ GAME_OVER_TICKS  GamePanel should transition to GAME_OVER
+    public boolean isDead() {
+
+        return false;
+    }
 }

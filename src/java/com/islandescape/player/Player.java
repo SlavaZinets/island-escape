@@ -43,6 +43,11 @@ public class Player {
         this.position = new Point(x, y);
         this.nameColor = nameColor;
     }
+    public Player(String name, int id, int x, int y) {
+        this.name = name;
+        this.id = id;
+        this.position = new Point(x, y);
+    }
 
     public void move (Direction direction) {
         Facing newFacing = Facing.fromDirection(direction);

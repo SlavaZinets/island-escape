@@ -12,6 +12,7 @@ public enum ItemType {
     PADDLE,
     MAST,
     FRAME,
+    SAIL,
     RUDDER,
     FITTINGS,
     COCONUT,
