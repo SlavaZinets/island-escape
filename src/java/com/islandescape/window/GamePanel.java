@@ -15,6 +15,7 @@ import com.islandescape.resources.ResourceSpawner;
 import com.islandescape.structures.CraftingTable;
 import com.islandescape.ui.BoatRepairScreen;
 import com.islandescape.ui.CraftingScreen;
+import com.islandescape.ui.MainMenu;
 import com.islandescape.ui.WinOverlay;
 
 import javax.swing.*;
@@ -48,7 +49,10 @@ public class GamePanel extends JPanel {
     private BoatRepairScreen boatRepairScreen;
     private boolean boatRepairOpen = false;
     private final WinOverlay winOverlay = new WinOverlay();
-    private GameState gameState = GameState.PLAYING;
+    private final MainMenu mainMenu = new MainMenu();
+    private GameState gameState = GameState.MAIN_MENU;
+    private Runnable quitAction = () -> System.exit(0);
+    private boolean quitRequested = false;
     private final List<ResourceNode> resourceNodes = new ArrayList<>();
     private String farmToastMessage = "";
     private int farmToastFrames = 0;
@@ -116,6 +120,31 @@ public class GamePanel extends JPanel {
         return gameState;
     }
 
+    public MainMenu getMainMenu() {
+        return mainMenu;
+    }
+
+    public boolean isQuitRequested() {
+        return quitRequested;
+    }
+
+    public void setQuitAction(Runnable quitAction) {
+        this.quitAction = quitAction;
+    }
+
+    public void startNewGame() {
+    }
+
+    public void quitGame() {
+        quitRequested = true;
+        if (quitAction != null) {
+            quitAction.run();
+        }
+    }
+
+    public void loadGame() {
+    }
+
     public void startGameLoop() {
         gameLoop = new Timer(16, e -> {
             update();
@@ -126,6 +155,24 @@ public class GamePanel extends JPanel {
 
     private void update() {
         if (keyHandler == null) return;
+
+        // MAIN_MENU: only menu navigation runs. Drain other edges so they
+        // don't fire on the first frame after transitioning to PLAYING.
+        if (gameState == GameState.MAIN_MENU) {
+            if (keyHandler.consumeMenuUp())      mainMenu.moveUp();
+            if (keyHandler.consumeMenuDown())    mainMenu.moveDown();
+            if (keyHandler.consumeMenuConfirm()) mainMenu.confirm();
+
+            keyHandler.consumeCraftScreenToggle();
+            keyHandler.consumeCraftCommit();
+            keyHandler.consumeBoatRepairToggle();
+            keyHandler.consumeBoardKey();
+            keyHandler.consumeP1Action();
+            keyHandler.consumeP2Action();
+            keyHandler.consumeP1Gather();
+            keyHandler.consumeP2Gather();
+            return;
+        }
 
         // GAME_WON freezes everything — input, movement, farming.
         if (gameState == GameState.GAME_WON) {
@@ -398,6 +445,15 @@ public class GamePanel extends JPanel {
     protected void paintComponent(Graphics g) {
         super.paintComponent(g);
         Graphics2D g2 = (Graphics2D) g;
+
+        // Main menu owns the screen
+        if (gameState == GameState.MAIN_MENU) {
+            g.setColor(Color.BLACK);
+            g.fillRect(0, 0, getWidth(), getHeight());
+            mainMenu.render(g2, getWidth(), getHeight());
+            return;
+        }
+
         g.setColor(new Color(77, 166, 255));
         g.fillRect(0, 0, getWidth(), getHeight());
 
