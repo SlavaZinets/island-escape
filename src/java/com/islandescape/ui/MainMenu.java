@@ -10,35 +10,56 @@ public class MainMenu {
         QUIT
     }
 
-    private int selectedIndex;
-    private boolean loadEnabled;
+    private int selectedIndex = 0;
+    private boolean loadEnabled = true;
 
+    // runnable interfaces for functions which will be called when the option is selected
     private Runnable onNewGame;
     private Runnable onLoadGame;
     private Runnable onQuit;
 
     public MainMenu() {
-        // stub
     }
 
     public MenuOption getSelected() {
-        return null;
+        return MenuOption.values()[selectedIndex];
     }
 
     public void moveUp() {
-        // stub
+        changeOption(-1);
     }
 
     public void moveDown() {
-        // stub
+        changeOption(1);
+    }
+
+    //
+    private void changeOption(int delta) {
+        MenuOption[] options = MenuOption.values();
+        int n = options.length;
+
+        // do while to skip load game option if there are no saved game
+        do {
+            selectedIndex = (selectedIndex + delta) % n;
+        } while (!loadEnabled && options[selectedIndex] == MenuOption.LOAD_GAME);
     }
 
     public void confirm() {
-
+        switch (getSelected()) {
+            case NEW_GAME:
+                if (onNewGame != null) onNewGame.run();
+                break;
+            case LOAD_GAME:
+                if (loadEnabled && onLoadGame != null) onLoadGame.run();
+                break;
+            case QUIT:
+                if (onQuit != null) onQuit.run();
+                break;
+        }
     }
 
     public void setLoadEnabled(boolean enabled) {
-
+        this.loadEnabled = enabled;
     }
 
     public boolean isLoadEnabled() {
