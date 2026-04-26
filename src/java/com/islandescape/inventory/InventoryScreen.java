@@ -244,10 +244,56 @@ public class InventoryScreen {
         // Player 2 grid
         drawPlayerGrid(g2d, player2.getInventory(), p2Left, gridTop);
 
-        // Held item on cursor
+        // Shared trash slot + REMOVE button (centered below both grids)
+        drawTrashSlot(g2d, panelW, panelH);
+        drawRemoveButton(g2d, panelW, panelH);
+
+        // Held item on cursor — draw last so it floats above the trash UI
         if (!cursor.isEmpty()) {
             drawItem(g2d, cursor.getHeldItem(), mouseX - SLOT_SIZE / 2, mouseY - SLOT_SIZE / 2);
         }
+    }
+
+    private void drawTrashSlot(Graphics2D g2d, int panelW, int panelH) {
+        int x = getTrashSlotX(panelW);
+        int y = getTrashSlotY(panelH);
+
+        // "TRASH" label, same style as the player labels above each grid
+        g2d.setColor(Color.WHITE);
+        g2d.setFont(new Font("SansSerif", Font.BOLD, 18));
+        g2d.drawString("TRASH", x, y - 8);
+
+        // slot background — same look as a normal inventory slot
+        g2d.setColor(new Color(60, 60, 60, 200));
+        g2d.fillRoundRect(x, y, SLOT_SIZE, SLOT_SIZE, 8, 8);
+        g2d.setColor(new Color(120, 120, 120));
+        g2d.drawRoundRect(x, y, SLOT_SIZE, SLOT_SIZE, 8, 8);
+
+        // contents
+        Item item = trashBin.getItem();
+        if (item != null) {
+            drawItem(g2d, item, x, y);
+        }
+    }
+
+    private void drawRemoveButton(Graphics2D g2d, int panelW, int panelH) {
+        Rectangle r = getRemoveButtonRect(panelW, panelH);
+
+        // red-tinted fill + lighter red border
+        g2d.setColor(new Color(180, 50, 50, 220));
+        g2d.fillRoundRect(r.x, r.y, r.width, r.height, 8, 8);
+        g2d.setColor(new Color(255, 100, 100));
+        g2d.drawRoundRect(r.x, r.y, r.width, r.height, 8, 8);
+
+        // centered white "REMOVE" label
+        g2d.setColor(Color.WHITE);
+        Font font = new Font("SansSerif", Font.BOLD, 14);
+        g2d.setFont(font);
+        String label = "REMOVE";
+        int textW = g2d.getFontMetrics().stringWidth(label);
+        int textX = r.x + (r.width - textW) / 2;
+        int textY = r.y + (r.height + g2d.getFontMetrics().getAscent()) / 2 - 2;
+        g2d.drawString(label, textX, textY);
     }
 
     private void drawPlayerGrid(Graphics2D g2d, Inventory inventory, int gridLeft, int gridTop) {
