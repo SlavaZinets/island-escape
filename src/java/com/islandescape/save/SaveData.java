@@ -12,10 +12,10 @@ public class SaveData {
     int p1Hotbar;
     int p2Hotbar;
 
-    Item[] p1Slots;
-    Item[] p2Slots;
+    Item[] p1Slots = new Item[20];
+    Item[] p2Slots = new Item[20];
 
-    Item[] boatSlots;
+    Item[] boatSlots = new Item[6];
 
-    boolean[] resourceDisabled;
+    boolean[] resourceDisabled = new boolean[0];
 }
