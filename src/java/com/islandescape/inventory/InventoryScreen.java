@@ -8,6 +8,7 @@ import java.awt.Color;
 import java.awt.Font;
 import java.awt.Graphics;
 import java.awt.Graphics2D;
+import java.awt.Rectangle;
 import java.awt.image.BufferedImage;
 import java.io.File;
 import java.io.IOException;
@@ -22,9 +23,16 @@ public class InventoryScreen {
     private static final int SLOT_GAP = 12;
     private static final int SEPARATOR_WIDTH = 30;
 
+    // Trash cluster sits below the grids
+    private static final int TRASH_GAP_BELOW_GRID = 30;
+    private static final int REMOVE_BUTTON_WIDTH = 120;
+    private static final int REMOVE_BUTTON_HEIGHT = 32;
+    private static final int REMOVE_BUTTON_GAP_BELOW_SLOT = 12;
+
     private final Player player1;
     private final Player player2;
     private final InventoryCursor cursor;
+    private final TrashBin trashBin;
     private final Map<String, BufferedImage> itemIcons;
 
     private boolean open;
@@ -32,9 +40,14 @@ public class InventoryScreen {
     private int mouseY;
 
     public InventoryScreen(Player player1, Player player2, InventoryCursor cursor) {
+        this(player1, player2, cursor, new TrashBin());
+    }
+
+    public InventoryScreen(Player player1, Player player2, InventoryCursor cursor, TrashBin trashBin) {
         this.player1 = player1;
         this.player2 = player2;
         this.cursor = cursor;
+        this.trashBin = trashBin;
         this.itemIcons = new HashMap<>();
         loadItemIcons();
     }
@@ -57,6 +70,31 @@ public class InventoryScreen {
     public void handleClick(int screenX, int screenY, boolean isLeftClick, int panelW, int panelH) {
         if (!open) return;
 
+        // REMOVE button — destroys whatever is in the trash slot, leaves cursor untouched
+        if (pixelOnRemoveButton(screenX, screenY, panelW, panelH)) {
+            trashBin.clear();
+            return;
+        }
+
+        //  Trash slot — same cursor slot routing as a normal slot, just on the bin
+        if (pixelToTrashSlot(screenX, screenY, panelW, panelH)) {
+            if (cursor.isEmpty()) {
+                if (isLeftClick) {
+                    cursor.pickUpFromTrash(trashBin);
+                } else {
+                    cursor.pickUpHalfFromTrash(trashBin);
+                }
+            } else {
+                if (isLeftClick) {
+                    cursor.placeAllInTrash(trashBin);
+                } else {
+                    cursor.placeOneInTrash(trashBin);
+                }
+            }
+            return;
+        }
+
+        // 3. Player grids
         int xBorder = getXBorder(panelW);
         int gridTop = getGridTop(panelH);
 
@@ -135,6 +173,38 @@ public class InventoryScreen {
     // Both grids share the same top Y
     int getGridTop(int panelH) {
         return (panelH - getPlayerGridHeight()) / 2;
+    }
+
+    // Trash cluster geometry (centered below both grids)
+
+    int getTrashSlotX(int panelW) {
+        return panelW / 2 - SLOT_SIZE / 2;
+    }
+
+    int getTrashSlotY(int panelH) {
+        return getGridTop(panelH) + getPlayerGridHeight() + TRASH_GAP_BELOW_GRID;
+    }
+
+    Rectangle getRemoveButtonRect(int panelW, int panelH) {
+        int x = panelW / 2 - REMOVE_BUTTON_WIDTH / 2;
+        int y = getTrashSlotY(panelH) + SLOT_SIZE + REMOVE_BUTTON_GAP_BELOW_SLOT;
+        return new Rectangle(x, y, REMOVE_BUTTON_WIDTH, REMOVE_BUTTON_HEIGHT);
+    }
+
+    boolean pixelToTrashSlot(int px, int py, int panelW, int panelH) {
+        int x = getTrashSlotX(panelW);
+        int y = getTrashSlotY(panelH);
+        return px >= x && px < x + SLOT_SIZE
+                && py >= y && py < y + SLOT_SIZE;
+    }
+
+    boolean pixelOnRemoveButton(int px, int py, int panelW, int panelH) {
+        return getRemoveButtonRect(panelW, panelH).contains(px, py);
+    }
+
+    // expose the trash bin for tests + external inspection
+    public TrashBin getTrashBin() {
+        return trashBin;
     }
 
 
