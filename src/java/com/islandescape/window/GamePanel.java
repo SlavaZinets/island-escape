@@ -14,6 +14,7 @@ import com.islandescape.resources.ResourceNode;
 import com.islandescape.resources.ResourceSpawner;
 import com.islandescape.structures.CraftingTable;
 import com.islandescape.ui.CraftingScreen;
+import com.islandescape.ui.GameOverOverlay;
 
 import javax.swing.*;
 
@@ -368,6 +369,12 @@ public class GamePanel extends JPanel {
             g2.setFont(new Font("SansSerif", Font.BOLD, 18));
             g2.setColor(new Color(120, 255, 120));
             g2.drawString(farmToastMessage, 30, 44);
+        }
+
+        // GAME_OVER overlay paints LAST so it covers map, inventory, status
+        // bars, held item, and any active farm toast.
+        if (gameState == GameState.GAME_OVER) {
+            GameOverOverlay.render(g2, getWidth(), getHeight(), player1, player2);
         }
     }
 }
