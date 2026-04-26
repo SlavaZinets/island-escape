@@ -8,6 +8,7 @@ import com.islandescape.inventory.InventoryCursor;
 import com.islandescape.inventory.InventoryScreen;
 import com.islandescape.item.ConsumableItem;
 import com.islandescape.item.Item;
+import com.islandescape.inventory.TrashBin;
 import com.islandescape.map.MapRenderer;
 import com.islandescape.map.TileMap;
 import com.islandescape.player.Player;
@@ -62,7 +63,8 @@ public class GamePanel extends JPanel {
         this.player2 = player2;
 
         InventoryCursor cursor = new InventoryCursor();
-        this.inventoryScreen = new InventoryScreen(player1, player2, cursor);
+        TrashBin trashBin = new TrashBin();
+        this.inventoryScreen = new InventoryScreen(player1, player2, cursor, trashBin);
         InventoryMouseHandler mouseHandler = new InventoryMouseHandler(inventoryScreen, this);
         addMouseListener(mouseHandler);
         addMouseMotionListener(mouseHandler);
