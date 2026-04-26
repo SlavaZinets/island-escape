@@ -3,6 +3,7 @@ package com.islandescape.window;
 import com.islandescape.crafting.CraftingSystem;
 import com.islandescape.input.GameKeyHandler;
 import com.islandescape.input.InventoryMouseHandler;
+import com.islandescape.input.MainMenuMouseHandler;
 import com.islandescape.inventory.InventoryCursor;
 import com.islandescape.inventory.InventoryScreen;
 import com.islandescape.item.Item;
@@ -46,6 +47,7 @@ public class GamePanel extends JPanel {
     private final MainMenuScreen mainMenuScreen = new MainMenuScreen();
     private final ManualScreen manualScreen = new ManualScreen();
     private int mainMenuSelectedIndex = 0;
+    private MainMenuMouseHandler mainMenuMouseHandler;
     private GameState gameState = GameState.MAIN_MENU;
     private final List<ResourceNode> resourceNodes = new ArrayList<>();
     private String farmToastMessage = "";
@@ -62,6 +64,9 @@ public class GamePanel extends JPanel {
         InventoryMouseHandler mouseHandler = new InventoryMouseHandler(inventoryScreen, this);
         addMouseListener(mouseHandler);
         addMouseMotionListener(mouseHandler);
+
+        this.mainMenuMouseHandler = new MainMenuMouseHandler(mainMenuScreen, this);
+        addMouseListener(mainMenuMouseHandler);
 
         resourceNodes.addAll(ResourceSpawner.spawnFromMap(map));
 
@@ -269,6 +274,11 @@ public class GamePanel extends JPanel {
 
     public void startGameFromMenu() {
         gameState = GameState.PLAYING;
+    }
+
+    public void selectMainMenuOption(int index) {
+        mainMenuSelectedIndex = index;
+        activateMainMenuSelection();
     }
 
     private boolean isPlayerNearTable(Player p) {
