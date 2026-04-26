@@ -20,7 +20,7 @@ public class CoconutPalm extends NaturalResource {
 
                 if (this.health == 0) {
                     // Drop a ConsumableItem so the player can later eat it with the F/. key.
-                    inventory.addItem(ConsumableItem.coconut());
+                    inventory.addItem(ConsumableItem.coconut(1));
                     System.out.println("you gathered: ");
                     System.out.println("  " + this.itemName);
                 }

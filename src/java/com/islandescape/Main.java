@@ -2,6 +2,7 @@ package com.islandescape;
 
 import com.islandescape.crafting.CraftingSystem;
 import com.islandescape.input.GameKeyHandler;
+import com.islandescape.item.ConsumableItem;
 import com.islandescape.item.Item;
 import com.islandescape.item.ItemCategory;
 import com.islandescape.item.ItemType;
@@ -42,6 +43,10 @@ public class Main {
 		player1.getInventory().addItem(new Item(ItemType.STONE, ItemCategory.PRIMARY_RESOURCE, "Stone", "A solid stone", 3));
 		player1.getInventory().addItem(new Item(ItemType.AXE, ItemCategory.TOOL, "Axe", "Chops trees for wood", 1));
 		player2.getInventory().addItem(new Item(ItemType.PICKAXE, ItemCategory.TOOL, "Pickaxe", "Mines stone", 1));
+
+		player2.getInventory().addItem(ConsumableItem.coconut(1));
+		player2.getInventory().addItem(ConsumableItem.banana(3));
+
 
 		// 4. Create crafting system, crafting table, and crafting screen overlay
 		CraftingSystem craftingSystem = new CraftingSystem();

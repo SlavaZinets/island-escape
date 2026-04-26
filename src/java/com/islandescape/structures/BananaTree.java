@@ -21,7 +21,7 @@ public class BananaTree extends NaturalResource {
 
                 if (this.health == 0) {
                     // Drop a ConsumableItem so the player can later eat it with the F/. key.
-                    inventory.addItem(ConsumableItem.banana());
+                    inventory.addItem(ConsumableItem.banana(1));
                     System.out.println("You got: " + this.itemName);
                 }
             }

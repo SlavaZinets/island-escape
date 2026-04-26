@@ -56,7 +56,7 @@ public class PlayerEatTest {
         int hungerBefore = s.getHunger();
         int thirstBefore = s.getThirst();
 
-        p.getInventory().addItem(ConsumableItem.coconut());
+        p.getInventory().addItem(ConsumableItem.coconut(1));
         ConsumableItem eaten = p.eat();
 
         assertNotNull(eaten, "Coconut should have been consumed");
@@ -76,7 +76,7 @@ public class PlayerEatTest {
         int hungerBefore = s.getHunger();
         int thirstBefore = s.getThirst();
 
-        p.getInventory().addItem(ConsumableItem.banana());
+        p.getInventory().addItem(ConsumableItem.banana(1));
         ConsumableItem eaten = p.eat();
 
         assertNotNull(eaten);
@@ -95,7 +95,7 @@ public class PlayerEatTest {
         int hungerBefore = s.getHunger();
         int thirstBefore = s.getThirst();
 
-        p.getInventory().addItem(ConsumableItem.water());
+        p.getInventory().addItem(ConsumableItem.water(1));
         ConsumableItem eaten = p.eat();
 
         assertNotNull(eaten);
@@ -134,7 +134,7 @@ public class PlayerEatTest {
     @Test
     void eatingLastOfStackClearsTheSlot() {
         Player p = new Player("Tester", 1, 0, 0);
-        p.getInventory().addItem(ConsumableItem.banana()); // qty 1
+        p.getInventory().addItem(ConsumableItem.banana(1)); // qty 1
 
         assertNotNull(p.eat(), "First eat consumes the lone banana");
 
@@ -161,7 +161,7 @@ public class PlayerEatTest {
         // hotbar[1]. Default selectedHotBarSlot = 0 → active is Wood.
         p.getInventory().addItem(new Item(
                 ItemType.WOOD, ItemCategory.PRIMARY_RESOURCE, "Wood", "Plain log"));
-        p.getInventory().addItem(ConsumableItem.water());
+        p.getInventory().addItem(ConsumableItem.water(1));
 
         assertNull(p.eat(),
                 "Active slot holds Wood — eat must not reach the water in the next slot");
@@ -178,8 +178,8 @@ public class PlayerEatTest {
         drainTo(s, 50, 50);
 
         // Banana → hotbar[0] (logical slot 15). Water → hotbar[1] (slot 16).
-        p.getInventory().addItem(ConsumableItem.banana());
-        p.getInventory().addItem(ConsumableItem.water());
+        p.getInventory().addItem(ConsumableItem.banana(1));
+        p.getInventory().addItem(ConsumableItem.water(1));
 
         // Select the WATER slot, then eat → water should be consumed.
         p.getInventory().setSelectedHotBarSlot(16);

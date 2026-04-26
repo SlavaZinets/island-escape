@@ -9,12 +9,12 @@ public class SurvivalStats {
     // At or below this value, the player is "low" and moves at half speed
     public static final int LOW_THRESHOLD = 20;
 
-    public static final int GAME_OVER_TICKS = 1875;
+    public static final int GAME_OVER_TICKS = 100;
 
 
      // Hunger and thirst depletion per tick. 0.5 per second / 62.5 fps = 0.008
 
-    public static final double DEPLETION_PER_TICK = 0.5 / 62.5;
+    public static final double DEPLETION_PER_TICK = 1.5 / 62.5;
 
     private double hunger;
     private double thirst;

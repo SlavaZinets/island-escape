@@ -27,26 +27,26 @@ public class ConsumableItem extends Item {
         return thirstEffect;
     }
 
-    public static ConsumableItem coconut() {
+    public static ConsumableItem coconut(int quantity) {
         return new ConsumableItem(
                 ItemType.COCONUT, ItemCategory.FOOD,
                 "Coconut", "Restores hunger and a little thirst",
-                1, 15, 8);
+                quantity, 15, 8);
     }
 
 
-    public static ConsumableItem banana() {
+    public static ConsumableItem banana(int quantity) {
         return new ConsumableItem(
                 ItemType.BANANA, ItemCategory.FOOD,
                 "Banana", "Restores hunger",
-                1, 20, 0);
+                quantity, 20, 0);
     }
 
 
-    public static ConsumableItem water() {
+    public static ConsumableItem water(int quantity) {
         return new ConsumableItem(
                 ItemType.WATER, ItemCategory.FOOD,
                 "Water", "Restores thirst",
-                1, 0, 25);
+                quantity, 0, 25);
     }
 }

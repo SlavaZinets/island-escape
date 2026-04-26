@@ -14,7 +14,7 @@ public class ConsumableItemTest {
 
     @Test
     void coconutRestoresBothHungerAndThirst() {
-        ConsumableItem c = ConsumableItem.coconut();
+        ConsumableItem c = ConsumableItem.coconut(1);
 
         assertNotNull(c);
         assertEquals(ItemType.COCONUT, c.getType());
@@ -25,7 +25,7 @@ public class ConsumableItemTest {
 
     @Test
     void bananaRestoresOnlyHunger() {
-        ConsumableItem b = ConsumableItem.banana();
+        ConsumableItem b = ConsumableItem.banana(1);
 
         assertEquals(ItemType.BANANA, b.getType());
         assertTrue(b.getHungerEffect() > 0, "banana must restore some hunger");
@@ -34,7 +34,7 @@ public class ConsumableItemTest {
 
     @Test
     void waterRestoresOnlyThirst() {
-        ConsumableItem w = ConsumableItem.water();
+        ConsumableItem w = ConsumableItem.water(1);
 
         assertEquals(ItemType.WATER, w.getType());
         assertEquals(0, w.getHungerEffect(), "water must not restore hunger");
@@ -43,8 +43,8 @@ public class ConsumableItemTest {
 
     @Test
     void factoriesProduceFreshInstancesEachCall() {
-        ConsumableItem a = ConsumableItem.coconut();
-        ConsumableItem b = ConsumableItem.coconut();
+        ConsumableItem a = ConsumableItem.coconut(1);
+        ConsumableItem b = ConsumableItem.coconut(1);
 
         // Mutating one (e.g. via Item.split or merge) must not affect the other.
         // Sanity-check that they are distinct objects.
