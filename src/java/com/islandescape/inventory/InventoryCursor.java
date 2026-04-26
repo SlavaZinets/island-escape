@@ -101,20 +101,94 @@ public class InventoryCursor {
 
     // Mirror the pickUp / pickUpHalf / placeAll / placeOne shape but talk
 
+    // pick all items from the trash bin
     public void pickUpFromTrash(TrashBin bin) {
+        Item binItem = bin.getItem();
+        if (binItem == null) return;
 
+        heldItem = binItem;
+        bin.setItem(null);
     }
 
+    // pick half of the items (ceil) from the trash bin
     public void pickUpHalfFromTrash(TrashBin bin) {
+        Item binItem = bin.getItem();
+        if (binItem == null) return;
 
+        int total = binItem.getQuantity();
+        int takeAmount = (int) Math.ceil(total / 2.0);
+
+        Item taken = binItem.split(takeAmount);
+        if (binItem.getQuantity() <= 0) {
+            bin.setItem(null);
+        }
+        heldItem = taken;
     }
 
+    // place all items in the trash bin (merge same type, swap on different/full)
     public void placeAllInTrash(TrashBin bin) {
+        if (heldItem == null) return;
 
+        Item binItem = bin.getItem();
+
+        // empty bin — drop everything
+        if (binItem == null) {
+            bin.setItem(heldItem);
+            heldItem = null;
+            return;
+        }
+
+        // same type — try to merge
+        if (binItem.getType() == heldItem.getType()) {
+            int spaceInSlot = Item.MAX_STACK_SIZE - binItem.getQuantity();
+
+            if (heldItem.getQuantity() <= spaceInSlot) {
+                // fits entirely
+                binItem.merge(heldItem);
+                heldItem = null;
+            } else {
+                // partial merge — fill bin to max, keep rest on cursor
+                Item partial = heldItem.split(spaceInSlot);
+                binItem.merge(partial);
+            }
+            return;
+        }
+
+        // different type or full — swap
+        bin.setItem(heldItem);
+        heldItem = binItem;
     }
 
+    // place one item in the trash bin (merge same type with space, swap on different/full)
     public void placeOneInTrash(TrashBin bin) {
+        if (heldItem == null) return;
 
+        Item binItem = bin.getItem();
+
+        // empty — place one
+        if (binItem == null) {
+            Item one = heldItem.split(1);
+            bin.setItem(one);
+            if (heldItem.getQuantity() <= 0) {
+                heldItem = null;
+            }
+            return;
+        }
+
+        // same type and has space — place one
+        if (binItem.getType() == heldItem.getType()
+                && binItem.getQuantity() < Item.MAX_STACK_SIZE) {
+            Item one = heldItem.split(1);
+            binItem.merge(one);
+            if (heldItem.getQuantity() <= 0) {
+                heldItem = null;
+            }
+            return;
+        }
+
+        // full or different type — swap
+        bin.setItem(heldItem);
+        heldItem = binItem;
     }
 
     //get current holding Item
