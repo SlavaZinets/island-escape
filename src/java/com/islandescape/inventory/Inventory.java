@@ -231,4 +231,15 @@ public class Inventory {
         remove(type, qty);
         return result;
     }
+
+    public boolean isEmpty() {
+        for (Item slot : slots) {
+            if (slot != null) return false;
+        }
+        for (Item hotBarSlot : hotBarSlots) {
+            if (hotBarSlot != null) return false;
+        }
+        return true;
+    }
+
 }

@@ -7,6 +7,7 @@ import com.islandescape.item.Item;
 import com.islandescape.player.Player;
 import com.islandescape.ui.BoatRepairLayout;
 import com.islandescape.ui.CraftingScreenLayout;
+import com.islandescape.ui.StatusBarRenderer;
 
 import javax.imageio.ImageIO;
 import java.awt.Color;
@@ -465,6 +466,36 @@ public class InventoryScreen {
             g2d.setFont(new Font("SansSerif", Font.BOLD, 12));
             String qty = String.valueOf(item.getQuantity());
             g2d.drawString(qty, x + SLOT_SIZE - 8 - g2d.getFontMetrics().stringWidth(qty), y + SLOT_SIZE - 6);
+        }
+    }
+
+    /*
+        Draws the hunger/thirst HUD above each player's hotbar. No-ops when
+        the full inventory is open — the bars only belong on top of the
+        hotbar layout (PLAYING and GAME_OVER), not when slot grids are
+        spread across the screen. Geometry mirrors drawHotbar() exactly so
+        the bars line up perfectly with the hotbar slots underneath.
+     */
+    public void drawStatusBars(Graphics2D g2d, int panelW, int panelH) {
+        if (open) return; // hidden during INVENTORY_OPEN / E-toggle full grid
+
+        int hotbarWidth = COLS * SLOT_SIZE + (COLS - 1) * SLOT_GAP;
+        int hotbarY = panelH - SLOT_SIZE - 20;
+
+        // The player name sits at hotbarY - 6. The bar stack ends just
+        // above the name with a 4 px breather so it doesn't crowd the text.
+        int barStackBottom = hotbarY - 6 - 12 - 4;
+
+        int p1HotbarX = panelW / 2 - hotbarWidth - 120;
+        int p2HotbarX = panelW / 2 + 120;
+
+        if (player1 != null) {
+            StatusBarRenderer.drawForPlayer(g2d, player1.getSurvivalStats(),
+                    p1HotbarX, barStackBottom, hotbarWidth);
+        }
+        if (player2 != null) {
+            StatusBarRenderer.drawForPlayer(g2d, player2.getSurvivalStats(),
+                    p2HotbarX, barStackBottom, hotbarWidth);
         }
     }
 

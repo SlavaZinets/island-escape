@@ -6,6 +6,7 @@ import com.islandescape.input.GameKeyHandler;
 import com.islandescape.input.InventoryMouseHandler;
 import com.islandescape.inventory.InventoryCursor;
 import com.islandescape.inventory.InventoryScreen;
+import com.islandescape.item.ConsumableItem;
 import com.islandescape.item.Item;
 import com.islandescape.map.MapRenderer;
 import com.islandescape.map.TileMap;
@@ -16,6 +17,7 @@ import com.islandescape.structures.CraftingTable;
 import com.islandescape.ui.BoatRepairScreen;
 import com.islandescape.ui.CraftingScreen;
 import com.islandescape.ui.WinOverlay;
+import com.islandescape.ui.GameOverOverlay;
 
 import javax.swing.*;
 
@@ -140,6 +142,11 @@ public class GamePanel extends JPanel {
             return;
         }
 
+        if (gameState == GameState.GAME_OVER) {
+            if (farmToastFrames > 0) farmToastFrames--;
+            return;
+        }
+
         if (farmToastFrames > 0) {
             farmToastFrames--;
         }
@@ -181,6 +188,19 @@ public class GamePanel extends JPanel {
         }
 
         if (gameState == GameState.PLAYING) {
+            // Tick survival stats first. If either player has been starving
+            // long enough, transition to GAME_OVER and bail before movement.
+
+            if (player1 != null) player1.getSurvivalStats().tickDown();
+            if (player2 != null) player2.getSurvivalStats().tickDown();
+
+            boolean p1Dead = player1 != null && player1.getSurvivalStats().isDead();
+            boolean p2Dead = player2 != null && player2.getSurvivalStats().isDead();
+            if (p1Dead || p2Dead) {
+                gameState = GameState.GAME_OVER;
+                return;
+            }
+
             if (player1 != null) {
                 player1.move(keyHandler.getP1Direction());
             }
@@ -194,6 +214,14 @@ public class GamePanel extends JPanel {
             }
             if (keyHandler.consumeP2Gather()) {
                 tryFarmNearestResource(player2);
+            }
+
+            // Eat keys: F for P1, . for P2.
+            if (keyHandler.consumeP1Eat()) {
+                tryEatFirstConsumable(player1);
+            }
+            if (keyHandler.consumeP2Eat()) {
+                tryEatFirstConsumable(player2);
             }
         }
         // When INVENTORY_OPEN, all crafting / boat interaction is mouse-driven
@@ -241,6 +269,30 @@ public class GamePanel extends JPanel {
         System.out.println("[Farm] player=" + player.getName()
                 + ", resource=" + nearest.getClass().getSimpleName()
                 + ", drops=" + formatDrops(drops));
+    }
+
+    private void tryEatFirstConsumable(Player player) {
+        if (player == null) return;
+
+        ConsumableItem eaten = player.eat();
+        if (eaten == null) {
+            farmToastMessage = "Nothing to eat";
+            farmToastFrames = 50;
+            return;
+        }
+
+        // Build a short, descriptive feedback string. Show the actual deltas
+        // (some food is hunger-only, some thirst-only, coconut is both).
+        StringBuilder sb = new StringBuilder("Ate ");
+        sb.append(eaten.getType().name());
+        if (eaten.getHungerEffect() > 0) {
+            sb.append("  +").append(eaten.getHungerEffect()).append(" hunger");
+        }
+        if (eaten.getThirstEffect() > 0) {
+            sb.append("  +").append(eaten.getThirstEffect()).append(" thirst");
+        }
+        farmToastMessage = sb.toString();
+        farmToastFrames = 75;
     }
 
     private String formatDrops(List<Item> drops) {
@@ -444,6 +496,12 @@ public class GamePanel extends JPanel {
             // Normal mode — just inventory (hotbar or full grid)
             if (inventoryScreen != null) {
                 inventoryScreen.renderInventoryComponent(g, getWidth(), getHeight());
+
+                // Hunger/thirst HUD above each hotbar. drawStatusBars() is
+                // a no-op when the full inventory is open (E-toggle), so
+                // no extra gating needed here.
+                inventoryScreen.drawStatusBars(g2, getWidth(), getHeight());
+
                 inventoryScreen.drawHeldItem(g2);
             }
         }
@@ -455,6 +513,11 @@ public class GamePanel extends JPanel {
             g2.setColor(new Color(120, 255, 120));
             g2.drawString(farmToastMessage, 30, 44);
         }
-    }
 
+        // GAME_OVER overlay paints LAST so it covers map, inventory, status
+        // bars, held item, and any active farm toast.
+        if (gameState == GameState.GAME_OVER) {
+            GameOverOverlay.render(g2, getWidth(), getHeight(), player1, player2);
+        }
+    }
 }
