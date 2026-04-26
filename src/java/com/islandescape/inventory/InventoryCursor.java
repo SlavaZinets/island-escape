@@ -98,6 +98,25 @@ public class InventoryCursor {
         heldItem = slotItem;
     }
 
+
+    // Mirror the pickUp / pickUpHalf / placeAll / placeOne shape but talk
+
+    public void pickUpFromTrash(TrashBin bin) {
+
+    }
+
+    public void pickUpHalfFromTrash(TrashBin bin) {
+
+    }
+
+    public void placeAllInTrash(TrashBin bin) {
+
+    }
+
+    public void placeOneInTrash(TrashBin bin) {
+
+    }
+
     //get current holding Item
     public Item getHeldItem(){
         return heldItem;
