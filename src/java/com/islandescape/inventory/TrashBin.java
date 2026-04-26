@@ -9,19 +9,21 @@ import com.islandescape.item.Item;
  */
 public class TrashBin {
 
+    private Item item;
+
     public Item getItem() {
-        return null;
+        return item;
     }
 
     public void setItem(Item item) {
-
+        this.item = item;
     }
 
     public boolean isEmpty() {
-        return true;
+        return item == null;
     }
 
     public void clear() {
-
+        this.item = null;
     }
 }
