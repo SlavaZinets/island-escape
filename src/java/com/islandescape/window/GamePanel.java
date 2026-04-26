@@ -101,6 +101,14 @@ public class GamePanel extends JPanel {
     private void update() {
         if (keyHandler == null) return;
 
+        // GAME_OVER: world is frozen. Don't move players, don't tick survival,
+        // don't accept any input. Only the toast countdown bleeds out so a
+        // mid-flight farm message doesn't stay forever on the death screen.
+        if (gameState == GameState.GAME_OVER) {
+            if (farmToastFrames > 0) farmToastFrames--;
+            return;
+        }
+
         if (farmToastFrames > 0) {
             farmToastFrames--;
         }
@@ -123,6 +131,19 @@ public class GamePanel extends JPanel {
         }
 
         if (gameState == GameState.PLAYING) {
+            // Tick survival stats first. If either player has been starving
+            // long enough, transition to GAME_OVER and bail before movement.
+
+            if (player1 != null) player1.getSurvivalStats().tickDown();
+            if (player2 != null) player2.getSurvivalStats().tickDown();
+
+            boolean p1Dead = player1 != null && player1.getSurvivalStats().isDead();
+            boolean p2Dead = player2 != null && player2.getSurvivalStats().isDead();
+            if (p1Dead || p2Dead) {
+                gameState = GameState.GAME_OVER;
+                return;
+            }
+
             if (player1 != null) {
                 player1.move(keyHandler.getP1Direction());
             }
