@@ -13,6 +13,8 @@ import com.islandescape.resources.ResourceNode;
 import com.islandescape.resources.ResourceSpawner;
 import com.islandescape.structures.CraftingTable;
 import com.islandescape.ui.CraftingScreen;
+import com.islandescape.ui.MainMenuScreen;
+import com.islandescape.ui.ManualScreen;
 
 import javax.swing.*;
 
@@ -41,7 +43,10 @@ public class GamePanel extends JPanel {
     private CraftingSystem craftingSystem;
     private CraftingTable craftingTable;
     private CraftingScreen craftingScreen;
-    private GameState gameState = GameState.PLAYING;
+    private final MainMenuScreen mainMenuScreen = new MainMenuScreen();
+    private final ManualScreen manualScreen = new ManualScreen();
+    private int mainMenuSelectedIndex = 0;
+    private GameState gameState = GameState.MAIN_MENU;
     private final List<ResourceNode> resourceNodes = new ArrayList<>();
     private String farmToastMessage = "";
     private int farmToastFrames = 0;
@@ -100,6 +105,24 @@ public class GamePanel extends JPanel {
 
     private void update() {
         if (keyHandler == null) return;
+
+        if (gameState == GameState.MAIN_MENU) {
+            if (keyHandler.consumeMenuUp()) {
+                mainMenuSelectedIndex = (mainMenuSelectedIndex + MainMenuScreen.OPTIONS.length - 1)
+                        % MainMenuScreen.OPTIONS.length;
+            }
+            if (keyHandler.consumeMenuDown()) {
+                mainMenuSelectedIndex = (mainMenuSelectedIndex + 1) % MainMenuScreen.OPTIONS.length;
+            }
+            if (keyHandler.consumeMenuSelect()) {
+                activateMainMenuSelection();
+            }
+            return;
+        }
+
+        if (gameState == GameState.MANUAL) {
+            return;
+        }
 
         if (farmToastFrames > 0) {
             farmToastFrames--;
@@ -220,6 +243,31 @@ public class GamePanel extends JPanel {
         return isPlayerNearTable(player1) || isPlayerNearTable(player2);
     }
 
+    private void activateMainMenuSelection() {
+        if (mainMenuSelectedIndex == 0) {
+            startGameFromMenu();
+            return;
+        }
+        if (mainMenuSelectedIndex == 1) {
+            gameState = GameState.MANUAL;
+            return;
+        }
+        System.exit(0);
+    }
+
+    public void showMainMenu() {
+        if (inventoryScreen != null) {
+            inventoryScreen.returnHeldItem();
+            inventoryScreen.setCraftingOpen(false);
+            inventoryScreen.setOpen(false);
+        }
+        gameState = GameState.MAIN_MENU;
+    }
+
+    public void startGameFromMenu() {
+        gameState = GameState.PLAYING;
+    }
+
     private boolean isPlayerNearTable(Player p) {
         return craftingTable != null && p != null
                 && craftingTable.isPlayerNearby(p.getX(), p.getY());
@@ -276,6 +324,16 @@ public class GamePanel extends JPanel {
 
         Set<Point> disabledTiles = ResourceSpawner.disabledTileCoords(resourceNodes);
         map.renderMapComponent(renderer, g, getWidth(), getHeight(), player1, player2, disabledTiles);
+
+        if (gameState == GameState.MAIN_MENU) {
+            mainMenuScreen.render(g2, getWidth(), getHeight(), mainMenuSelectedIndex);
+            return;
+        }
+
+        if (gameState == GameState.MANUAL) {
+            manualScreen.render(g2, getWidth(), getHeight());
+            return;
+        }
 
         if (gameState == GameState.INVENTORY_OPEN && craftingScreen != null) {
             // 1. Crafting panel (dim overlay + brown background + crafting grid)
