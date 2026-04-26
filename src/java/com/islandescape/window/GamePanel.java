@@ -132,12 +132,19 @@ public class GamePanel extends JPanel {
         return quitRequested;
     }
 
+    public List<ResourceNode> getResourceNodes() {
+        return resourceNodes;
+    }
+
     public void setQuitAction(Runnable quitAction) {
         this.quitAction = quitAction;
     }
 
     public void startNewGame() {
         gameState = GameState.PLAYING;
+    }
+
+    public void resetToFresh() {
     }
 
     public void quitGame() {

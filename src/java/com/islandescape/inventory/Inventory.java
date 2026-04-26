@@ -185,6 +185,9 @@ public class Inventory {
 
 
 
+    public void clear() {
+    }
+
     public ArrayList<Item> snapshot() {
         ArrayList<Item> list = new ArrayList<>();
         for (Item s : slots) if (s != null) list.add(s);

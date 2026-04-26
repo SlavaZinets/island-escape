@@ -75,6 +75,9 @@ public class Player {
         position.setLocation(newX, newY);
     }
 
+    public void setPosition(double x, double y) {
+    }
+
     public void setWorldBounds(int worldWidth, int worldHeight) {
         this.worldWidth = worldWidth;
         this.worldHeight = worldHeight;

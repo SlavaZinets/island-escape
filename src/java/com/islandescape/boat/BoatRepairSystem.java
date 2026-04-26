@@ -108,6 +108,9 @@ public class BoatRepairSystem {
     }
 
 
+    public void reset() {
+    }
+
     // Removes and returns the item in the given slot.
     // Returns null if the slot is empty, out of range, or already complete
     // (completed deposits are permanent and cannot be taken back).
