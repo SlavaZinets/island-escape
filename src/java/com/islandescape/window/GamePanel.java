@@ -352,6 +352,12 @@ public class GamePanel extends JPanel {
             // Normal mode — just inventory (hotbar or full grid)
             if (inventoryScreen != null) {
                 inventoryScreen.renderInventoryComponent(g, getWidth(), getHeight());
+
+                // Hunger/thirst HUD above each hotbar. drawStatusBars() is
+                // a no-op when the full inventory is open (E-toggle), so
+                // no extra gating needed here.
+                inventoryScreen.drawStatusBars(g2, getWidth(), getHeight());
+
                 inventoryScreen.drawHeldItem(g2);
             }
         }
