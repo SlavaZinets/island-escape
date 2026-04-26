@@ -71,6 +71,10 @@ public class GamePanel extends JPanel {
 
         resourceNodes.addAll(ResourceSpawner.spawnFromMap(map));
 
+        mainMenu.setOnNewGame(this::startNewGame);
+        mainMenu.setOnLoadGame(this::loadGame);
+        mainMenu.setOnQuit(this::quitGame);
+
         setFocusable(true);
     }
 
@@ -133,6 +137,7 @@ public class GamePanel extends JPanel {
     }
 
     public void startNewGame() {
+        gameState = GameState.PLAYING;
     }
 
     public void quitGame() {
