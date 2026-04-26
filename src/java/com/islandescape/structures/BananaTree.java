@@ -1,9 +1,7 @@
 package com.islandescape.structures;
 
 import com.islandescape.inventory.Inventory;
-import com.islandescape.item.Item;
-import com.islandescape.item.ItemCategory;
-import com.islandescape.item.ItemType;
+import com.islandescape.item.ConsumableItem;
 
 //class for bananas
 public class BananaTree extends NaturalResource {
@@ -22,8 +20,8 @@ public class BananaTree extends NaturalResource {
                 System.out.println("collect bananas" + this.health);
 
                 if (this.health == 0) {
-                    Item banana = new Item(ItemType.BANANA, ItemCategory.FOOD, "Banana", "banan");
-                    inventory.addItem(banana);
+                    // Drop a ConsumableItem so the player can later eat it with the F/. key.
+                    inventory.addItem(ConsumableItem.banana());
                     System.out.println("You got: " + this.itemName);
                 }
             }
@@ -31,5 +29,4 @@ public class BananaTree extends NaturalResource {
             System.out.println("Too far from bananas");
         }
     }
-
 }
