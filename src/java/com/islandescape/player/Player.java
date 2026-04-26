@@ -7,6 +7,7 @@ import com.islandescape.resources.ResourceNode;
 import com.islandescape.utilities.Direction;
 
 import java.awt.*;
+import java.awt.geom.Point2D;
 import java.awt.image.BufferedImage;
 import java.util.List;
 
@@ -25,9 +26,10 @@ public class Player {
 
     private String name;
     private int id;
-    private Point position;
+    private Point2D.Double position;
     private final double SPEED = 2;
     private final Inventory inventory = new Inventory();
+    private final SurvivalStats survivalStats = new SurvivalStats();
 
     private int worldWidth = 0;
     private int worldHeight = 0;
@@ -40,13 +42,13 @@ public class Player {
     public Player(String name, int id, int x, int y, Color nameColor) {
         this.name = name;
         this.id = id;
-        this.position = new Point(x, y);
+        this.position = new Point2D.Double(x, y);
         this.nameColor = nameColor;
     }
     public Player(String name, int id, int x, int y) {
         this.name = name;
         this.id = id;
-        this.position = new Point(x, y);
+        this.position = new Point2D.Double(x, y);
     }
 
     public void move (Direction direction) {
@@ -59,8 +61,9 @@ public class Player {
             animationTick = 0;
         }
 
-        double newX = position.getX() + direction.getX() * SPEED;
-        double newY = position.getY() - direction.getY() * SPEED;
+        double effectiveSpeed = SPEED * survivalStats.getSpeedMultiplier();
+        double newX = position.getX() + direction.getX() * effectiveSpeed;
+        double newY = position.getY() - direction.getY() * effectiveSpeed;
 
         if (worldWidth > 0 && worldHeight > 0) {
             newX = Math.max(0, Math.min(newX, worldWidth - WIDTH));
@@ -151,6 +154,10 @@ public class Player {
 
     public Inventory getInventory() {
         return inventory;
+    }
+
+    public SurvivalStats getSurvivalStats() {
+        return survivalStats;
     }
 
     // Player side of gathering.
