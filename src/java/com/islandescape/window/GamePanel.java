@@ -106,6 +106,7 @@ public class GamePanel extends JPanel {
     private void update() {
         if (keyHandler == null) return;
 
+        // Main menu is input-only: no world updates while selecting options.
         if (gameState == GameState.MAIN_MENU) {
             if (keyHandler.consumeMenuUp()) {
                 mainMenuSelectedIndex = (mainMenuSelectedIndex + MainMenuScreen.OPTIONS.length - 1)
@@ -120,6 +121,7 @@ public class GamePanel extends JPanel {
             return;
         }
 
+        // Manual screen is static and exits back to menu via ESC (handled in key handler).
         if (gameState == GameState.MANUAL) {
             return;
         }
@@ -244,6 +246,7 @@ public class GamePanel extends JPanel {
     }
 
     private void activateMainMenuSelection() {
+        // 0: start game, 1: open manual, 2: exit app.
         if (mainMenuSelectedIndex == 0) {
             startGameFromMenu();
             return;

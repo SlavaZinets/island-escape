@@ -52,6 +52,7 @@ public class GameKeyHandler implements KeyListener {
             // P2 movement
             case KeyEvent.VK_UP:
                 isPressedUp = true;
+                // Menu navigation uses one-shot toggles, consumed in GamePanel.update().
                 if (state == GameState.MAIN_MENU) {
                     menuUpToggled = true;
                 }
@@ -81,6 +82,7 @@ public class GameKeyHandler implements KeyListener {
             case KeyEvent.VK_I:     craftScreenToggled = true; break;
             case KeyEvent.VK_ENTER:
                 craftCommitted = true;
+                // In main menu, Enter confirms the currently selected option.
                 if (state == GameState.MAIN_MENU) {
                     menuSelectToggled = true;
                 }
