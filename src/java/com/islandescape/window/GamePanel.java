@@ -141,10 +141,26 @@ public class GamePanel extends JPanel {
     }
 
     public void startNewGame() {
+        resetToFresh();
         gameState = GameState.PLAYING;
     }
 
     public void resetToFresh() {
+        if (player1 != null) {
+            player1.setPosition(320, 192);
+            player1.getInventory().clear();
+        }
+        if (player2 != null) {
+            player2.setPosition(352, 192);
+            player2.getInventory().clear();
+        }
+        if (boatWreck != null) {
+            boatWreck.reset();
+        }
+        resourceNodes.clear();
+        if (map != null) {
+            resourceNodes.addAll(ResourceSpawner.spawnFromMap(map));
+        }
     }
 
     public void quitGame() {

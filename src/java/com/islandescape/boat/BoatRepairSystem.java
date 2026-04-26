@@ -109,6 +109,9 @@ public class BoatRepairSystem {
 
 
     public void reset() {
+        for (int i = 0; i < TOTAL_SLOTS; i++) {
+            repairedItems[i] = null;
+        }
     }
 
     // Removes and returns the item in the given slot.

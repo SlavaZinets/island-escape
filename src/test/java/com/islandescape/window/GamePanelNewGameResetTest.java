@@ -11,8 +11,6 @@ import com.islandescape.map.MapRenderer;
 import com.islandescape.map.TileMap;
 import com.islandescape.player.Player;
 import com.islandescape.resources.ResourceNode;
-import com.islandescape.ui.MainMenu;
-import com.islandescape.ui.MainMenu.MenuOption;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 
@@ -20,9 +18,7 @@ import java.util.List;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertFalse;
-import static org.junit.jupiter.api.Assertions.assertNotNull;
 import static org.junit.jupiter.api.Assertions.assertNull;
-import static org.junit.jupiter.api.Assertions.assertSame;
 import static org.junit.jupiter.api.Assertions.assertTrue;
 
 public class GamePanelNewGameResetTest {

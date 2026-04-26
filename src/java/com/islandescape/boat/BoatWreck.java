@@ -47,5 +47,7 @@ public class BoatWreck extends WorldStructure {
     }
 
     public void reset() {
+        repairSystem.reset();
+        boardedPlayers.clear();
     }
 }
