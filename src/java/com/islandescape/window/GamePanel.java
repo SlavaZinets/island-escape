@@ -5,6 +5,7 @@ import com.islandescape.input.GameKeyHandler;
 import com.islandescape.input.InventoryMouseHandler;
 import com.islandescape.inventory.InventoryCursor;
 import com.islandescape.inventory.InventoryScreen;
+import com.islandescape.item.ConsumableItem;
 import com.islandescape.item.Item;
 import com.islandescape.map.MapRenderer;
 import com.islandescape.map.TileMap;
@@ -158,6 +159,14 @@ public class GamePanel extends JPanel {
             if (keyHandler.consumeP2Gather()) {
                 tryFarmNearestResource(player2);
             }
+
+            // Eat keys: F for P1, . for P2.
+            if (keyHandler.consumeP1Eat()) {
+                tryEatFirstConsumable(player1);
+            }
+            if (keyHandler.consumeP2Eat()) {
+                tryEatFirstConsumable(player2);
+            }
         }
         // When INVENTORY_OPEN, all crafting interaction is mouse-driven
         // (handled by InventoryScreen.handleClick)
@@ -199,6 +208,30 @@ public class GamePanel extends JPanel {
         System.out.println("[Farm] player=" + player.getName()
                 + ", resource=" + nearest.getClass().getSimpleName()
                 + ", drops=" + formatDrops(drops));
+    }
+
+    private void tryEatFirstConsumable(Player player) {
+        if (player == null) return;
+
+        ConsumableItem eaten = player.eat();
+        if (eaten == null) {
+            farmToastMessage = "Nothing to eat";
+            farmToastFrames = 50;
+            return;
+        }
+
+        // Build a short, descriptive feedback string. Show the actual deltas
+        // (some food is hunger-only, some thirst-only, coconut is both).
+        StringBuilder sb = new StringBuilder("Ate ");
+        sb.append(eaten.getType().name());
+        if (eaten.getHungerEffect() > 0) {
+            sb.append("  +").append(eaten.getHungerEffect()).append(" hunger");
+        }
+        if (eaten.getThirstEffect() > 0) {
+            sb.append("  +").append(eaten.getThirstEffect()).append(" thirst");
+        }
+        farmToastMessage = sb.toString();
+        farmToastFrames = 75;
     }
 
     private String formatDrops(List<Item> drops) {

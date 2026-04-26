@@ -1,6 +1,7 @@
 package com.islandescape.player;
 
 import com.islandescape.inventory.Inventory;
+import com.islandescape.item.ConsumableItem;
 import com.islandescape.item.Item;
 import com.islandescape.map.TileMap;
 import com.islandescape.resources.ResourceNode;
@@ -167,5 +168,27 @@ public class Player {
             return resource.harvest(inventory);
         }
         return null;
+    }
+
+    /*
+        Eats whatever is in the player's currently-selected hotbar slot,
+     */
+    public ConsumableItem eat() {
+        Item active = inventory.getActiveItem();
+        if (!(active instanceof ConsumableItem)) {
+            return null;
+        }
+
+        ConsumableItem food = (ConsumableItem) active;
+        survivalStats.eat(food.getHungerEffect());
+        survivalStats.drink(food.getThirstEffect());
+
+
+        food.split(1);
+        if (food.getQuantity() <= 0) {
+
+            inventory.setSlot(inventory.getSelectedHotBarSlot(), null);
+        }
+        return food;
     }
 }
