@@ -218,7 +218,7 @@ public class InventoryScreen {
         }
     }
 
-    private void drawFullInventory(Graphics2D g2d, int panelW, int panelH) {
+    public void drawFullInventory(Graphics2D g2d, int panelW, int panelH) {
         int p1Left = getP1Left(panelW);
         int p2Left = getP2Left(panelW);
         int gridTop = getGridTop(panelH);
