@@ -13,6 +13,9 @@ public class SaveData {
         return new SaveData();
     }
 
+    public static void apply(SaveData data, Player p1, Player p2, BoatWreck wreck, List<ResourceNode> nodes) {
+    }
+
 
     private double p1x;
     private double p1y;

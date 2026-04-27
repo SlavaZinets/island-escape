@@ -8,7 +8,7 @@ import com.islandescape.item.ItemCategory;
 import com.islandescape.item.ItemType;
 import com.islandescape.player.Player;
 import com.islandescape.resources.ResourceNode;
-import com.islandescape.structures.Tree;
+import com.islandescape.resources.Tree;
 import org.junit.jupiter.api.Test;
 
 import java.util.Arrays;
@@ -114,9 +114,9 @@ public class SaveDataCaptureTest {
         Player p2 = new Player("P2", 2, 0, 0);
         BoatWreck wreck = new BoatWreck(0, 0, "Wreck");
 
-        ResourceNode node0 = new Tree(0, 0, "tree0");
-        ResourceNode node1 = new Tree(50, 50, "tree1");
-        ResourceNode node2 = new Tree(100, 100, "tree2");
+        ResourceNode node0 = new Tree(0, 0);
+        ResourceNode node1 = new Tree(50, 50);
+        ResourceNode node2 = new Tree(100, 100);
         node1.disable();
 
         SaveData data = SaveData.capture(p1, p2, wreck, Arrays.asList(node0, node1, node2));

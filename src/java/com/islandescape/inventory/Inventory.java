@@ -185,6 +185,9 @@ public class Inventory {
 
 
 
+    public void replaceContents(Item[] flatSlots, int hotbarIndex) {
+    }
+
     public void clear() {
         for (int i = 0; i < slots.length; i++) {
             slots[i] = null;
