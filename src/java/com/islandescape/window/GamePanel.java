@@ -1,5 +1,6 @@
 package com.islandescape.window;
 
+import com.islandescape.audio.SoundManager;
 import com.islandescape.boat.BoatWreck;
 import com.islandescape.crafting.CraftingSystem;
 import com.islandescape.input.GameKeyHandler;
@@ -65,6 +66,10 @@ public class GamePanel extends JPanel {
     private final List<ResourceNode> resourceNodes = new ArrayList<>();
     private String farmToastMessage = "";
     private int farmToastFrames = 0;
+
+    private static final int FOOTSTEP_INTERVAL_TICKS = 16;
+    private int p1FootstepCooldown = 0;
+    private int p2FootstepCooldown = 0;
 
     public GamePanel(TileMap map, MapRenderer renderer, Player player1, Player player2) {
         this.map = map;
@@ -180,6 +185,21 @@ public class GamePanel extends JPanel {
         if (map != null) {
             resourceNodes.addAll(ResourceSpawner.spawnFromMap(map));
         }
+        p1FootstepCooldown = 0;
+        p2FootstepCooldown = 0;
+    }
+
+    // Plays a footstep when the player is moving and their cooldown has elapsed.
+    // Returns the next cooldown value to store.
+    private int tickFootstep(Player player, int cooldown) {
+        if (!player.isMoving()) {
+            return 0;
+        }
+        if (cooldown <= 0) {
+            SoundManager.play("footstep");
+            return FOOTSTEP_INTERVAL_TICKS;
+        }
+        return cooldown - 1;
     }
 
     public void quitGame() {
@@ -360,9 +380,11 @@ public class GamePanel extends JPanel {
 
             if (player1 != null) {
                 player1.move(keyHandler.getP1Direction());
+                p1FootstepCooldown = tickFootstep(player1, p1FootstepCooldown);
             }
             if (player2 != null) {
                 player2.move(keyHandler.getP2Direction());
+                p2FootstepCooldown = tickFootstep(player2, p2FootstepCooldown);
             }
 
             // Gather keys: G for P1, M for P2.

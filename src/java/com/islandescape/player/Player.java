@@ -52,6 +52,10 @@ public class Player {
         this.position = new Point2D.Double(x, y);
     }
 
+    public boolean isMoving() {
+        return animationTick > 0;
+    }
+
     public void move (Direction direction) {
         Facing newFacing = Facing.fromDirection(direction);
         if (newFacing != null) {
