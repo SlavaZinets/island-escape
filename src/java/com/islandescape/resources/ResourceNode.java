@@ -47,6 +47,10 @@ public abstract class ResourceNode extends WorldStructure {
         this.respawnCountdown = RESPAWN_TICKS;
     }
 
+    public void setDisabled(boolean disabled) {
+        this.disabled = disabled;
+    }
+
     public void tick() {
         if (!disabled) return;
         respawnCountdown--;

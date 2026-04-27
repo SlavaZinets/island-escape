@@ -108,6 +108,18 @@ public class BoatRepairSystem {
     }
 
 
+    public void reset() {
+        for (int i = 0; i < TOTAL_SLOTS; i++) {
+            repairedItems[i] = null;
+        }
+    }
+
+    // Bypasses placeIn validation. Save/load only - never call from gameplay code.
+    public void forceSetSlot(int slot, Item item) {
+        if (slot < 0 || slot >= TOTAL_SLOTS) return;
+        repairedItems[slot] = item;
+    }
+
     // Removes and returns the item in the given slot.
     // Returns null if the slot is empty, out of range, or already complete
     // (completed deposits are permanent and cannot be taken back).

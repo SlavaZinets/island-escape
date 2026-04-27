@@ -32,6 +32,12 @@ public class GameKeyHandler implements KeyListener {
     private boolean craftCommitted = false;
     private boolean boatRepairToggled = false;
     private boolean boardKeyPressed = false;
+    private boolean saveKeyPressed = false;
+
+    // Main menu navigation edges
+    private boolean menuUp = false;
+    private boolean menuDown = false;
+    private boolean menuConfirm = false;
 
     private final GamePanel gamePanel;
 
@@ -42,6 +48,23 @@ public class GameKeyHandler implements KeyListener {
     @Override
     public void keyPressed(KeyEvent e) {
         int key = e.getKeyCode();
+
+        // Main menu state owns navigation keys and blocks all other input
+        if (gamePanel != null && gamePanel.getGameState() == GameState.MAIN_MENU) {
+            switch (key) {
+                case KeyEvent.VK_UP:
+                    menuUp = true;
+                    break;
+                case KeyEvent.VK_DOWN:
+                    menuDown = true;
+                    break;
+                case KeyEvent.VK_ENTER:
+                    menuConfirm = true;
+                    break;
+            }
+            return;
+        }
+
         switch (key) {
             // P1 movement
             case KeyEvent.VK_W: isPressedW = true; break;
@@ -76,6 +99,12 @@ public class GameKeyHandler implements KeyListener {
             // Ignored by GamePanel.update() when crafting is the open panel.
             case KeyEvent.VK_R:     boatRepairToggled = true; break;
             case KeyEvent.VK_B:     boardKeyPressed = true; break;
+            // Save hotkey — only fires while actively playing.
+            case KeyEvent.VK_F5:
+                if (gamePanel != null && gamePanel.getGameState() == GameState.PLAYING) {
+                    saveKeyPressed = true;
+                }
+                break;
         }
 
         // ESC closes whatever is open
@@ -174,6 +203,12 @@ public class GameKeyHandler implements KeyListener {
         return val;
     }
 
+    public boolean consumeSaveKey() {
+        boolean val = saveKeyPressed;
+        saveKeyPressed = false;
+        return val;
+    }
+
     public boolean consumeP1Action() {
         boolean val = p1ActionToggled;
         p1ActionToggled = false;
@@ -197,6 +232,22 @@ public class GameKeyHandler implements KeyListener {
         p2GatherToggled = false;
         return val;
     }
+
+    public boolean consumeMenuUp() {
+        boolean val = menuUp;
+        menuUp = false;
+        return val;
+    }
+
+    public boolean consumeMenuDown() {
+        boolean val = menuDown;
+        menuDown = false;
+        return val;
+    }
+
+    public boolean consumeMenuConfirm() {
+        boolean val = menuConfirm;
+        menuConfirm = false;
 
     public boolean consumeP1Eat() {
         boolean val = p1EatToggled;
