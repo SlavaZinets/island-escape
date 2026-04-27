@@ -20,10 +20,10 @@ import com.islandescape.save.SaveManager;
 import com.islandescape.structures.CraftingTable;
 import com.islandescape.ui.BoatRepairScreen;
 import com.islandescape.ui.CraftingScreen;
+import com.islandescape.ui.ManualScreen;
 import com.islandescape.ui.MainMenu;
 import com.islandescape.ui.WinOverlay;
 import com.islandescape.ui.GameOverOverlay;
-
 import javax.swing.*;
 
 import java.io.IOException;
@@ -52,6 +52,8 @@ public class GamePanel extends JPanel {
     private CraftingSystem craftingSystem;
     private CraftingTable craftingTable;
     private CraftingScreen craftingScreen;
+
+    private final ManualScreen manualScreen = new ManualScreen();
     private BoatWreck boatWreck;
     private BoatRepairScreen boatRepairScreen;
     private boolean boatRepairOpen = false;
@@ -228,6 +230,11 @@ public class GamePanel extends JPanel {
 
     private void update() {
         if (keyHandler == null) return;
+
+        // Manual screen is static and exits back to menu via ESC (handled in key handler).
+        if (gameState == GameState.MANUAL) {
+          return;
+        }
 
         // MAIN_MENU: only menu navigation runs. Drain other edges so they
         // don't fire on the first frame after transitioning to PLAYING.
@@ -458,6 +465,15 @@ public class GamePanel extends JPanel {
         return isPlayerNearTable(player1) || isPlayerNearTable(player2);
     }
 
+    public void showMainMenu() {
+        if (inventoryScreen != null) {
+            inventoryScreen.returnHeldItem();
+            inventoryScreen.setCraftingOpen(false);
+            inventoryScreen.setOpen(false);
+        }
+        gameState = GameState.MAIN_MENU;
+    }
+
     private boolean isPlayerNearTable(Player p) {
         return craftingTable != null && p != null
                 && craftingTable.isPlayerNearby(p.getX(), p.getY());
@@ -588,6 +604,12 @@ public class GamePanel extends JPanel {
         Set<Point> disabledTiles = ResourceSpawner.disabledTileCoords(resourceNodes);
         map.renderMapComponent(renderer, g, getWidth(), getHeight(), player1, player2, disabledTiles);
 
+
+        if (gameState == GameState.MANUAL) {
+            manualScreen.render(g2, getWidth(), getHeight());
+            return;
+        }
+      
         if (gameState == GameState.GAME_WON) {
             winOverlay.render(g2, getWidth(), getHeight());
             return;
@@ -598,7 +620,7 @@ public class GamePanel extends JPanel {
             boatRepairScreen.render(g2, getWidth(), getHeight(),
                     boatWreck != null ? boatWreck.getRepairSystem() : null);
 
-            // 2. Inventory grids (drawn ON TOP of the brown panel)
+            // 2. Inventory grids
             if (inventoryScreen != null) {
                 inventoryScreen.renderInventoryComponent(g, getWidth(), getHeight());
             }
@@ -615,7 +637,7 @@ public class GamePanel extends JPanel {
                     player2 != null ? player2.getInventory() : null,
                     isPlayerNearTable(player1), isPlayerNearTable(player2));
 
-            // 2. Inventory grids (drawn ON TOP of the brown panel)
+            // 2. Inventory grids
             if (inventoryScreen != null) {
                 inventoryScreen.renderInventoryComponent(g, getWidth(), getHeight());
             }

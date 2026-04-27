@@ -30,6 +30,7 @@ public class GameKeyHandler implements KeyListener {
     private boolean p2EatToggled = false;
     private boolean craftScreenToggled = false;
     private boolean craftCommitted = false;
+
     private boolean boatRepairToggled = false;
     private boolean boardKeyPressed = false;
     private boolean saveKeyPressed = false;
@@ -72,16 +73,27 @@ public class GameKeyHandler implements KeyListener {
             case KeyEvent.VK_S: isPressedS = true; break;
             case KeyEvent.VK_D: isPressedD = true; break;
             // P2 movement
-            case KeyEvent.VK_UP:    isPressedUp = true; break;
+            case KeyEvent.VK_UP:
+                isPressedUp = true;
+                // Menu navigation uses one-shot toggles, consumed in GamePanel.update().
+                if (state == GameState.MAIN_MENU) {
+                    menuUpToggled = true;
+                }
+                break;
             case KeyEvent.VK_LEFT:  isPressedLeft = true; break;
-            case KeyEvent.VK_DOWN:  isPressedDown = true; break;
+            case KeyEvent.VK_DOWN:
+                isPressedDown = true;
+                if (state == GameState.MAIN_MENU) {
+                    menuDownToggled = true;
+                }
+                break;
             case KeyEvent.VK_RIGHT: isPressedRight = true; break;
             // P1/P2 action (interact + place-in-grid)
             case KeyEvent.VK_E:
                 p1ActionToggled = true;
                 // Only toggle inventory when crafting is NOT open
                 // (when crafting is open, E is consumed as P1 action by the crafting screen)
-                if (gamePanel.getGameState() != GameState.INVENTORY_OPEN) {
+                if (gamePanel != null && gamePanel.getGameState() == GameState.PLAYING) {
                     gamePanel.toggleInventoryScreen();
                 }
                 break;
@@ -94,6 +106,7 @@ public class GameKeyHandler implements KeyListener {
             case KeyEvent.VK_PERIOD: p2EatToggled = true; break;
             // Crafting screen toggle / commit
             case KeyEvent.VK_I:     craftScreenToggled = true; break;
+
             case KeyEvent.VK_ENTER: craftCommitted = true; break;
             // Boat repair: R toggles the repair panel, B boards the boat.
             // Ignored by GamePanel.update() when crafting is the open panel.
@@ -113,6 +126,8 @@ public class GameKeyHandler implements KeyListener {
                 gamePanel.closeBoatRepairScreen();
             } else if (gamePanel.getGameState() == GameState.INVENTORY_OPEN) {
                 gamePanel.closeCraftingScreen();
+            } else if (gamePanel.getGameState() == GameState.MANUAL) {
+                gamePanel.showMainMenu();
             } else if (gamePanel.isInventoryScreenOpen()) {
                 gamePanel.toggleInventoryScreen();
             }
@@ -120,18 +135,18 @@ public class GameKeyHandler implements KeyListener {
         }
 
         // Block hotbar keys while inventory/crafting is open
-        if (gamePanel.isInventoryScreenOpen()) {
+        if (gamePanel != null && gamePanel.isInventoryScreenOpen()) {
             return;
         }
 
         // Hotbar slot selection when inventory is closed
         // Player 1: keys 1-5
-        if (key >= KeyEvent.VK_1 && key <= KeyEvent.VK_5 && gamePanel.getPlayer1() != null) {
+        if (gamePanel != null && key >= KeyEvent.VK_1 && key <= KeyEvent.VK_5 && gamePanel.getPlayer1() != null) {
             gamePanel.getPlayer1().getInventory().setSelectedHotBarSlot(15 + (key - KeyEvent.VK_1));
             return;
         }
         // Player 2: keys 6-0 (6=15, 7=16, 8=17, 9=18, 0=19)
-        if (gamePanel.getPlayer2() != null) {
+        if (gamePanel != null && gamePanel.getPlayer2() != null) {
             if (key >= KeyEvent.VK_6 && key <= KeyEvent.VK_9) {
                 gamePanel.getPlayer2().getInventory().setSelectedHotBarSlot(15 + (key - KeyEvent.VK_6));
                 return;
@@ -234,12 +249,14 @@ public class GameKeyHandler implements KeyListener {
     }
 
     public boolean consumeMenuUp() {
+
         boolean val = menuUp;
         menuUp = false;
         return val;
     }
 
     public boolean consumeMenuDown() {
+
         boolean val = menuDown;
         menuDown = false;
         return val;
