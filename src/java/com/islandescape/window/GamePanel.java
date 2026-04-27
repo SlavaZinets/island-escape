@@ -82,6 +82,7 @@ public class GamePanel extends JPanel {
 
         mainMenu.setOnNewGame(this::startNewGame);
         mainMenu.setOnLoadGame(this::loadGame);
+        mainMenu.setOnManual(this::showManual);
         mainMenu.setOnQuit(this::quitGame);
         refreshLoadMenuAvailability();
 
@@ -474,6 +475,10 @@ public class GamePanel extends JPanel {
         gameState = GameState.MAIN_MENU;
     }
 
+    public void showManual() {
+        gameState = GameState.MANUAL;
+    }
+
     private boolean isPlayerNearTable(Player p) {
         return craftingTable != null && p != null
                 && craftingTable.isPlayerNearby(p.getX(), p.getY());
@@ -598,17 +603,20 @@ public class GamePanel extends JPanel {
             return;
         }
 
+        // Manual mirrors the main menu background (solid black + dim overlay)
+        // so the world isn't visible behind it.
+        if (gameState == GameState.MANUAL) {
+            g.setColor(Color.BLACK);
+            g.fillRect(0, 0, getWidth(), getHeight());
+            manualScreen.render(g2, getWidth(), getHeight());
+            return;
+        }
+
         g.setColor(new Color(77, 166, 255));
         g.fillRect(0, 0, getWidth(), getHeight());
 
         Set<Point> disabledTiles = ResourceSpawner.disabledTileCoords(resourceNodes);
         map.renderMapComponent(renderer, g, getWidth(), getHeight(), player1, player2, disabledTiles);
-
-
-        if (gameState == GameState.MANUAL) {
-            manualScreen.render(g2, getWidth(), getHeight());
-            return;
-        }
       
         if (gameState == GameState.GAME_WON) {
             winOverlay.render(g2, getWidth(), getHeight());

@@ -9,6 +9,7 @@ public class MainMenu {
     public enum MenuOption {
         NEW_GAME,
         LOAD_GAME,
+        MANUAL,
         QUIT
     }
 
@@ -18,6 +19,7 @@ public class MainMenu {
     // runnable interfaces for functions which will be called when the option is selected
     private Runnable onNewGame;
     private Runnable onLoadGame;
+    private Runnable onManual;
     private Runnable onQuit;
 
     public MainMenu() {
@@ -40,9 +42,10 @@ public class MainMenu {
         MenuOption[] options = MenuOption.values();
         int n = options.length;
 
-        // do while to skip load game option if there are no saved game
+        // do while to skip load game option if there are no saved game.
+        // Math.floorMod handles the negative wraparound for moveUp from index 0.
         do {
-            selectedIndex = (selectedIndex + delta) % n;
+            selectedIndex = Math.floorMod(selectedIndex + delta, n);
         } while (!loadEnabled && options[selectedIndex] == MenuOption.LOAD_GAME);
     }
 
@@ -53,6 +56,9 @@ public class MainMenu {
                 break;
             case LOAD_GAME:
                 if (loadEnabled && onLoadGame != null) onLoadGame.run();
+                break;
+            case MANUAL:
+                if (onManual != null) onManual.run();
                 break;
             case QUIT:
                 if (onQuit != null) onQuit.run();
@@ -74,6 +80,10 @@ public class MainMenu {
 
     public void setOnLoadGame(Runnable onLoadGame) {
         this.onLoadGame = onLoadGame;
+    }
+
+    public void setOnManual(Runnable onManual) {
+        this.onManual = onManual;
     }
 
     public void setOnQuit(Runnable onQuit) {
@@ -132,6 +142,7 @@ public class MainMenu {
         switch (option) {
             case NEW_GAME:  return "New Game";
             case LOAD_GAME: return "Load Game";
+            case MANUAL:    return "Manual";
             case QUIT:      return "Quit";
             default:        return option.name();
         }

@@ -75,17 +75,10 @@ public class GameKeyHandler implements KeyListener {
             // P2 movement
             case KeyEvent.VK_UP:
                 isPressedUp = true;
-                // Menu navigation uses one-shot toggles, consumed in GamePanel.update().
-                if (state == GameState.MAIN_MENU) {
-                    menuUpToggled = true;
-                }
                 break;
             case KeyEvent.VK_LEFT:  isPressedLeft = true; break;
             case KeyEvent.VK_DOWN:
                 isPressedDown = true;
-                if (state == GameState.MAIN_MENU) {
-                    menuDownToggled = true;
-                }
                 break;
             case KeyEvent.VK_RIGHT: isPressedRight = true; break;
             // P1/P2 action (interact + place-in-grid)

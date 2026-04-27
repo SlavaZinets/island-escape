@@ -10,19 +10,20 @@ public class ManualScreen {
 
     private static final String[] LINES = {
             "Goal:",
-            "Survive on the island by collecting resources and crafting tools.",
+            "Survive, gather resources, repair the boat wreck, and escape together.",
             "",
-            "Controls:",
-            "Player 1 move: W A S D",
-            "Player 2 move: Arrow keys",
-            "Gather: G (P1), M (P2)",
-            "Inventory: E",
-            "Crafting screen near table: I",
-            "Place/confirm in crafting: Enter",
+            "Player 1:",
+            "Move: W A S D     Gather: G     Eat / drink: F",
+            "Open inventory: E     Hotbar slots: 1 2 3 4 5",
             "",
-            "Tips:",
-            "Use the correct tool for each resource.",
-            "Work together: one player can gather while another crafts.",
+            "Player 2:",
+            "Move: Arrow keys     Gather: M     Eat / drink: .",
+            "Hotbar slots: 6 7 8 9 0",
+            "",
+            "Shared:",
+            "Crafting screen (near table): I     Confirm craft: Enter",
+            "Boat repair (near wreck): R     Board boat: B",
+            "Save game: F5     Close panel: Esc",
             "",
             "Press ESC to return to Main Menu"
     };
@@ -33,7 +34,7 @@ public class ManualScreen {
         int panelW = panelWidth * 3 / 4;
         int panelH = panelHeight * 4 / 5;
 
-        g2.setColor(new Color(0, 0, 0, 185));
+        g2.setColor(new Color(0, 0, 0, 210));
         g2.fillRect(0, 0, panelWidth, panelHeight);
 
         g2.setColor(new Color(28, 38, 48, 235));
