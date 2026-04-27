@@ -48,16 +48,7 @@ public class BoatRepairScreen {
     private void drawBackground(Graphics2D g, int screenW, int screenH, BoatRepairLayout layout) {
         g.setColor(OVERLAY_DIM);
         g.fillRect(0, 0, screenW, screenH);
-
-        BufferedImage bg = assets.getPanelBg();
-        if (bg != null) {
-            g.drawImage(bg, layout.panelX, layout.panelY, layout.panelW, layout.panelH, null);
-        } else {
-            g.setColor(new Color(139, 119, 82));
-            g.fillRoundRect(layout.panelX, layout.panelY, layout.panelW, layout.panelH, 20, 20);
-            g.setColor(new Color(101, 67, 33));
-            g.drawRoundRect(layout.panelX, layout.panelY, layout.panelW, layout.panelH, 20, 20);
-        }
+        assets.drawPanel(g, layout.panelX, layout.panelY, layout.panelW, layout.panelH);
     }
 
     private void drawTitle(Graphics2D g, BoatRepairLayout layout) {
