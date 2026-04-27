@@ -100,6 +100,24 @@ public class SaveManagerIOTest {
     }
 
     @Test
+    public void loadedItemsHaveNameMatchingIconKey() throws IOException {
+        // The InventoryScreen looks up icons by item.getName().toLowerCase() against
+        // keys like "wood", "tropical_leaves", etc. Loaded items must carry a name that
+        // resolves to that key, otherwise icons disappear after load.
+        SaveData data = new SaveData();
+        data.getP1Slots()[0] = new Item(ItemType.WOOD, ItemCategory.PRIMARY_RESOURCE, "Wood", "", 5);
+        data.getP1Slots()[1] = new Item(ItemType.TROPICAL_LEAVES, ItemCategory.PRIMARY_RESOURCE, "Tropical Leaves", "", 2);
+        data.getP2Slots()[0] = new Item(ItemType.PICKAXE, ItemCategory.TOOL, "Pickaxe", "", 1);
+
+        SaveManager.save(data);
+        SaveData loaded = SaveManager.load();
+
+        assertEquals("wood", loaded.getP1Slots()[0].getName().toLowerCase());
+        assertEquals("tropical_leaves", loaded.getP1Slots()[1].getName().toLowerCase());
+        assertEquals("pickaxe", loaded.getP2Slots()[0].getName().toLowerCase());
+    }
+
+    @Test
     public void saveDataSavesBoatProgressData() throws IOException {
         SaveData data = new SaveData();
 

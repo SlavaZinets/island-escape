@@ -125,7 +125,9 @@ public final class SaveManager {
         ItemType type = ItemType.valueOf(parts[0]);
         ItemCategory category = ItemCategory.valueOf(parts[1]);
         int qty = Integer.parseInt(parts[2]);
-        return new Item(type, category, "", "", qty);
+        // Name must lowercase to the InventoryScreen icon key
+        String name = type.name().toLowerCase();
+        return new Item(type, category, name, "", qty);
     }
 
     private static double parseDouble(Properties props, String key) {

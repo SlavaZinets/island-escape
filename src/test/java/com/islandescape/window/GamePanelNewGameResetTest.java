@@ -89,6 +89,20 @@ public class GamePanelNewGameResetTest {
     }
 
     @Test
+    public void startNewGame_grantsPickaxeToP1AndAxeToP2() {
+        panel.startNewGame();
+
+        List<Item> p1Items = p1.getInventory().snapshot();
+        List<Item> p2Items = p2.getInventory().snapshot();
+
+        assertEquals(1, p1Items.size(), "P1 should start with exactly one item");
+        assertEquals(ItemType.PICKAXE, p1Items.get(0).getType());
+
+        assertEquals(1, p2Items.size(), "P2 should start with exactly one item");
+        assertEquals(ItemType.AXE, p2Items.get(0).getType());
+    }
+
+    @Test
     public void resetToFresh_reEnablesAllResourceNodes() {
         List<ResourceNode> nodes = panel.getResourceNodes();
         assertFalse(nodes.isEmpty(), "fixture map should produce at least one resource node");

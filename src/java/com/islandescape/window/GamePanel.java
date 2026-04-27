@@ -7,11 +7,14 @@ import com.islandescape.input.InventoryMouseHandler;
 import com.islandescape.inventory.InventoryCursor;
 import com.islandescape.inventory.InventoryScreen;
 import com.islandescape.item.Item;
+import com.islandescape.item.ItemCategory;
+import com.islandescape.item.ItemType;
 import com.islandescape.map.MapRenderer;
 import com.islandescape.map.TileMap;
 import com.islandescape.player.Player;
 import com.islandescape.resources.ResourceNode;
 import com.islandescape.resources.ResourceSpawner;
+import com.islandescape.save.SaveData;
 import com.islandescape.save.SaveManager;
 import com.islandescape.structures.CraftingTable;
 import com.islandescape.ui.BoatRepairScreen;
@@ -21,6 +24,7 @@ import com.islandescape.ui.WinOverlay;
 
 import javax.swing.*;
 
+import java.io.IOException;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Set;
@@ -144,6 +148,14 @@ public class GamePanel extends JPanel {
 
     public void startNewGame() {
         resetToFresh();
+        if (player1 != null) {
+            player1.getInventory().addItem(
+                new Item(ItemType.PICKAXE, ItemCategory.TOOL, "Pickaxe", "Mines stone", 1));
+        }
+        if (player2 != null) {
+            player2.getInventory().addItem(
+                new Item(ItemType.AXE, ItemCategory.TOOL, "Axe", "Chops trees for wood", 1));
+        }
         gameState = GameState.PLAYING;
     }
 
@@ -173,9 +185,31 @@ public class GamePanel extends JPanel {
     }
 
     public void loadGame() {
+        if (!SaveManager.hasSave()) return;
+        SaveData data;
+        try {
+            data = SaveManager.load();
+        } catch (IOException e) {
+            throw new RuntimeException("Failed to load save", e);
+        }
+        SaveData.apply(data, player1, player2, boatWreck, resourceNodes);
+
+        // Close any panels that may have been left open by the previous session.
+        boatRepairOpen = false;
+        if (inventoryScreen != null) {
+            inventoryScreen.setBoatRepairOpen(false);
+            inventoryScreen.setCraftingOpen(false);
+            inventoryScreen.setOpen(false);
+        }
+        gameState = GameState.PLAYING;
     }
 
     public void onSaveKey() {
+        SaveData data = SaveData.capture(player1, player2, boatWreck, resourceNodes);
+        SaveManager.save(data);
+        refreshLoadMenuAvailability();
+        farmToastMessage = "Saved";
+        farmToastFrames = 75;
     }
 
     public void refreshLoadMenuAvailability() {
@@ -262,6 +296,11 @@ public class GamePanel extends JPanel {
         // range of the fully-repaired boat are boarded.
         if (keyHandler.consumeBoardKey()) {
             onBoardKey();
+        }
+
+        // Save hotkey (F5). Edge is only set in PLAYING (gated in GameKeyHandler).
+        if (keyHandler.consumeSaveKey()) {
+            onSaveKey();
         }
 
         if (gameState == GameState.PLAYING) {

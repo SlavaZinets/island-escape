@@ -2,6 +2,7 @@ package com.islandescape.save;
 
 import com.islandescape.boat.BoatRepairSystem;
 import com.islandescape.boat.BoatWreck;
+import com.islandescape.inventory.Inventory;
 import com.islandescape.item.Item;
 import com.islandescape.player.Player;
 import com.islandescape.resources.ResourceNode;
@@ -11,7 +12,38 @@ import java.util.List;
 public class SaveData {
 
     public static SaveData capture(Player p1, Player p2, BoatWreck wreck, List<ResourceNode> nodes) {
-        return new SaveData();
+        SaveData data = new SaveData();
+
+        data.setP1x(p1.getX());
+        data.setP1y(p1.getY());
+        data.setP2x(p2.getX());
+        data.setP2y(p2.getY());
+
+        Inventory inv1 = p1.getInventory();
+        Inventory inv2 = p2.getInventory();
+        data.setP1Hotbar(inv1.getSelectedHotBarSlot());
+        data.setP2Hotbar(inv2.getSelectedHotBarSlot());
+
+        Item[] p1Slots = data.getP1Slots();
+        Item[] p2Slots = data.getP2Slots();
+        for (int i = 0; i < p1Slots.length; i++) {
+            p1Slots[i] = inv1.getSlot(i);
+            p2Slots[i] = inv2.getSlot(i);
+        }
+
+        Item[] boatSlots = data.getBoatSlots();
+        BoatRepairSystem repair = wreck.getRepairSystem();
+        for (int i = 0; i < boatSlots.length; i++) {
+            boatSlots[i] = repair.getSlot(i);
+        }
+
+        boolean[] disabled = new boolean[nodes.size()];
+        for (int i = 0; i < disabled.length; i++) {
+            disabled[i] = nodes.get(i).isDisabled();
+        }
+        data.setResourceDisabled(disabled);
+
+        return data;
     }
 
     public static void apply(SaveData data, Player p1, Player p2, BoatWreck wreck, List<ResourceNode> nodes) {

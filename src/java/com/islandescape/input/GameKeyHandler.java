@@ -94,8 +94,12 @@ public class GameKeyHandler implements KeyListener {
             // Ignored by GamePanel.update() when crafting is the open panel.
             case KeyEvent.VK_R:     boatRepairToggled = true; break;
             case KeyEvent.VK_B:     boardKeyPressed = true; break;
-            // Save hotkey — GamePanel.update() decides whether to honour it
-            case KeyEvent.VK_F5:    saveKeyPressed = true; break;
+            // Save hotkey — only fires while actively playing.
+            case KeyEvent.VK_F5:
+                if (gamePanel != null && gamePanel.getGameState() == GameState.PLAYING) {
+                    saveKeyPressed = true;
+                }
+                break;
         }
 
         // ESC closes whatever is open
