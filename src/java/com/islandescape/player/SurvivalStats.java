@@ -14,7 +14,7 @@ public class SurvivalStats {
 
      // Hunger and thirst depletion per tick. 0.5 per second / 62.5 fps = 0.008
 
-    public static final double DEPLETION_PER_TICK = 1.5 / 62.5;
+    public static final double DEPLETION_PER_TICK = 0.5 / 62.5;
 
     private double hunger;
     private double thirst;
@@ -47,6 +47,22 @@ public class SurvivalStats {
     public void drink(int amount) {
         if (amount <= 0) return;
         thirst = Math.min(MAX, thirst + amount);
+    }
+
+    // Restores hunger and thirst from a backup snapshot. Both values are
+    // clamped to [0, MAX] and the starve-tick counter is cleared so a freshly
+    // loaded session doesn't inherit the prior session's accumulated death
+    // ticks even if it was saved at zero.
+    public void loadFromBackup(int hungerValue, int thirstValue) {
+        hunger = clamp(hungerValue);
+        thirst = clamp(thirstValue);
+        ticksAtZero = 0;
+    }
+
+    private static int clamp(int value) {
+        if (value < 0) return 0;
+        if (value > MAX) return MAX;
+        return value;
     }
 
     // Current hunger, floored to an int in [0, MAX].

@@ -141,7 +141,7 @@ public class MainMenu {
     private static String labelFor(MenuOption option) {
         switch (option) {
             case NEW_GAME:  return "New Game";
-            case LOAD_GAME: return "Load Game";
+            case LOAD_GAME: return "Continue Game";
             case MANUAL:    return "Manual";
             case QUIT:      return "Quit";
             default:        return option.name();

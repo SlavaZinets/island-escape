@@ -183,10 +183,36 @@ public class GamePanel extends JPanel {
     }
 
     public void quitGame() {
+        persistSessionIfInProgress();
         quitRequested = true;
         if (quitAction != null) {
             quitAction.run();
         }
+    }
+
+    private boolean isSessionInProgress() {
+        return gameState == GameState.PLAYING || gameState == GameState.INVENTORY_OPEN;
+    }
+
+    // Closes any open panel (returning cursor / mid-craft items to the
+    // players' inventories) and writes a save snapshot — but only if a
+    // gameplay session is actually in progress. No-op from MAIN_MENU /
+    // MANUAL / GAME_WON / GAME_OVER, so leaving those states never
+    // overwrites the save with a fresh / dead state.
+    private void persistSessionIfInProgress() {
+        if (!isSessionInProgress()) return;
+        if (boatRepairOpen) {
+            closeBoatRepairScreen();
+        } else if (gameState == GameState.INVENTORY_OPEN) {
+            closeCraftingScreen();
+        }
+        if (inventoryScreen != null && inventoryScreen.isOpen()) {
+            inventoryScreen.returnHeldItem();
+            inventoryScreen.setOpen(false);
+        }
+        SaveData data = SaveData.capture(player1, player2, boatWreck, resourceNodes);
+        SaveManager.save(data);
+        refreshLoadMenuAvailability();
     }
 
     public void loadGame() {
@@ -467,6 +493,7 @@ public class GamePanel extends JPanel {
     }
 
     public void showMainMenu() {
+        persistSessionIfInProgress();
         if (inventoryScreen != null) {
             inventoryScreen.returnHeldItem();
             inventoryScreen.setCraftingOpen(false);

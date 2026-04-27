@@ -202,4 +202,59 @@ public class SurvivalStatsTest {
         assertTrue(s.isDead(),
                 "isDead must be true once ticksAtZero ≥ GAME_OVER_TICKS");
     }
+
+    @Test
+    void loadFromBackupStoresExactValues() {
+        SurvivalStats s = new SurvivalStats();
+        s.loadFromBackup(42, 17);
+        assertEquals(42, s.getHunger());
+        assertEquals(17, s.getThirst());
+    }
+
+    @Test
+    void loadFromBackupClampsHungerBelowZero() {
+        SurvivalStats s = new SurvivalStats();
+        s.loadFromBackup(-50, 30);
+        assertEquals(0, s.getHunger());
+        assertEquals(30, s.getThirst());
+    }
+
+    @Test
+    void loadFromBackupClampsThirstAboveMax() {
+        SurvivalStats s = new SurvivalStats();
+        s.loadFromBackup(50, SurvivalStats.MAX + 999);
+        assertEquals(50, s.getHunger());
+        assertEquals(SurvivalStats.MAX, s.getThirst());
+    }
+
+    @Test
+    void loadFromBackupClearsStarveTickCounter() {
+        SurvivalStats s = new SurvivalStats();
+        // Drain to empty so ticksAtZero accumulates.
+        tickDownTimes(s, ticksForDrop(SurvivalStats.MAX) + 50);
+        assertTrue(s.getTicksAtZero() > 0);
+
+        // Restoring the backup values must reset the death counter so a
+        // freshly loaded session doesn't carry over prior starve ticks.
+        s.loadFromBackup(80, 80);
+
+        assertEquals(0, s.getTicksAtZero());
+    }
+
+    @Test
+    void loadFromBackupAtZeroDoesNotInheritPriorDeathCounter() {
+        SurvivalStats s = new SurvivalStats();
+        // Accumulate death ticks on the current instance.
+        tickDownTimes(s, ticksForDrop(SurvivalStats.MAX) + 50);
+        int prior = s.getTicksAtZero();
+        assertTrue(prior > 0);
+
+        // Loading backup values of 0/0 should still reset the counter — the
+        // saved snapshot represents a fresh starting point regardless of what
+        // accumulated in the in-memory instance before the load.
+        s.loadFromBackup(0, 0);
+
+        assertEquals(0, s.getTicksAtZero());
+        assertTrue(s.isStarving());
+    }
 }

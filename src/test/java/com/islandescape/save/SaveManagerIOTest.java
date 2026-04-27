@@ -3,6 +3,7 @@ package com.islandescape.save;
 import com.islandescape.item.Item;
 import com.islandescape.item.ItemCategory;
 import com.islandescape.item.ItemType;
+import com.islandescape.player.SurvivalStats;
 import org.junit.jupiter.api.AfterEach;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
@@ -164,6 +165,49 @@ public class SaveManagerIOTest {
         assertNotNull(loaded);
         assertNotNull(loaded.getResourceDisabled());
         assertEquals(0, loaded.getResourceDisabled().length);
+    }
+
+    @Test
+    public void saveDataSavesHungerAndThirst() throws IOException {
+        SaveData data = new SaveData();
+        data.setP1Hunger(73);
+        data.setP1Thirst(64);
+        data.setP2Hunger(12);
+        data.setP2Thirst(45);
+
+        SaveManager.save(data);
+        SaveData loaded = SaveManager.load();
+
+        assertEquals(73, loaded.getP1Hunger());
+        assertEquals(64, loaded.getP1Thirst());
+        assertEquals(12, loaded.getP2Hunger());
+        assertEquals(45, loaded.getP2Thirst());
+    }
+
+    @Test
+    public void legacySaveWithoutHungerThirstKeysLoadsAtMax() throws IOException {
+        // Simulate a save file written before survival stats were persisted:
+        // capture before adding the new fields and write it via Properties
+        // directly. SaveManager.save always writes them now, so we hand-craft
+        // a Properties file missing those keys.
+        java.util.Properties props = new java.util.Properties();
+        props.setProperty("p1.x", "1.0");
+        props.setProperty("p1.y", "2.0");
+        props.setProperty("p2.x", "3.0");
+        props.setProperty("p2.y", "4.0");
+        props.setProperty("p1.hotbar", "15");
+        props.setProperty("p2.hotbar", "15");
+        props.setProperty("resource.disabled.length", "0");
+        try (java.io.BufferedWriter w = java.nio.file.Files.newBufferedWriter(file.toPath())) {
+            props.store(w, "legacy");
+        }
+
+        SaveData loaded = SaveManager.load();
+
+        assertEquals(SurvivalStats.MAX, loaded.getP1Hunger());
+        assertEquals(SurvivalStats.MAX, loaded.getP1Thirst());
+        assertEquals(SurvivalStats.MAX, loaded.getP2Hunger());
+        assertEquals(SurvivalStats.MAX, loaded.getP2Thirst());
     }
 
     private static void assertItemEquals(ItemType type, ItemCategory category, int qty, Item actual) {

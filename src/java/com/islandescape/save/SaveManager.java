@@ -35,6 +35,11 @@ public final class SaveManager {
         props.setProperty("p1.hotbar", Integer.toString(data.getP1Hotbar()));
         props.setProperty("p2.hotbar", Integer.toString(data.getP2Hotbar()));
 
+        props.setProperty("p1.hunger", Integer.toString(data.getP1Hunger()));
+        props.setProperty("p1.thirst", Integer.toString(data.getP1Thirst()));
+        props.setProperty("p2.hunger", Integer.toString(data.getP2Hunger()));
+        props.setProperty("p2.thirst", Integer.toString(data.getP2Thirst()));
+
         writeSlots(props, "p1.slot.", data.getP1Slots());
         writeSlots(props, "p2.slot.", data.getP2Slots());
         writeSlots(props, "boat.slot.", data.getBoatSlots());
@@ -70,6 +75,13 @@ public final class SaveManager {
 
         data.setP1Hotbar(parseInt(props, "p1.hotbar"));
         data.setP2Hotbar(parseInt(props, "p2.hotbar"));
+
+        // Survival stats — only override the SaveData defaults when the
+        // property is present, so legacy saves load as full-stats.
+        applyIntIfPresent(props, "p1.hunger", data::setP1Hunger);
+        applyIntIfPresent(props, "p1.thirst", data::setP1Thirst);
+        applyIntIfPresent(props, "p2.hunger", data::setP2Hunger);
+        applyIntIfPresent(props, "p2.thirst", data::setP2Thirst);
 
         readSlots(props, "p1.slot.", data.getP1Slots());
         readSlots(props, "p2.slot.", data.getP2Slots());
@@ -138,5 +150,11 @@ public final class SaveManager {
     private static int parseInt(Properties props, String key) {
         String raw = props.getProperty(key);
         return raw == null ? 0 : Integer.parseInt(raw);
+    }
+
+    private static void applyIntIfPresent(Properties props, String key,
+                                          java.util.function.IntConsumer setter) {
+        String raw = props.getProperty(key);
+        if (raw != null) setter.accept(Integer.parseInt(raw));
     }
 }

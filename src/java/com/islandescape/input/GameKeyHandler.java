@@ -113,7 +113,8 @@ public class GameKeyHandler implements KeyListener {
                 break;
         }
 
-        // ESC closes whatever is open
+        // ESC closes whatever is open. With nothing open while playing, it
+        // returns to the main menu — showMainMenu() saves the session.
         if (key == KeyEvent.VK_ESCAPE) {
             if (gamePanel.isBoatRepairOpen()) {
                 gamePanel.closeBoatRepairScreen();
@@ -123,6 +124,8 @@ public class GameKeyHandler implements KeyListener {
                 gamePanel.showMainMenu();
             } else if (gamePanel.isInventoryScreenOpen()) {
                 gamePanel.toggleInventoryScreen();
+            } else if (gamePanel.getGameState() == GameState.PLAYING) {
+                gamePanel.showMainMenu();
             }
             return;
         }
