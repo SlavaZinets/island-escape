@@ -1,5 +1,6 @@
 package com.islandescape.inventory;
 
+import com.islandescape.boat.BoatRepairSystem;
 import com.islandescape.crafting.CraftingSystem;
 import com.islandescape.item.Item;
 
@@ -197,6 +198,55 @@ public class InventoryCursor {
 
         if (heldItem.getQuantity() <= 0) {
             heldItem = null;
+        }
+    }
+
+
+    // Left-click with a full cursor on a boat-repair slot.
+    public void placeIntoBoatSlot(BoatRepairSystem brs, int slot) {
+        if (heldItem == null) return;
+        heldItem = brs.placeIn(slot, heldItem);
+    }
+
+    // Right-click with a full cursor on a boat-repair slot.
+    public void placeOneIntoBoatSlot(BoatRepairSystem brs, int slot) {
+        if (heldItem == null) return;
+        if (heldItem.getType() != brs.getRequiredType(slot)) return;
+        if (brs.isSlotComplete(slot)) return;
+
+        Item one = heldItem.split(1);
+        brs.placeIn(slot, one);
+
+        if (heldItem.getQuantity() <= 0) {
+            heldItem = null;
+        }
+    }
+
+    // Left-click with an empty cursor on a boat-repair slot
+    public void pickUpFromBoatSlot(BoatRepairSystem brs, int slot) {
+        if (!isEmpty()) return;
+        Item taken = brs.takeOut(slot);
+        if (taken != null) {
+            heldItem = taken;
+        }
+    }
+
+    // Right-click with an empty cursor on a boat-repair slot
+    public void pickUpHalfFromBoatSlot(BoatRepairSystem brs, int slot) {
+        if (!isEmpty()) return;
+        if (brs.isSlotComplete(slot)) return;
+        Item existing = brs.getSlot(slot);
+        if (existing == null) return;
+
+        int total = existing.getQuantity();
+        int takeAmount = (int) Math.ceil(total / 2.0);
+
+        if (takeAmount >= total) {
+            // Take everything — use takeOut so the slot is cleared.
+            heldItem = brs.takeOut(slot);
+        } else {
+            // Split in place; the slot retains the remainder.
+            heldItem = existing.split(takeAmount);
         }
     }
 

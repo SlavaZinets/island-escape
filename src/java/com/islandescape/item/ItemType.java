@@ -15,6 +15,8 @@ public enum ItemType {
     RUDDER,
     FITTINGS,
     COCONUT,
-    BANANA
+    BANANA,
+    SAIL,
+    WATER
 
 }

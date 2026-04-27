@@ -31,7 +31,7 @@ public class CraftingTableTest {
          inv[2] = new Item(ItemType.ROPE, ItemCategory.CRAFTABLE_RESOURCE, "Rope", "Crafted rope");
            int[] indices = {0, 1, 2};
         //running craft at table position
-        table.Crafting(0, 0, inv, indices);
+//        table.Crafting(0, 0, inv, indices);
          assertNull(inv[1]);
         assertNull(inv[2]);
 

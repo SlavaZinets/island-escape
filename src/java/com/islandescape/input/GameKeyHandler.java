@@ -26,11 +26,19 @@ public class GameKeyHandler implements KeyListener {
     private boolean p2ActionToggled = false;
     private boolean p1GatherToggled = false;
     private boolean p2GatherToggled = false;
+    private boolean p1EatToggled = false;
+    private boolean p2EatToggled = false;
     private boolean craftScreenToggled = false;
     private boolean craftCommitted = false;
-    private boolean menuUpToggled = false;
-    private boolean menuDownToggled = false;
-    private boolean menuSelectToggled = false;
+
+    private boolean boatRepairToggled = false;
+    private boolean boardKeyPressed = false;
+    private boolean saveKeyPressed = false;
+
+    // Main menu navigation edges
+    private boolean menuUp = false;
+    private boolean menuDown = false;
+    private boolean menuConfirm = false;
 
     private final GamePanel gamePanel;
 
@@ -41,7 +49,22 @@ public class GameKeyHandler implements KeyListener {
     @Override
     public void keyPressed(KeyEvent e) {
         int key = e.getKeyCode();
-        GameState state = gamePanel != null ? gamePanel.getGameState() : GameState.PLAYING;
+
+        // Main menu state owns navigation keys and blocks all other input
+        if (gamePanel != null && gamePanel.getGameState() == GameState.MAIN_MENU) {
+            switch (key) {
+                case KeyEvent.VK_UP:
+                    menuUp = true;
+                    break;
+                case KeyEvent.VK_DOWN:
+                    menuDown = true;
+                    break;
+                case KeyEvent.VK_ENTER:
+                    menuConfirm = true;
+                    break;
+            }
+            return;
+        }
 
         switch (key) {
             // P1 movement
@@ -78,23 +101,30 @@ public class GameKeyHandler implements KeyListener {
             // Resource gathering: G for P1, M for P2
             case KeyEvent.VK_G:     p1GatherToggled = true; break;
             case KeyEvent.VK_M:     p2GatherToggled = true; break;
+            // Eat / drink first consumable: F for P1, . for P2
+            case KeyEvent.VK_F:      p1EatToggled = true; break;
+            case KeyEvent.VK_PERIOD: p2EatToggled = true; break;
             // Crafting screen toggle / commit
             case KeyEvent.VK_I:     craftScreenToggled = true; break;
-            case KeyEvent.VK_ENTER:
-                craftCommitted = true;
-                // In main menu, Enter confirms the currently selected option.
-                if (state == GameState.MAIN_MENU) {
-                    menuSelectToggled = true;
+
+            case KeyEvent.VK_ENTER: craftCommitted = true; break;
+            // Boat repair: R toggles the repair panel, B boards the boat.
+            // Ignored by GamePanel.update() when crafting is the open panel.
+            case KeyEvent.VK_R:     boatRepairToggled = true; break;
+            case KeyEvent.VK_B:     boardKeyPressed = true; break;
+            // Save hotkey — only fires while actively playing.
+            case KeyEvent.VK_F5:
+                if (gamePanel != null && gamePanel.getGameState() == GameState.PLAYING) {
+                    saveKeyPressed = true;
                 }
                 break;
         }
 
         // ESC closes whatever is open
         if (key == KeyEvent.VK_ESCAPE) {
-            if (gamePanel == null) {
-                return;
-            }
-            if (gamePanel.getGameState() == GameState.INVENTORY_OPEN) {
+            if (gamePanel.isBoatRepairOpen()) {
+                gamePanel.closeBoatRepairScreen();
+            } else if (gamePanel.getGameState() == GameState.INVENTORY_OPEN) {
                 gamePanel.closeCraftingScreen();
             } else if (gamePanel.getGameState() == GameState.MANUAL) {
                 gamePanel.showMainMenu();
@@ -176,6 +206,24 @@ public class GameKeyHandler implements KeyListener {
         return val;
     }
 
+    public boolean consumeBoatRepairToggle() {
+        boolean val = boatRepairToggled;
+        boatRepairToggled = false;
+        return val;
+    }
+
+    public boolean consumeBoardKey() {
+        boolean val = boardKeyPressed;
+        boardKeyPressed = false;
+        return val;
+    }
+
+    public boolean consumeSaveKey() {
+        boolean val = saveKeyPressed;
+        saveKeyPressed = false;
+        return val;
+    }
+
     public boolean consumeP1Action() {
         boolean val = p1ActionToggled;
         p1ActionToggled = false;
@@ -201,20 +249,34 @@ public class GameKeyHandler implements KeyListener {
     }
 
     public boolean consumeMenuUp() {
-        boolean val = menuUpToggled;
-        menuUpToggled = false;
+
+        boolean val = menuUp;
+        menuUp = false;
         return val;
     }
 
     public boolean consumeMenuDown() {
-        boolean val = menuDownToggled;
-        menuDownToggled = false;
+
+        boolean val = menuDown;
+        menuDown = false;
         return val;
     }
 
-    public boolean consumeMenuSelect() {
-        boolean val = menuSelectToggled;
-        menuSelectToggled = false;
+    public boolean consumeMenuConfirm() {
+        boolean val = menuConfirm;
+        menuConfirm = false;
+        return val;
+    }
+
+    public boolean consumeP1Eat() {
+        boolean val = p1EatToggled;
+        p1EatToggled = false;
+        return val;
+    }
+
+    public boolean consumeP2Eat() {
+        boolean val = p2EatToggled;
+        p2EatToggled = false;
         return val;
     }
 }

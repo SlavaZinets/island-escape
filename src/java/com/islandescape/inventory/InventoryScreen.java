@@ -1,10 +1,13 @@
 package com.islandescape.inventory;
 
+import com.islandescape.boat.BoatRepairSystem;
 import com.islandescape.crafting.CraftingRecipe;
 import com.islandescape.crafting.CraftingSystem;
 import com.islandescape.item.Item;
 import com.islandescape.player.Player;
+import com.islandescape.ui.BoatRepairLayout;
 import com.islandescape.ui.CraftingScreenLayout;
+import com.islandescape.ui.StatusBarRenderer;
 
 import javax.imageio.ImageIO;
 import java.awt.Color;
@@ -31,11 +34,15 @@ public class InventoryScreen {
     private final Map<String, BufferedImage> itemIcons;
 
     private CraftingSystem craftingSystem;
+    private BoatRepairSystem boatRepairSystem;
 
     private boolean open;
     private boolean craftingOpen;
+    private boolean boatRepairOpen;
     private boolean p1NearTable = true;
     private boolean p2NearTable = true;
+    private boolean p1NearBoat = true;
+    private boolean p2NearBoat = true;
     private int mouseX;
     private int mouseY;
 
@@ -68,6 +75,43 @@ public class InventoryScreen {
         this.p2NearTable = p2Near;
     }
 
+    // Boat repair
+
+    public void setBoatRepairSystem(BoatRepairSystem boatRepairSystem) {
+        this.boatRepairSystem = boatRepairSystem;
+    }
+
+    public void setBoatRepairOpen(boolean boatRepairOpen) {
+        this.boatRepairOpen = boatRepairOpen;
+    }
+
+    public void setPlayerNearBoat(boolean p1Near, boolean p2Near) {
+        this.p1NearBoat = p1Near;
+        this.p2NearBoat = p2Near;
+    }
+
+    // Determine which boat-repair slot was clicked, or -1 if none
+
+    int pixelToBoatSlot(int px, int py, int panelW, int panelH) {
+        BoatRepairLayout layout = new BoatRepairLayout(panelW, panelH);
+
+        int relX = px - layout.repairSlotsStartX;
+        int relY = py - layout.repairSlotsY;
+        if (relX < 0 || relY < 0) return -1;
+
+        // One row only — click must be within the slot height vertically.
+        if (relY >= layout.slotSize) return -1;
+
+        int cellSize = layout.slotSize + layout.slotGap;
+        int col = relX / cellSize;
+        if (col >= BoatRepairLayout.SLOT_COUNT) return -1;
+
+        // Click must be inside the slot horizontally, not in the gap between slots.
+        if (relX % cellSize >= layout.slotSize) return -1;
+
+        return col;
+    }
+
     public void updateMouse(int x, int y) {
         this.mouseX = x;
         this.mouseY = y;
@@ -77,6 +121,15 @@ public class InventoryScreen {
 
     public void handleClick(int screenX, int screenY, boolean isLeftClick, int panelW, int panelH) {
         if (!open) return;
+
+        // When boat repair is open, check boat-repair slots first
+        if (boatRepairOpen && boatRepairSystem != null) {
+            int boatSlot = pixelToBoatSlot(screenX, screenY, panelW, panelH);
+            if (boatSlot >= 0) {
+                handleBoatRepairClick(boatSlot, isLeftClick, screenX, panelW, panelH);
+                return;
+            }
+        }
 
         // When crafting is open, check crafting areas first
         if (craftingOpen && craftingSystem != null) {
@@ -99,7 +152,13 @@ public class InventoryScreen {
         int p1Left;
         int p2Left;
 
-        if (craftingOpen) {
+        if (boatRepairOpen) {
+            BoatRepairLayout layout = new BoatRepairLayout(panelW, panelH);
+            xBorder = layout.invXBorder;
+            gridTop = layout.invAreaTop + 22;
+            p1Left = layout.invP1Left;
+            p2Left = layout.invP2Left;
+        } else if (craftingOpen) {
             CraftingScreenLayout layout = new CraftingScreenLayout(panelW, panelH);
             xBorder = layout.invXBorder;
             gridTop = layout.invAreaTop + 22;
@@ -115,8 +174,11 @@ public class InventoryScreen {
         // determine player by X position
         boolean isPlayer1 = screenX < xBorder;
 
-        // Block inventory clicks for players not near the crafting table
-        if (craftingOpen) {
+        // Block inventory clicks for players not near the active structure.
+        if (boatRepairOpen) {
+            if (isPlayer1 && !p1NearBoat) return;
+            if (!isPlayer1 && !p2NearBoat) return;
+        } else if (craftingOpen) {
             if (isPlayer1 && !p1NearTable) return;
             if (!isPlayer1 && !p2NearTable) return;
         }
@@ -161,6 +223,24 @@ public class InventoryScreen {
         if (relY % cellSize >= layout.slotSize) return -1;
 
         return row * CraftingScreenLayout.GRID_COLS + col;
+    }
+
+    // Handle a click on a boat-repair slot.
+
+    private void handleBoatRepairClick(int slot, boolean isLeftClick, int screenX, int panelW, int panelH) {
+        if (cursor.isEmpty()) {
+            if (isLeftClick) {
+                cursor.pickUpFromBoatSlot(boatRepairSystem, slot);
+            } else {
+                cursor.pickUpHalfFromBoatSlot(boatRepairSystem, slot);
+            }
+        } else {
+            if (isLeftClick) {
+                cursor.placeIntoBoatSlot(boatRepairSystem, slot);
+            } else {
+                cursor.placeOneIntoBoatSlot(boatRepairSystem, slot);
+            }
+        }
     }
 
     // Handle a click on a crafting grid slot — mirrors inventory click behavior
@@ -283,7 +363,13 @@ public class InventoryScreen {
     private void drawFullInventory(Graphics2D g2d, int panelW, int panelH) {
         int p1Left, p2Left, gridTop, xBorder;
 
-        if (craftingOpen) {
+        if (boatRepairOpen) {
+            BoatRepairLayout layout = new BoatRepairLayout(panelW, panelH);
+            p1Left = layout.invP1Left;
+            p2Left = layout.invP2Left;
+            gridTop = layout.invAreaTop + 22;
+            xBorder = layout.invXBorder;
+        } else if (craftingOpen) {
             CraftingScreenLayout layout = new CraftingScreenLayout(panelW, panelH);
             p1Left = layout.invP1Left;
             p2Left = layout.invP2Left;
@@ -296,8 +382,8 @@ public class InventoryScreen {
             xBorder = getXBorder(panelW);
         }
 
-        boolean p1Blocked = craftingOpen && !p1NearTable;
-        boolean p2Blocked = craftingOpen && !p2NearTable;
+        boolean p1Blocked = (craftingOpen && !p1NearTable) || (boatRepairOpen && !p1NearBoat);
+        boolean p2Blocked = (craftingOpen && !p2NearTable) || (boatRepairOpen && !p2NearBoat);
 
         // Player 1 label
         g2d.setColor(p1Blocked ? new Color(120, 100, 80) : new Color(60, 40, 20));
@@ -380,6 +466,36 @@ public class InventoryScreen {
             g2d.setFont(new Font("SansSerif", Font.BOLD, 12));
             String qty = String.valueOf(item.getQuantity());
             g2d.drawString(qty, x + SLOT_SIZE - 8 - g2d.getFontMetrics().stringWidth(qty), y + SLOT_SIZE - 6);
+        }
+    }
+
+    /*
+        Draws the hunger/thirst HUD above each player's hotbar. No-ops when
+        the full inventory is open — the bars only belong on top of the
+        hotbar layout (PLAYING and GAME_OVER), not when slot grids are
+        spread across the screen. Geometry mirrors drawHotbar() exactly so
+        the bars line up perfectly with the hotbar slots underneath.
+     */
+    public void drawStatusBars(Graphics2D g2d, int panelW, int panelH) {
+        if (open) return; // hidden during INVENTORY_OPEN / E-toggle full grid
+
+        int hotbarWidth = COLS * SLOT_SIZE + (COLS - 1) * SLOT_GAP;
+        int hotbarY = panelH - SLOT_SIZE - 20;
+
+        // The player name sits at hotbarY - 6. The bar stack ends just
+        // above the name with a 4 px breather so it doesn't crowd the text.
+        int barStackBottom = hotbarY - 6 - 12 - 4;
+
+        int p1HotbarX = panelW / 2 - hotbarWidth - 120;
+        int p2HotbarX = panelW / 2 + 120;
+
+        if (player1 != null) {
+            StatusBarRenderer.drawForPlayer(g2d, player1.getSurvivalStats(),
+                    p1HotbarX, barStackBottom, hotbarWidth);
+        }
+        if (player2 != null) {
+            StatusBarRenderer.drawForPlayer(g2d, player2.getSurvivalStats(),
+                    p2HotbarX, barStackBottom, hotbarWidth);
         }
     }
 
