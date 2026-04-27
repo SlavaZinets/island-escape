@@ -30,6 +30,7 @@ public class GameKeyHandler implements KeyListener {
     private boolean craftCommitted = false;
     private boolean boatRepairToggled = false;
     private boolean boardKeyPressed = false;
+    private boolean saveKeyPressed = false;
 
     // Main menu navigation edges
     private boolean menuUp = false;
@@ -93,6 +94,8 @@ public class GameKeyHandler implements KeyListener {
             // Ignored by GamePanel.update() when crafting is the open panel.
             case KeyEvent.VK_R:     boatRepairToggled = true; break;
             case KeyEvent.VK_B:     boardKeyPressed = true; break;
+            // Save hotkey — GamePanel.update() decides whether to honour it
+            case KeyEvent.VK_F5:    saveKeyPressed = true; break;
         }
 
         // ESC closes whatever is open
@@ -188,6 +191,12 @@ public class GameKeyHandler implements KeyListener {
     public boolean consumeBoardKey() {
         boolean val = boardKeyPressed;
         boardKeyPressed = false;
+        return val;
+    }
+
+    public boolean consumeSaveKey() {
+        boolean val = saveKeyPressed;
+        saveKeyPressed = false;
         return val;
     }
 

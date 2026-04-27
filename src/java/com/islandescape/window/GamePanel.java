@@ -12,6 +12,7 @@ import com.islandescape.map.TileMap;
 import com.islandescape.player.Player;
 import com.islandescape.resources.ResourceNode;
 import com.islandescape.resources.ResourceSpawner;
+import com.islandescape.save.SaveManager;
 import com.islandescape.structures.CraftingTable;
 import com.islandescape.ui.BoatRepairScreen;
 import com.islandescape.ui.CraftingScreen;
@@ -74,6 +75,7 @@ public class GamePanel extends JPanel {
         mainMenu.setOnNewGame(this::startNewGame);
         mainMenu.setOnLoadGame(this::loadGame);
         mainMenu.setOnQuit(this::quitGame);
+        refreshLoadMenuAvailability();
 
         setFocusable(true);
     }
@@ -171,6 +173,13 @@ public class GamePanel extends JPanel {
     }
 
     public void loadGame() {
+    }
+
+    public void onSaveKey() {
+    }
+
+    public void refreshLoadMenuAvailability() {
+        mainMenu.setLoadEnabled(SaveManager.hasSave());
     }
 
     public void startGameLoop() {
