@@ -16,6 +16,7 @@ public enum ItemType {
     FITTINGS,
     COCONUT,
     BANANA,
-    SAIL
+    SAIL,
+    WATER
 
 }

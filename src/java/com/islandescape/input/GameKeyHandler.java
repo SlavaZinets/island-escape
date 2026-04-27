@@ -26,6 +26,8 @@ public class GameKeyHandler implements KeyListener {
     private boolean p2ActionToggled = false;
     private boolean p1GatherToggled = false;
     private boolean p2GatherToggled = false;
+    private boolean p1EatToggled = false;
+    private boolean p2EatToggled = false;
     private boolean craftScreenToggled = false;
     private boolean craftCommitted = false;
     private boolean boatRepairToggled = false;
@@ -87,6 +89,9 @@ public class GameKeyHandler implements KeyListener {
             // Resource gathering: G for P1, M for P2
             case KeyEvent.VK_G:     p1GatherToggled = true; break;
             case KeyEvent.VK_M:     p2GatherToggled = true; break;
+            // Eat / drink first consumable: F for P1, . for P2
+            case KeyEvent.VK_F:      p1EatToggled = true; break;
+            case KeyEvent.VK_PERIOD: p2EatToggled = true; break;
             // Crafting screen toggle / commit
             case KeyEvent.VK_I:     craftScreenToggled = true; break;
             case KeyEvent.VK_ENTER: craftCommitted = true; break;
@@ -243,6 +248,16 @@ public class GameKeyHandler implements KeyListener {
     public boolean consumeMenuConfirm() {
         boolean val = menuConfirm;
         menuConfirm = false;
+
+    public boolean consumeP1Eat() {
+        boolean val = p1EatToggled;
+        p1EatToggled = false;
+        return val;
+    }
+
+    public boolean consumeP2Eat() {
+        boolean val = p2EatToggled;
+        p2EatToggled = false;
         return val;
     }
 }
