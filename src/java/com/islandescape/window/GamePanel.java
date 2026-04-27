@@ -3,7 +3,6 @@ package com.islandescape.window;
 import com.islandescape.crafting.CraftingSystem;
 import com.islandescape.input.GameKeyHandler;
 import com.islandescape.input.InventoryMouseHandler;
-import com.islandescape.input.MainMenuMouseHandler;
 import com.islandescape.inventory.InventoryCursor;
 import com.islandescape.inventory.InventoryScreen;
 import com.islandescape.item.Item;
@@ -14,7 +13,6 @@ import com.islandescape.resources.ResourceNode;
 import com.islandescape.resources.ResourceSpawner;
 import com.islandescape.structures.CraftingTable;
 import com.islandescape.ui.CraftingScreen;
-import com.islandescape.ui.MainMenuScreen;
 import com.islandescape.ui.ManualScreen;
 
 import javax.swing.*;
@@ -44,10 +42,8 @@ public class GamePanel extends JPanel {
     private CraftingSystem craftingSystem;
     private CraftingTable craftingTable;
     private CraftingScreen craftingScreen;
-    private final MainMenuScreen mainMenuScreen = new MainMenuScreen();
     private final ManualScreen manualScreen = new ManualScreen();
     private int mainMenuSelectedIndex = 0;
-    private MainMenuMouseHandler mainMenuMouseHandler;
     private GameState gameState = GameState.MAIN_MENU;
     private final List<ResourceNode> resourceNodes = new ArrayList<>();
     private String farmToastMessage = "";
@@ -64,9 +60,6 @@ public class GamePanel extends JPanel {
         InventoryMouseHandler mouseHandler = new InventoryMouseHandler(inventoryScreen, this);
         addMouseListener(mouseHandler);
         addMouseMotionListener(mouseHandler);
-
-        this.mainMenuMouseHandler = new MainMenuMouseHandler(mainMenuScreen, this);
-        addMouseListener(mainMenuMouseHandler);
 
         resourceNodes.addAll(ResourceSpawner.spawnFromMap(map));
 
@@ -110,21 +103,6 @@ public class GamePanel extends JPanel {
 
     private void update() {
         if (keyHandler == null) return;
-
-        // Main menu is input-only: no world updates while selecting options.
-        if (gameState == GameState.MAIN_MENU) {
-            if (keyHandler.consumeMenuUp()) {
-                mainMenuSelectedIndex = (mainMenuSelectedIndex + MainMenuScreen.OPTIONS.length - 1)
-                        % MainMenuScreen.OPTIONS.length;
-            }
-            if (keyHandler.consumeMenuDown()) {
-                mainMenuSelectedIndex = (mainMenuSelectedIndex + 1) % MainMenuScreen.OPTIONS.length;
-            }
-            if (keyHandler.consumeMenuSelect()) {
-                activateMainMenuSelection();
-            }
-            return;
-        }
 
         // Manual screen is static and exits back to menu via ESC (handled in key handler).
         if (gameState == GameState.MANUAL) {
@@ -250,19 +228,6 @@ public class GamePanel extends JPanel {
         return isPlayerNearTable(player1) || isPlayerNearTable(player2);
     }
 
-    private void activateMainMenuSelection() {
-        // 0: start game, 1: open manual, 2: exit app.
-        if (mainMenuSelectedIndex == 0) {
-            startGameFromMenu();
-            return;
-        }
-        if (mainMenuSelectedIndex == 1) {
-            gameState = GameState.MANUAL;
-            return;
-        }
-        System.exit(0);
-    }
-
     public void showMainMenu() {
         if (inventoryScreen != null) {
             inventoryScreen.returnHeldItem();
@@ -270,15 +235,6 @@ public class GamePanel extends JPanel {
             inventoryScreen.setOpen(false);
         }
         gameState = GameState.MAIN_MENU;
-    }
-
-    public void startGameFromMenu() {
-        gameState = GameState.PLAYING;
-    }
-
-    public void selectMainMenuOption(int index) {
-        mainMenuSelectedIndex = index;
-        activateMainMenuSelection();
     }
 
     private boolean isPlayerNearTable(Player p) {
@@ -337,11 +293,6 @@ public class GamePanel extends JPanel {
 
         Set<Point> disabledTiles = ResourceSpawner.disabledTileCoords(resourceNodes);
         map.renderMapComponent(renderer, g, getWidth(), getHeight(), player1, player2, disabledTiles);
-
-        if (gameState == GameState.MAIN_MENU) {
-            mainMenuScreen.render(g2, getWidth(), getHeight(), mainMenuSelectedIndex);
-            return;
-        }
 
         if (gameState == GameState.MANUAL) {
             manualScreen.render(g2, getWidth(), getHeight());
