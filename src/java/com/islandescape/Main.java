@@ -19,6 +19,9 @@ import com.islandescape.map.MapRenderer;
 import com.islandescape.map.TileMap;
 
 import java.awt.*;
+import java.awt.event.WindowAdapter;
+import java.awt.event.WindowEvent;
+import javax.swing.JFrame;
 
 public class Main {
 	public static void main(String[] args) throws Exception {
@@ -73,8 +76,17 @@ public class Main {
 		panel.setFocusable(true);
 		panel.setKeyHandler(new GameKeyHandler(panel));
 
-		// 7. Create the window fullscreen and add the panel
+		// 7. Create the window fullscreen and add the panel.
+		// Route the window X button through quitGame() so the active session
+		// is saved before the JVM exits.
 		GameWindow window = new GameWindow("Island Escape");
+		window.setDefaultCloseOperation(JFrame.DO_NOTHING_ON_CLOSE);
+		window.addWindowListener(new WindowAdapter() {
+			@Override
+			public void windowClosing(WindowEvent e) {
+				panel.quitGame();
+			}
+		});
 		window.add(panel);
 		window.setVisible(true);
 		panel.requestFocusInWindow();
