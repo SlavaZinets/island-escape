@@ -1,8 +1,18 @@
 package com.islandescape.save;
 
+import com.islandescape.boat.BoatWreck;
 import com.islandescape.item.Item;
+import com.islandescape.player.Player;
+import com.islandescape.resources.ResourceNode;
+
+import java.util.List;
 
 public class SaveData {
+
+    public static SaveData capture(Player p1, Player p2, BoatWreck wreck, List<ResourceNode> nodes) {
+        return new SaveData();
+    }
+
 
     private double p1x;
     private double p1y;
