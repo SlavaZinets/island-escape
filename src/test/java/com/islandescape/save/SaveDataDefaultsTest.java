@@ -1,5 +1,6 @@
 package com.islandescape.save;
 
+import com.islandescape.player.SurvivalStats;
 import org.junit.jupiter.api.Test;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
@@ -56,5 +57,14 @@ public class SaveDataDefaultsTest {
     public void resourceDisabledIsNonNull() {
         SaveData data = new SaveData();
         assertNotNull(data.getResourceDisabled());
+    }
+
+    @Test
+    public void hungerAndThirstDefaultToMaxSoLegacySavesLoadFull() {
+        SaveData data = new SaveData();
+        assertEquals(SurvivalStats.MAX, data.getP1Hunger());
+        assertEquals(SurvivalStats.MAX, data.getP1Thirst());
+        assertEquals(SurvivalStats.MAX, data.getP2Hunger());
+        assertEquals(SurvivalStats.MAX, data.getP2Thirst());
     }
 }

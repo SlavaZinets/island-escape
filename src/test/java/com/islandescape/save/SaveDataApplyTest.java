@@ -150,6 +150,48 @@ public class SaveDataApplyTest {
     }
 
     @Test
+    public void applyRestoresHungerAndThirstOnBothPlayers() {
+        Player p1 = new Player("P1", 1, 0, 0);
+        Player p2 = new Player("P2", 2, 0, 0);
+        BoatWreck wreck = new BoatWreck(0, 0, "Wreck");
+
+        SaveData data = new SaveData();
+        data.setP1Hunger(33);
+        data.setP1Thirst(44);
+        data.setP2Hunger(55);
+        data.setP2Thirst(66);
+
+        SaveData.apply(data, p1, p2, wreck, List.of());
+
+        assertEquals(33, p1.getSurvivalStats().getHunger());
+        assertEquals(44, p1.getSurvivalStats().getThirst());
+        assertEquals(55, p2.getSurvivalStats().getHunger());
+        assertEquals(66, p2.getSurvivalStats().getThirst());
+    }
+
+    @Test
+    public void hungerAndThirstSurviveACaptureApplyRoundTrip() {
+        Player p1 = new Player("P1", 1, 0, 0);
+        Player p2 = new Player("P2", 2, 0, 0);
+        BoatWreck wreck = new BoatWreck(0, 0, "Wreck");
+
+        p1.getSurvivalStats().loadFromBackup(81, 72);
+        p2.getSurvivalStats().loadFromBackup(63, 54);
+
+        SaveData data = SaveData.capture(p1, p2, wreck, List.of());
+
+        // Reset to fresh players, then apply.
+        Player loaded1 = new Player("P1", 1, 0, 0);
+        Player loaded2 = new Player("P2", 2, 0, 0);
+        SaveData.apply(data, loaded1, loaded2, wreck, List.of());
+
+        assertEquals(81, loaded1.getSurvivalStats().getHunger());
+        assertEquals(72, loaded1.getSurvivalStats().getThirst());
+        assertEquals(63, loaded2.getSurvivalStats().getHunger());
+        assertEquals(54, loaded2.getSurvivalStats().getThirst());
+    }
+
+    @Test
     public void applyMarksDisabledNodesByIndex() {
         Player p1 = new Player("P1", 1, 0, 0);
         Player p2 = new Player("P2", 2, 0, 0);

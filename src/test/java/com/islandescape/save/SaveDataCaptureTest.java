@@ -140,6 +140,23 @@ public class SaveDataCaptureTest {
         assertEquals(0, data.getResourceDisabled().length);
     }
 
+    @Test
+    public void capturesHungerAndThirstFromBothPlayers() {
+        Player p1 = new Player("P1", 1, 0, 0);
+        Player p2 = new Player("P2", 2, 0, 0);
+        BoatWreck wreck = new BoatWreck(0, 0, "Wreck");
+
+        p1.getSurvivalStats().loadFromBackup(73, 64);
+        p2.getSurvivalStats().loadFromBackup(12, 45);
+
+        SaveData data = SaveData.capture(p1, p2, wreck, List.of());
+
+        assertEquals(73, data.getP1Hunger());
+        assertEquals(64, data.getP1Thirst());
+        assertEquals(12, data.getP2Hunger());
+        assertEquals(45, data.getP2Thirst());
+    }
+
     private static void assertItemEquals(ItemType type, ItemCategory category, int qty, Item actual) {
         assertNotNull(actual, "expected an item, got null");
         assertEquals(type, actual.getType());
