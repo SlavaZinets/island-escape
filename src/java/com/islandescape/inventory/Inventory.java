@@ -185,6 +185,26 @@ public class Inventory {
 
 
 
+    public void replaceContents(Item[] flatSlots, int hotbarIndex) {
+        for (int i = 0; i < slots.length; i++) {
+            slots[i] = flatSlots[i];
+        }
+        for (int i = 0; i < hotBarSlots.length; i++) {
+            hotBarSlots[i] = flatSlots[slots.length + i];
+        }
+        setSelectedHotBarSlot(hotbarIndex);
+    }
+
+    public void clear() {
+        for (int i = 0; i < slots.length; i++) {
+            slots[i] = null;
+        }
+        for (int i = 0; i < hotBarSlots.length; i++) {
+            hotBarSlots[i] = null;
+        }
+        selectedHotBarSlot = 0;
+    }
+
     public ArrayList<Item> snapshot() {
         ArrayList<Item> list = new ArrayList<>();
         for (Item s : slots) if (s != null) list.add(s);

@@ -45,4 +45,9 @@ public class BoatWreck extends WorldStructure {
     public boolean isPlayerBoarded(int playerId) {
         return boardedPlayers.contains(playerId);
     }
+
+    public void reset() {
+        repairSystem.reset();
+        boardedPlayers.clear();
+    }
 }
