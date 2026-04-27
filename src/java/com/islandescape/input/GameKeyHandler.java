@@ -248,6 +248,8 @@ public class GameKeyHandler implements KeyListener {
     public boolean consumeMenuConfirm() {
         boolean val = menuConfirm;
         menuConfirm = false;
+        return val;
+    }
 
     public boolean consumeP1Eat() {
         boolean val = p1EatToggled;
