@@ -116,6 +116,8 @@ public class BoatRepairSystem {
 
     // Bypasses placeIn validation. Save/load only - never call from gameplay code.
     public void forceSetSlot(int slot, Item item) {
+        if (slot < 0 || slot >= TOTAL_SLOTS) return;
+        repairedItems[slot] = item;
     }
 
     // Removes and returns the item in the given slot.

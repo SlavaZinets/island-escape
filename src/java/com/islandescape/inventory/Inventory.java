@@ -186,6 +186,13 @@ public class Inventory {
 
 
     public void replaceContents(Item[] flatSlots, int hotbarIndex) {
+        for (int i = 0; i < slots.length; i++) {
+            slots[i] = flatSlots[i];
+        }
+        for (int i = 0; i < hotBarSlots.length; i++) {
+            hotBarSlots[i] = flatSlots[slots.length + i];
+        }
+        setSelectedHotBarSlot(hotbarIndex);
     }
 
     public void clear() {

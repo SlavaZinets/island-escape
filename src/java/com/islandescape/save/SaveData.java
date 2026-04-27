@@ -1,5 +1,6 @@
 package com.islandescape.save;
 
+import com.islandescape.boat.BoatRepairSystem;
 import com.islandescape.boat.BoatWreck;
 import com.islandescape.item.Item;
 import com.islandescape.player.Player;
@@ -14,6 +15,25 @@ public class SaveData {
     }
 
     public static void apply(SaveData data, Player p1, Player p2, BoatWreck wreck, List<ResourceNode> nodes) {
+        p1.setPosition(data.getP1x(), data.getP1y());
+        p2.setPosition(data.getP2x(), data.getP2y());
+
+        p1.getInventory().replaceContents(data.getP1Slots(), data.getP1Hotbar());
+        p2.getInventory().replaceContents(data.getP2Slots(), data.getP2Hotbar());
+
+        // reset() clears repair items and boardedPlayers — boardedPlayers stays empty per the save/load contract.
+        wreck.reset();
+        BoatRepairSystem repair = wreck.getRepairSystem();
+        Item[] boatSlots = data.getBoatSlots();
+        for (int i = 0; i < boatSlots.length; i++) {
+            repair.forceSetSlot(i, boatSlots[i]);
+        }
+
+        boolean[] disabled = data.getResourceDisabled();
+        int n = Math.min(nodes.size(), disabled.length);
+        for (int i = 0; i < n; i++) {
+            nodes.get(i).setDisabled(disabled[i]);
+        }
     }
 
 
