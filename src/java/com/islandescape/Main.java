@@ -64,7 +64,7 @@ public class Main {
 
 		// Placed on a beach tile — hardcoded fallback so the win condition
 		// never silently disables if map lookup fails.
-		BoatWreck boatWreck = new BoatWreck(130, 130, "Boat");
+		BoatWreck boatWreck = new BoatWreck(432, 176, "Boat");
 		BoatRepairScreen boatRepairScreen = new BoatRepairScreen();
 
 		// 5. Create the panel that draws the map
