@@ -1,5 +1,6 @@
 package com.islandescape;
 
+import com.islandescape.audio.SoundManager;
 import com.islandescape.boat.BoatWreck;
 import com.islandescape.crafting.CraftingSystem;
 import com.islandescape.input.GameKeyHandler;
@@ -25,6 +26,8 @@ import javax.swing.JFrame;
 
 public class Main {
 	public static void main(String[] args) throws Exception {
+		SoundManager.load("footstep", "src/resources/sounds/footstep.wav");
+
 		TileMap map = MapLoader.load("src/resources/maps/IslandMap.tmx");
 
 		// 2. Create the renderer

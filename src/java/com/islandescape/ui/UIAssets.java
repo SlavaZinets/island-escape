@@ -3,6 +3,8 @@ package com.islandescape.ui;
 import com.islandescape.item.ItemType;
 
 import javax.imageio.ImageIO;
+import java.awt.Color;
+import java.awt.Graphics2D;
 import java.awt.image.BufferedImage;
 import java.io.File;
 import java.util.Collections;
@@ -24,7 +26,7 @@ public class UIAssets {
 
     public UIAssets() {
         String base = "src/resources/ui/crafting/";
-        panelBg      = loadImage(base + "rafting_panel_bg.png");
+        panelBg      = loadImage(base + "crafting_panel_bg-removebg-preview.png");
         slotEmpty    = loadImage(base + "crafting_slot_empty.png");
         slotSelected = loadImage(base + "crafting_slot_selected.png");
         arrow        = loadImage(base + "crafting_arrow.png");
@@ -58,6 +60,16 @@ public class UIAssets {
     }
 
     public BufferedImage getPanelBg()     { return panelBg; }
+
+    // Draws a brown rounded panel — the shared panel background used by
+    // crafting, boat-repair, and inventory screens.
+    public void drawPanel(Graphics2D g, int x, int y, int w, int h) {
+        g.setColor(new Color(139, 119, 82));
+        g.fillRoundRect(x, y, w, h, 20, 20);
+        g.setColor(new Color(101, 67, 33));
+        g.drawRoundRect(x, y, w, h, 20, 20);
+    }
+
     public BufferedImage getSlotEmpty()   { return slotEmpty; }
     public BufferedImage getSlotSelected(){ return slotSelected; }
     public BufferedImage getArrow()       { return arrow; }
