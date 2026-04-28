@@ -643,7 +643,8 @@ public class GamePanel extends JPanel {
         g.fillRect(0, 0, getWidth(), getHeight());
 
         Set<Point> disabledTiles = ResourceSpawner.disabledTileCoords(resourceNodes);
-        map.renderMapComponent(renderer, g, getWidth(), getHeight(), player1, player2, disabledTiles);
+        boolean boatRepaired = boatWreck != null && boatWreck.isFullyRepaired();
+        map.renderMapComponent(renderer, g, getWidth(), getHeight(), player1, player2, disabledTiles, boatRepaired);
       
         if (gameState == GameState.GAME_WON) {
             winOverlay.render(g2, getWidth(), getHeight());

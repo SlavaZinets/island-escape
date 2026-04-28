@@ -34,12 +34,12 @@ public class Main {
 		int worldW = map.getWidth() * map.getTileSize();
 		int worldH = map.getHeight() * map.getTileSize();
 
-		Player player1 = new Player("Player1", 1, 320, 192, Color.BLUE);
+		Player player1 = new Player("Alpha", 1, 48, 128, Color.BLUE);
 		player1.setWorldBounds(worldW, worldH);
 		player1.setTileMap(map);
 		player1.setSprite(new PlayerSprite("src/resources/player/player_walking.png"));
 
-		Player player2 = new Player("Player2", 2, 352, 192, Color.RED);
+		Player player2 = new Player("Romeo", 2, 80, 176, Color.RED);
 		player2.setWorldBounds(worldW, worldH);
 		player2.setTileMap(map);
 		player2.setSprite(new PlayerSprite("src/resources/player/player_walking.png"));
@@ -55,7 +55,7 @@ public class Main {
 
 		// 4. Create crafting system, crafting table, and crafting screen overlay
 		CraftingSystem craftingSystem = new CraftingSystem();
-		CraftingTable craftingTable = new CraftingTable(128, 128);
+		CraftingTable craftingTable = new CraftingTable(384, 160);
 		CraftingScreen craftingScreen = new CraftingScreen();
 
 

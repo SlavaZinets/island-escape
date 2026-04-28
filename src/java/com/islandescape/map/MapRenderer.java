@@ -29,9 +29,14 @@ public class MapRenderer {
     }
 
     // render the map
-    public void render(Graphics2D g, TileMap map, Set<Point> disabledResourceTiles){
-        String[] layers = {"water", "ground(cliffs)", "ground(surface)", "ground(borders)", "bridges", "decoration", "trees", "stones"};
+    public void render(Graphics2D g, TileMap map, Set<Point> disabledResourceTiles, boolean boatRepaired){
+        String[] layers = {"water", "ground(cliffs)", "ground(surface)", "ground(borders)", "bridges", "decoration", "trees", "stones", "crafting", "boat", "repairedBoat"};
         for(String layer: layers){
+            // Boat / repairedBoat are mutually exclusive: show one based on
+            // the wreck's repair state, hide the other.
+            if (layer.equals("boat") && boatRepaired) continue;
+            if (layer.equals("repairedBoat") && !boatRepaired) continue;
+
             TileLayer tileLayer = map.getLayer(layer);
             if(tileLayer == null){
                 System.out.println("WARNING: Layer not found: " + layer);
