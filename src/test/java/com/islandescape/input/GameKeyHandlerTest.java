@@ -9,6 +9,7 @@ import java.awt.Component;
 import java.awt.event.KeyEvent;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertDoesNotThrow;
 import static org.junit.jupiter.api.Assertions.assertFalse;
 import static org.junit.jupiter.api.Assertions.assertNotNull;
 import static org.junit.jupiter.api.Assertions.assertTrue;
@@ -162,6 +163,16 @@ public class GameKeyHandlerTest {
         handler.keyPressed(press(KeyEvent.VK_J));
         assertEquals(0, handler.getDirection().getX());
         assertEquals(0, handler.getDirection().getY());
+    }
+
+    @Test
+    void testEWithNullPanelDoesNotThrow() {
+        assertDoesNotThrow(() -> handler.keyPressed(press(KeyEvent.VK_E)));
+    }
+
+    @Test
+    void testEscWithNullPanelDoesNotThrow() {
+        assertDoesNotThrow(() -> handler.keyPressed(press(KeyEvent.VK_ESCAPE)));
     }
 
 

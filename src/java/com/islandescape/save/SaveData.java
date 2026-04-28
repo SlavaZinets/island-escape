@@ -1,0 +1,147 @@
+package com.islandescape.save;
+
+import com.islandescape.boat.BoatRepairSystem;
+import com.islandescape.boat.BoatWreck;
+import com.islandescape.inventory.Inventory;
+import com.islandescape.item.Item;
+import com.islandescape.player.Player;
+import com.islandescape.player.SurvivalStats;
+import com.islandescape.resources.ResourceNode;
+
+import java.util.List;
+
+public class SaveData {
+
+    public static SaveData capture(Player p1, Player p2, BoatWreck wreck, List<ResourceNode> nodes) {
+        SaveData data = new SaveData();
+
+        data.setP1x(p1.getX());
+        data.setP1y(p1.getY());
+        data.setP2x(p2.getX());
+        data.setP2y(p2.getY());
+
+        Inventory inv1 = p1.getInventory();
+        Inventory inv2 = p2.getInventory();
+        data.setP1Hotbar(inv1.getSelectedHotBarSlot());
+        data.setP2Hotbar(inv2.getSelectedHotBarSlot());
+
+        SurvivalStats stats1 = p1.getSurvivalStats();
+        SurvivalStats stats2 = p2.getSurvivalStats();
+        data.setP1Hunger(stats1.getHunger());
+        data.setP1Thirst(stats1.getThirst());
+        data.setP2Hunger(stats2.getHunger());
+        data.setP2Thirst(stats2.getThirst());
+
+        Item[] p1Slots = data.getP1Slots();
+        Item[] p2Slots = data.getP2Slots();
+        for (int i = 0; i < p1Slots.length; i++) {
+            p1Slots[i] = inv1.getSlot(i);
+            p2Slots[i] = inv2.getSlot(i);
+        }
+
+        Item[] boatSlots = data.getBoatSlots();
+        BoatRepairSystem repair = wreck.getRepairSystem();
+        for (int i = 0; i < boatSlots.length; i++) {
+            boatSlots[i] = repair.getSlot(i);
+        }
+
+        boolean[] disabled = new boolean[nodes.size()];
+        for (int i = 0; i < disabled.length; i++) {
+            disabled[i] = nodes.get(i).isDisabled();
+        }
+        data.setResourceDisabled(disabled);
+
+        return data;
+    }
+
+    public static void apply(SaveData data, Player p1, Player p2, BoatWreck wreck, List<ResourceNode> nodes) {
+        p1.setPosition(data.getP1x(), data.getP1y());
+        p2.setPosition(data.getP2x(), data.getP2y());
+
+        p1.getInventory().replaceContents(data.getP1Slots(), data.getP1Hotbar());
+        p2.getInventory().replaceContents(data.getP2Slots(), data.getP2Hotbar());
+
+        p1.getSurvivalStats().loadFromBackup(data.getP1Hunger(), data.getP1Thirst());
+        p2.getSurvivalStats().loadFromBackup(data.getP2Hunger(), data.getP2Thirst());
+
+        // reset() clears repair items and boardedPlayers — boardedPlayers stays empty per the save/load contract.
+        wreck.reset();
+        BoatRepairSystem repair = wreck.getRepairSystem();
+        Item[] boatSlots = data.getBoatSlots();
+        for (int i = 0; i < boatSlots.length; i++) {
+            repair.forceSetSlot(i, boatSlots[i]);
+        }
+
+        boolean[] disabled = data.getResourceDisabled();
+        int n = Math.min(nodes.size(), disabled.length);
+        for (int i = 0; i < n; i++) {
+            nodes.get(i).setDisabled(disabled[i]);
+        }
+    }
+
+
+    private double p1x;
+    private double p1y;
+    private double p2x;
+    private double p2y;
+
+    private int p1Hotbar;
+    private int p2Hotbar;
+
+    // Default to MAX so a save file written before survival stats were
+    // persisted (i.e. with these properties absent) loads as full-stats
+    // rather than instantly-starving.
+    private int p1Hunger = SurvivalStats.MAX;
+    private int p1Thirst = SurvivalStats.MAX;
+    private int p2Hunger = SurvivalStats.MAX;
+    private int p2Thirst = SurvivalStats.MAX;
+
+    private Item[] p1Slots = new Item[20];
+    private Item[] p2Slots = new Item[20];
+
+    private Item[] boatSlots = new Item[6];
+
+    private boolean[] resourceDisabled = new boolean[0];
+
+    public double getP1x() { return p1x; }
+    public void setP1x(double p1x) { this.p1x = p1x; }
+
+    public double getP1y() { return p1y; }
+    public void setP1y(double p1y) { this.p1y = p1y; }
+
+    public double getP2x() { return p2x; }
+    public void setP2x(double p2x) { this.p2x = p2x; }
+
+    public double getP2y() { return p2y; }
+    public void setP2y(double p2y) { this.p2y = p2y; }
+
+    public int getP1Hotbar() { return p1Hotbar; }
+    public void setP1Hotbar(int p1Hotbar) { this.p1Hotbar = p1Hotbar; }
+
+    public int getP2Hotbar() { return p2Hotbar; }
+    public void setP2Hotbar(int p2Hotbar) { this.p2Hotbar = p2Hotbar; }
+
+    public int getP1Hunger() { return p1Hunger; }
+    public void setP1Hunger(int p1Hunger) { this.p1Hunger = p1Hunger; }
+
+    public int getP1Thirst() { return p1Thirst; }
+    public void setP1Thirst(int p1Thirst) { this.p1Thirst = p1Thirst; }
+
+    public int getP2Hunger() { return p2Hunger; }
+    public void setP2Hunger(int p2Hunger) { this.p2Hunger = p2Hunger; }
+
+    public int getP2Thirst() { return p2Thirst; }
+    public void setP2Thirst(int p2Thirst) { this.p2Thirst = p2Thirst; }
+
+    public Item[] getP1Slots() { return p1Slots; }
+    public void setP1Slots(Item[] p1Slots) { this.p1Slots = p1Slots; }
+
+    public Item[] getP2Slots() { return p2Slots; }
+    public void setP2Slots(Item[] p2Slots) { this.p2Slots = p2Slots; }
+
+    public Item[] getBoatSlots() { return boatSlots; }
+    public void setBoatSlots(Item[] boatSlots) { this.boatSlots = boatSlots; }
+
+    public boolean[] getResourceDisabled() { return resourceDisabled; }
+    public void setResourceDisabled(boolean[] resourceDisabled) { this.resourceDisabled = resourceDisabled; }
+}

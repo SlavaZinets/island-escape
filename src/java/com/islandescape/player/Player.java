@@ -1,12 +1,14 @@
 package com.islandescape.player;
 
 import com.islandescape.inventory.Inventory;
+import com.islandescape.item.ConsumableItem;
 import com.islandescape.item.Item;
 import com.islandescape.map.TileMap;
 import com.islandescape.resources.ResourceNode;
 import com.islandescape.utilities.Direction;
 
 import java.awt.*;
+import java.awt.geom.Point2D;
 import java.awt.image.BufferedImage;
 import java.util.List;
 
@@ -20,11 +22,15 @@ public class Player {
     private static final int FRAMES_PER_STEP = 8;
     private static final int FRAME_COUNT = 4;
 
+
+    private Color nameColor;
+
     private String name;
     private int id;
-    private Point position;
+    private Point2D.Double position;
     private final double SPEED = 2;
     private final Inventory inventory = new Inventory();
+    private final SurvivalStats survivalStats = new SurvivalStats();
 
     private int worldWidth = 0;
     private int worldHeight = 0;
@@ -34,10 +40,20 @@ public class Player {
     private int animationTick = 0;
     private PlayerSprite sprite = null;
 
+    public Player(String name, int id, int x, int y, Color nameColor) {
+        this.name = name;
+        this.id = id;
+        this.position = new Point2D.Double(x, y);
+        this.nameColor = nameColor;
+    }
     public Player(String name, int id, int x, int y) {
         this.name = name;
         this.id = id;
-        this.position = new Point(x, y);
+        this.position = new Point2D.Double(x, y);
+    }
+
+    public boolean isMoving() {
+        return animationTick > 0;
     }
 
     public void move (Direction direction) {
@@ -50,8 +66,9 @@ public class Player {
             animationTick = 0;
         }
 
-        double newX = position.getX() + direction.getX() * SPEED;
-        double newY = position.getY() - direction.getY() * SPEED;
+        double effectiveSpeed = SPEED * survivalStats.getSpeedMultiplier();
+        double newX = position.getX() + direction.getX() * effectiveSpeed;
+        double newY = position.getY() - direction.getY() * effectiveSpeed;
 
         if (worldWidth > 0 && worldHeight > 0) {
             newX = Math.max(0, Math.min(newX, worldWidth - WIDTH));
@@ -73,6 +90,10 @@ public class Player {
         }
 
         position.setLocation(newX, newY);
+    }
+
+    public void setPosition(double x, double y) {
+        position.setLocation(x, y);
     }
 
     public void setWorldBounds(int worldWidth, int worldHeight) {
@@ -126,6 +147,12 @@ public class Player {
             return;
         }
 
+        //show name of player above
+        g.setColor(nameColor);//color for text
+        g.setFont(new Font("Arial", Font.PLAIN, 10));
+        //draw name centered above player head
+        g.drawString(name, x + WIDTH / 2 - g.getFontMetrics().stringWidth(name) / 2, y - 4);
+
         int row = facing.getSpriteRow();
         int col = getFrameIndex();
         BufferedImage frame = facing.isFlipped()
@@ -138,6 +165,10 @@ public class Player {
         return inventory;
     }
 
+    public SurvivalStats getSurvivalStats() {
+        return survivalStats;
+    }
+
     // Player side of gathering.
     // We only check distance here and then delegate real harvest logic to the node.
     public List<Item> farm(ResourceNode resource) {
@@ -145,5 +176,27 @@ public class Player {
             return resource.harvest(inventory);
         }
         return null;
+    }
+
+    /*
+        Eats whatever is in the player's currently-selected hotbar slot,
+     */
+    public ConsumableItem eat() {
+        Item active = inventory.getActiveItem();
+        if (!(active instanceof ConsumableItem)) {
+            return null;
+        }
+
+        ConsumableItem food = (ConsumableItem) active;
+        survivalStats.eat(food.getHungerEffect());
+        survivalStats.drink(food.getThirstEffect());
+
+
+        food.split(1);
+        if (food.getQuantity() <= 0) {
+
+            inventory.setSlot(inventory.getSelectedHotBarSlot(), null);
+        }
+        return food;
     }
 }

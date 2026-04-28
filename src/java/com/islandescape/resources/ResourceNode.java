@@ -47,6 +47,10 @@ public abstract class ResourceNode extends WorldStructure {
         this.respawnCountdown = RESPAWN_TICKS;
     }
 
+    public void setDisabled(boolean disabled) {
+        this.disabled = disabled;
+    }
+
     public void tick() {
         if (!disabled) return;
         respawnCountdown--;
@@ -72,22 +76,15 @@ public abstract class ResourceNode extends WorldStructure {
         return null;
     }
 
-    // Simple check: does inventory contain the tool this node needs?
+    // Check the item the player is currently holding (active hotbar slot).
     protected boolean hasRequiredTool(Inventory inventory) {
         if (inventory == null) {
             return false;
         }
-        
-        // We scan all inventory slots and stop at first valid tool.
-        Item[] allItems = inventory.getItems();
-        for (Item item : allItems) {
-            if (item != null 
-                    && item.getType() == requiredTool
-                    && item.getCategory() == ItemCategory.TOOL) {
-                return true;
-            }
-        }
-        return false;
+        Item held = inventory.getActiveItem();
+        return held != null
+                && held.getType() == requiredTool
+                && held.getCategory() == ItemCategory.TOOL;
     }
 
     // Each concrete node defines its own drop list.

@@ -1,16 +1,20 @@
 package com.islandescape.inventory;
 
+import com.islandescape.boat.BoatRepairSystem;
 import com.islandescape.crafting.CraftingRecipe;
 import com.islandescape.crafting.CraftingSystem;
 import com.islandescape.item.Item;
 import com.islandescape.player.Player;
+import com.islandescape.ui.BoatRepairLayout;
 import com.islandescape.ui.CraftingScreenLayout;
+import com.islandescape.ui.StatusBarRenderer;
 
 import javax.imageio.ImageIO;
 import java.awt.Color;
 import java.awt.Font;
 import java.awt.Graphics;
 import java.awt.Graphics2D;
+import java.awt.Rectangle;
 import java.awt.image.BufferedImage;
 import java.io.File;
 import java.io.IOException;
@@ -25,24 +29,42 @@ public class InventoryScreen {
     private static final int SLOT_GAP = 12;
     private static final int SEPARATOR_WIDTH = 30;
 
+    // Trash cluster sits below the grids
+    private static final int TRASH_GAP_BELOW_GRID = 30;
+    private static final int REMOVE_BUTTON_WIDTH = 120;
+    private static final int REMOVE_BUTTON_HEIGHT = 32;
+    private static final int REMOVE_BUTTON_GAP_BELOW_SLOT = 12;
+
     private final Player player1;
     private final Player player2;
     private final InventoryCursor cursor;
+    private final TrashBin trashBin;
     private final Map<String, BufferedImage> itemIcons;
+    private BufferedImage slotEmpty;
+    private BufferedImage slotSelected;
 
     private CraftingSystem craftingSystem;
+    private BoatRepairSystem boatRepairSystem;
 
     private boolean open;
     private boolean craftingOpen;
+    private boolean boatRepairOpen;
     private boolean p1NearTable = true;
     private boolean p2NearTable = true;
+    private boolean p1NearBoat = true;
+    private boolean p2NearBoat = true;
     private int mouseX;
     private int mouseY;
 
     public InventoryScreen(Player player1, Player player2, InventoryCursor cursor) {
+        this(player1, player2, cursor, new TrashBin());
+    }
+
+    public InventoryScreen(Player player1, Player player2, InventoryCursor cursor, TrashBin trashBin) {
         this.player1 = player1;
         this.player2 = player2;
         this.cursor = cursor;
+        this.trashBin = trashBin;
         this.itemIcons = new HashMap<>();
         loadItemIcons();
     }
@@ -68,6 +90,43 @@ public class InventoryScreen {
         this.p2NearTable = p2Near;
     }
 
+    // Boat repair
+
+    public void setBoatRepairSystem(BoatRepairSystem boatRepairSystem) {
+        this.boatRepairSystem = boatRepairSystem;
+    }
+
+    public void setBoatRepairOpen(boolean boatRepairOpen) {
+        this.boatRepairOpen = boatRepairOpen;
+    }
+
+    public void setPlayerNearBoat(boolean p1Near, boolean p2Near) {
+        this.p1NearBoat = p1Near;
+        this.p2NearBoat = p2Near;
+    }
+
+    // Determine which boat-repair slot was clicked, or -1 if none
+
+    int pixelToBoatSlot(int px, int py, int panelW, int panelH) {
+        BoatRepairLayout layout = new BoatRepairLayout(panelW, panelH);
+
+        int relX = px - layout.repairSlotsStartX;
+        int relY = py - layout.repairSlotsY;
+        if (relX < 0 || relY < 0) return -1;
+
+        // One row only — click must be within the slot height vertically.
+        if (relY >= layout.slotSize) return -1;
+
+        int cellSize = layout.slotSize + layout.slotGap;
+        int col = relX / cellSize;
+        if (col >= BoatRepairLayout.SLOT_COUNT) return -1;
+
+        // Click must be inside the slot horizontally, not in the gap between slots.
+        if (relX % cellSize >= layout.slotSize) return -1;
+
+        return col;
+    }
+
     public void updateMouse(int x, int y) {
         this.mouseX = x;
         this.mouseY = y;
@@ -77,6 +136,43 @@ public class InventoryScreen {
 
     public void handleClick(int screenX, int screenY, boolean isLeftClick, int panelW, int panelH) {
         if (!open) return;
+
+        // REMOVE button — destroys whatever is in the trash slot, leaves cursor untouched
+        if (pixelOnRemoveButton(screenX, screenY, panelW, panelH)) {
+            trashBin.clear();
+            return;
+        }
+
+        //  Trash slot — same cursor slot routing as a normal slot, just on the bin
+        if (pixelToTrashSlot(screenX, screenY, panelW, panelH)) {
+            if (cursor.isEmpty()) {
+                if (isLeftClick) {
+                    cursor.pickUpFromTrash(trashBin);
+                } else {
+                    cursor.pickUpHalfFromTrash(trashBin);
+                }
+            } else {
+                if (isLeftClick) {
+                    cursor.placeAllInTrash(trashBin);
+                } else {
+                    cursor.placeOneInTrash(trashBin);
+                }
+            }
+            return;
+        }
+
+        // 3. Player grids
+        int xBorder = getXBorder(panelW);
+        int gridTop = getGridTop(panelH);
+
+        // When boat repair is open, check boat-repair slots first
+        if (boatRepairOpen && boatRepairSystem != null) {
+            int boatSlot = pixelToBoatSlot(screenX, screenY, panelW, panelH);
+            if (boatSlot >= 0) {
+                handleBoatRepairClick(boatSlot, isLeftClick, screenX, panelW, panelH);
+                return;
+            }
+        }
 
         // When crafting is open, check crafting areas first
         if (craftingOpen && craftingSystem != null) {
@@ -94,12 +190,17 @@ public class InventoryScreen {
             }
         }
 
-        int xBorder;
-        int gridTop;
+
         int p1Left;
         int p2Left;
 
-        if (craftingOpen) {
+        if (boatRepairOpen) {
+            BoatRepairLayout layout = new BoatRepairLayout(panelW, panelH);
+            xBorder = layout.invXBorder;
+            gridTop = layout.invAreaTop + 22;
+            p1Left = layout.invP1Left;
+            p2Left = layout.invP2Left;
+        } else if (craftingOpen) {
             CraftingScreenLayout layout = new CraftingScreenLayout(panelW, panelH);
             xBorder = layout.invXBorder;
             gridTop = layout.invAreaTop + 22;
@@ -115,8 +216,11 @@ public class InventoryScreen {
         // determine player by X position
         boolean isPlayer1 = screenX < xBorder;
 
-        // Block inventory clicks for players not near the crafting table
-        if (craftingOpen) {
+        // Block inventory clicks for players not near the active structure.
+        if (boatRepairOpen) {
+            if (isPlayer1 && !p1NearBoat) return;
+            if (!isPlayer1 && !p2NearBoat) return;
+        } else if (craftingOpen) {
             if (isPlayer1 && !p1NearTable) return;
             if (!isPlayer1 && !p2NearTable) return;
         }
@@ -161,6 +265,24 @@ public class InventoryScreen {
         if (relY % cellSize >= layout.slotSize) return -1;
 
         return row * CraftingScreenLayout.GRID_COLS + col;
+    }
+
+    // Handle a click on a boat-repair slot.
+
+    private void handleBoatRepairClick(int slot, boolean isLeftClick, int screenX, int panelW, int panelH) {
+        if (cursor.isEmpty()) {
+            if (isLeftClick) {
+                cursor.pickUpFromBoatSlot(boatRepairSystem, slot);
+            } else {
+                cursor.pickUpHalfFromBoatSlot(boatRepairSystem, slot);
+            }
+        } else {
+            if (isLeftClick) {
+                cursor.placeIntoBoatSlot(boatRepairSystem, slot);
+            } else {
+                cursor.placeOneIntoBoatSlot(boatRepairSystem, slot);
+            }
+        }
     }
 
     // Handle a click on a crafting grid slot — mirrors inventory click behavior
@@ -262,6 +384,38 @@ public class InventoryScreen {
         return (panelH - getPlayerGridHeight()) / 2;
     }
 
+    // Trash cluster geometry (centered below both grids)
+
+    int getTrashSlotX(int panelW) {
+        return panelW / 2 - SLOT_SIZE / 2;
+    }
+
+    int getTrashSlotY(int panelH) {
+        return getGridTop(panelH) + getPlayerGridHeight() + TRASH_GAP_BELOW_GRID;
+    }
+
+    Rectangle getRemoveButtonRect(int panelW, int panelH) {
+        int x = panelW / 2 - REMOVE_BUTTON_WIDTH / 2;
+        int y = getTrashSlotY(panelH) + SLOT_SIZE + REMOVE_BUTTON_GAP_BELOW_SLOT;
+        return new Rectangle(x, y, REMOVE_BUTTON_WIDTH, REMOVE_BUTTON_HEIGHT);
+    }
+
+    boolean pixelToTrashSlot(int px, int py, int panelW, int panelH) {
+        int x = getTrashSlotX(panelW);
+        int y = getTrashSlotY(panelH);
+        return px >= x && px < x + SLOT_SIZE
+                && py >= y && py < y + SLOT_SIZE;
+    }
+
+    boolean pixelOnRemoveButton(int px, int py, int panelW, int panelH) {
+        return getRemoveButtonRect(panelW, panelH).contains(px, py);
+    }
+
+    // expose the trash bin for tests + external inspection
+    public TrashBin getTrashBin() {
+        return trashBin;
+    }
+
 
 
     public void renderInventoryComponent(Graphics g, int panelW, int panelH) {
@@ -283,7 +437,13 @@ public class InventoryScreen {
     private void drawFullInventory(Graphics2D g2d, int panelW, int panelH) {
         int p1Left, p2Left, gridTop, xBorder;
 
-        if (craftingOpen) {
+        if (boatRepairOpen) {
+            BoatRepairLayout layout = new BoatRepairLayout(panelW, panelH);
+            p1Left = layout.invP1Left;
+            p2Left = layout.invP2Left;
+            gridTop = layout.invAreaTop + 22;
+            xBorder = layout.invXBorder;
+        } else if (craftingOpen) {
             CraftingScreenLayout layout = new CraftingScreenLayout(panelW, panelH);
             p1Left = layout.invP1Left;
             p2Left = layout.invP2Left;
@@ -294,10 +454,11 @@ public class InventoryScreen {
             p2Left = getP2Left(panelW);
             gridTop = getGridTop(panelH);
             xBorder = getXBorder(panelW);
+            drawInventoryPanel(g2d, panelW, panelH, p1Left, gridTop);
         }
 
-        boolean p1Blocked = craftingOpen && !p1NearTable;
-        boolean p2Blocked = craftingOpen && !p2NearTable;
+        boolean p1Blocked = (craftingOpen && !p1NearTable) || (boatRepairOpen && !p1NearBoat);
+        boolean p2Blocked = (craftingOpen && !p2NearTable) || (boatRepairOpen && !p2NearBoat);
 
         // Player 1 label
         g2d.setColor(p1Blocked ? new Color(120, 100, 80) : new Color(60, 40, 20));
@@ -318,10 +479,98 @@ public class InventoryScreen {
 
         // Player 2 grid
         drawPlayerGrid(g2d, player2.getInventory(), p2Left, gridTop, p2Blocked);
+
+        // Shared trash slot + REMOVE button (centered below both grids)
+        drawTrashSlot(g2d, panelW, panelH);
+        drawRemoveButton(g2d, panelW, panelH);
+
+        // Held item on cursor — draw last so it floats above the trash UI
+        if (!cursor.isEmpty()) {
+            drawItem(g2d, cursor.getHeldItem(), mouseX - SLOT_SIZE / 2, mouseY - SLOT_SIZE / 2);
+        }
+    }
+    private void drawTrashSlot(Graphics2D g2d, int panelW, int panelH) {
+        int x = getTrashSlotX(panelW);
+        int y = getTrashSlotY(panelH);
+
+        // "TRASH" label, same style as the player labels above each grid
+        g2d.setColor(Color.WHITE);
+        g2d.setFont(new Font("SansSerif", Font.BOLD, 18));
+        g2d.drawString("TRASH", x, y - 8);
+
+        // slot background — same look as a normal inventory slot
+        drawSlotCell(g2d, x, y, false);
+
+        // contents
+        Item item = trashBin.getItem();
+        if (item != null) {
+            drawItem(g2d, item, x, y);
+        }
     }
 
+    // Draws a single inventory cell using crafting_slot_empty.png (or
+    // crafting_slot_selected.png when selected). Falls back to the original
+    // dark rounded rect if the sprite is missing.
+    private void drawSlotCell(Graphics2D g2d, int x, int y, boolean selected) {
+        BufferedImage sprite = selected ? slotSelected : slotEmpty;
+        if (sprite != null) {
+            g2d.drawImage(sprite, x, y, SLOT_SIZE, SLOT_SIZE, null);
+            return;
+        }
+        // Fallback
+        g2d.setColor(selected ? new Color(255, 255, 100, 120) : new Color(60, 60, 60, 200));
+        g2d.fillRoundRect(x, y, SLOT_SIZE, SLOT_SIZE, 8, 8);
+        g2d.setColor(selected ? new Color(255, 255, 100) : new Color(120, 120, 120));
+        g2d.drawRoundRect(x, y, SLOT_SIZE, SLOT_SIZE, 8, 8);
+    }
+
+    // Brown rounded panel behind the inventory grids (only when inventory is
+    // the sole open screen — otherwise the crafting/boat-repair panel
+    // already provides a background).
+    private void drawInventoryPanel(Graphics2D g2d, int panelW, int panelH, int p1Left, int gridTop) {
+        int totalW = getTotalWidth();
+        int gridH = getPlayerGridHeight();
+        int trashY = getTrashSlotY(panelH);
+        Rectangle btn = getRemoveButtonRect(panelW, panelH);
+
+        int padX = 50;
+        int padTop = 50;
+        int padBottom = 30;
+
+        int rectX = p1Left - padX;
+        int rectY = gridTop - padTop;
+        int rectW = totalW + padX * 2;
+        int rectBottom = btn.y + btn.height + padBottom;
+        int rectH = rectBottom - rectY;
+
+        g2d.setColor(new Color(139, 119, 82));
+        g2d.fillRoundRect(rectX, rectY, rectW, rectH, 20, 20);
+        g2d.setColor(new Color(101, 67, 33));
+        g2d.drawRoundRect(rectX, rectY, rectW, rectH, 20, 20);
+    }
+
+    private void drawRemoveButton(Graphics2D g2d, int panelW, int panelH) {
+        Rectangle r = getRemoveButtonRect(panelW, panelH);
+
+        // red-tinted fill + lighter red border
+        g2d.setColor(new Color(180, 50, 50, 220));
+        g2d.fillRoundRect(r.x, r.y, r.width, r.height, 8, 8);
+        g2d.setColor(new Color(255, 100, 100));
+        g2d.drawRoundRect(r.x, r.y, r.width, r.height, 8, 8);
+
+        // centered white "REMOVE" label
+        g2d.setColor(Color.WHITE);
+        Font font = new Font("SansSerif", Font.BOLD, 14);
+        g2d.setFont(font);
+        String label = "REMOVE";
+        int textW = g2d.getFontMetrics().stringWidth(label);
+        int textX = r.x + (r.width - textW) / 2;
+        int textY = r.y + (r.height + g2d.getFontMetrics().getAscent()) / 2 - 2;
+        g2d.drawString(label, textX, textY);
+    }
     private void drawPlayerGrid(Graphics2D g2d, Inventory inventory, int gridLeft, int gridTop, boolean blocked) {
         int cellSize = SLOT_SIZE + SLOT_GAP;
+        int selectedLocal = inventory.getSelectedHotBarSlot() - 15;
 
         for (int row = 0; row < ROWS_PER_PLAYER; row++) {
             for (int col = 0; col < COLS; col++) {
@@ -329,23 +578,10 @@ public class InventoryScreen {
                 int y = gridTop + row * cellSize;
                 int slotIndex = row * COLS + col;
 
-                // slot background — dimmer when blocked
-                g2d.setColor(blocked ? new Color(40, 40, 40, 160) : new Color(60, 60, 60, 200));
-                g2d.fillRoundRect(x, y, SLOT_SIZE, SLOT_SIZE, 8, 8);
-                g2d.setColor(blocked ? new Color(80, 80, 80) : new Color(120, 120, 120));
-                g2d.drawRoundRect(x, y, SLOT_SIZE, SLOT_SIZE, 8, 8);
-
-                // highlight hotbar row (only if not blocked)
-                if (!blocked && row == 3) {
-                    int selectedGlobal = inventory.getSelectedHotBarSlot();
-                    int selectedLocal = selectedGlobal - 15;
-                    if (col == selectedLocal) {
-                        g2d.setColor(new Color(255, 255, 100, 120));
-                        g2d.fillRoundRect(x, y, SLOT_SIZE, SLOT_SIZE, 8, 8);
-                        g2d.setColor(new Color(255, 255, 100));
-                        g2d.drawRoundRect(x, y, SLOT_SIZE, SLOT_SIZE, 8, 8);
-                    }
-                }
+                // slot background — selected hotbar cell uses the selected
+                // sprite, everything else uses the empty sprite.
+                boolean isSelectedHotbar = !blocked && row == 3 && col == selectedLocal;
+                drawSlotCell(g2d, x, y, isSelectedHotbar);
 
                 // draw item
                 Item item = inventory.getSlot(slotIndex);
@@ -365,7 +601,7 @@ public class InventoryScreen {
     }
 
     private void drawItem(Graphics2D g2d, Item item, int x, int y) {
-        BufferedImage icon = itemIcons.get(item.getName().toLowerCase());
+        BufferedImage icon = itemIcons.get(item.getType().name().toLowerCase());
         if (icon != null) {
             g2d.drawImage(icon, x + 16, y + 16, 32, 32, null);
         } else {
@@ -380,6 +616,36 @@ public class InventoryScreen {
             g2d.setFont(new Font("SansSerif", Font.BOLD, 12));
             String qty = String.valueOf(item.getQuantity());
             g2d.drawString(qty, x + SLOT_SIZE - 8 - g2d.getFontMetrics().stringWidth(qty), y + SLOT_SIZE - 6);
+        }
+    }
+
+    /*
+        Draws the hunger/thirst HUD above each player's hotbar. No-ops when
+        the full inventory is open — the bars only belong on top of the
+        hotbar layout (PLAYING and GAME_OVER), not when slot grids are
+        spread across the screen. Geometry mirrors drawHotbar() exactly so
+        the bars line up perfectly with the hotbar slots underneath.
+     */
+    public void drawStatusBars(Graphics2D g2d, int panelW, int panelH) {
+        if (open) return; // hidden during INVENTORY_OPEN / E-toggle full grid
+
+        int hotbarWidth = COLS * SLOT_SIZE + (COLS - 1) * SLOT_GAP;
+        int hotbarY = panelH - SLOT_SIZE - 20;
+
+        // The player name sits at hotbarY - 6. The bar stack ends just
+        // above the name with a 4 px breather so it doesn't crowd the text.
+        int barStackBottom = hotbarY - 6 - 12 - 4;
+
+        int p1HotbarX = panelW / 2 - hotbarWidth - 120;
+        int p2HotbarX = panelW / 2 + 120;
+
+        if (player1 != null) {
+            StatusBarRenderer.drawForPlayer(g2d, player1.getSurvivalStats(),
+                    p1HotbarX, barStackBottom, hotbarWidth);
+        }
+        if (player2 != null) {
+            StatusBarRenderer.drawForPlayer(g2d, player2.getSurvivalStats(),
+                    p2HotbarX, barStackBottom, hotbarWidth);
         }
     }
 
@@ -413,19 +679,8 @@ public class InventoryScreen {
             int x = startX + col * cellSize;
             int slotIndex = 15 + col; // hotbar slots
 
-            // slot background
-            g2d.setColor(new Color(60, 60, 60, 200));
-            g2d.fillRoundRect(x, startY, SLOT_SIZE, SLOT_SIZE, 8, 8);
-            g2d.setColor(new Color(120, 120, 120));
-            g2d.drawRoundRect(x, startY, SLOT_SIZE, SLOT_SIZE, 8, 8);
-
-            // selected highlight
-            if (col == selectedLocal) {
-                g2d.setColor(new Color(255, 255, 100, 120));
-                g2d.fillRoundRect(x, startY, SLOT_SIZE, SLOT_SIZE, 8, 8);
-                g2d.setColor(new Color(255, 255, 100));
-                g2d.drawRoundRect(x, startY, SLOT_SIZE, SLOT_SIZE, 8, 8);
-            }
+            // slot background — selected uses crafting_slot_selected.png
+            drawSlotCell(g2d, x, startY, col == selectedLocal);
 
             // draw item
             Item item = inventory.getSlot(slotIndex);
@@ -447,15 +702,16 @@ public class InventoryScreen {
     }
 
     private void loadItemIcons() {
-        String[] names = {"wood", "stone", "banana", "coconut", "fish", "axe", "pickaxe",
-                "rope", "vines", "plank", "paddle", "fishing_rod", "coconut_shell",
-                "coconut_bottle", "tropical_leaves", "mast", "frame", "sail", "rudder", "fittings"};
+        String[] names = {"wood", "stone", "banana", "coconut", "axe", "pickaxe",
+                "rope", "vines", "plank", "paddle", "tropical_leaves", "mast", "frame", "sail", "rudder", "fittings"};
         for (String name : names) {
             BufferedImage img = loadImage("src/resources/items/item_" + name + ".png");
             if (img != null) {
                 itemIcons.put(name, img);
             }
         }
+        slotEmpty    = loadImage("src/resources/ui/crafting/crafting_slot_empty.png");
+        slotSelected = loadImage("src/resources/ui/crafting/crafting_slot_selected.png");
     }
 
     private BufferedImage loadImage(String path) {

@@ -1,21 +1,33 @@
 package com.islandescape.window;
 
+import com.islandescape.audio.SoundManager;
+import com.islandescape.boat.BoatWreck;
 import com.islandescape.crafting.CraftingSystem;
 import com.islandescape.input.GameKeyHandler;
 import com.islandescape.input.InventoryMouseHandler;
 import com.islandescape.inventory.InventoryCursor;
 import com.islandescape.inventory.InventoryScreen;
+import com.islandescape.item.ConsumableItem;
 import com.islandescape.item.Item;
+import com.islandescape.item.ItemCategory;
+import com.islandescape.item.ItemType;
 import com.islandescape.map.MapRenderer;
 import com.islandescape.map.TileMap;
 import com.islandescape.player.Player;
 import com.islandescape.resources.ResourceNode;
 import com.islandescape.resources.ResourceSpawner;
+import com.islandescape.save.SaveData;
+import com.islandescape.save.SaveManager;
 import com.islandescape.structures.CraftingTable;
+import com.islandescape.ui.BoatRepairScreen;
 import com.islandescape.ui.CraftingScreen;
-
+import com.islandescape.ui.ManualScreen;
+import com.islandescape.ui.MainMenu;
+import com.islandescape.ui.WinOverlay;
+import com.islandescape.ui.GameOverOverlay;
 import javax.swing.*;
 
+import java.io.IOException;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Set;
@@ -41,10 +53,23 @@ public class GamePanel extends JPanel {
     private CraftingSystem craftingSystem;
     private CraftingTable craftingTable;
     private CraftingScreen craftingScreen;
-    private GameState gameState = GameState.PLAYING;
+
+    private final ManualScreen manualScreen = new ManualScreen();
+    private BoatWreck boatWreck;
+    private BoatRepairScreen boatRepairScreen;
+    private boolean boatRepairOpen = false;
+    private final WinOverlay winOverlay = new WinOverlay();
+    private final MainMenu mainMenu = new MainMenu();
+    private GameState gameState = GameState.MAIN_MENU;
+    private Runnable quitAction = () -> System.exit(0);
+    private boolean quitRequested = false;
     private final List<ResourceNode> resourceNodes = new ArrayList<>();
     private String farmToastMessage = "";
     private int farmToastFrames = 0;
+
+    private static final int FOOTSTEP_INTERVAL_TICKS = 16;
+    private int p1FootstepCooldown = 0;
+    private int p2FootstepCooldown = 0;
 
     public GamePanel(TileMap map, MapRenderer renderer, Player player1, Player player2) {
         this.map = map;
@@ -59,6 +84,12 @@ public class GamePanel extends JPanel {
         addMouseMotionListener(mouseHandler);
 
         resourceNodes.addAll(ResourceSpawner.spawnFromMap(map));
+
+        mainMenu.setOnNewGame(this::startNewGame);
+        mainMenu.setOnLoadGame(this::loadGame);
+        mainMenu.setOnManual(this::showManual);
+        mainMenu.setOnQuit(this::quitGame);
+        refreshLoadMenuAvailability();
 
         setFocusable(true);
     }
@@ -86,8 +117,155 @@ public class GamePanel extends JPanel {
         this.craftingScreen = craftingScreen;
     }
 
+    public void setBoatWreck(BoatWreck boatWreck) {
+        this.boatWreck = boatWreck;
+        if (inventoryScreen != null && boatWreck != null) {
+            inventoryScreen.setBoatRepairSystem(boatWreck.getRepairSystem());
+        }
+    }
+
+    public void setBoatRepairScreen(BoatRepairScreen boatRepairScreen) {
+        this.boatRepairScreen = boatRepairScreen;
+    }
+
+    public BoatWreck getBoatWreck() {
+        return boatWreck;
+    }
+
+    public boolean isBoatRepairOpen() {
+        return boatRepairOpen;
+    }
+
     public GameState getGameState() {
         return gameState;
+    }
+
+    public MainMenu getMainMenu() {
+        return mainMenu;
+    }
+
+    public boolean isQuitRequested() {
+        return quitRequested;
+    }
+
+    public List<ResourceNode> getResourceNodes() {
+        return resourceNodes;
+    }
+
+    public void setQuitAction(Runnable quitAction) {
+        this.quitAction = quitAction;
+    }
+
+    public void startNewGame() {
+        resetToFresh();
+        if (player1 != null) {
+            player1.getInventory().addItem(
+                new Item(ItemType.PICKAXE, ItemCategory.TOOL, "Pickaxe", "Mines stone", 1));
+
+        }
+        if (player2 != null) {
+            player2.getInventory().addItem(
+                new Item(ItemType.AXE, ItemCategory.TOOL, "Axe", "Chops trees for wood", 1));
+        }
+        gameState = GameState.PLAYING;
+    }
+
+    public void resetToFresh() {
+        if (player1 != null) {
+            player1.setPosition(320, 192);
+            player1.getInventory().clear();
+        }
+        if (player2 != null) {
+            player2.setPosition(352, 192);
+            player2.getInventory().clear();
+        }
+        if (boatWreck != null) {
+            boatWreck.reset();
+        }
+        resourceNodes.clear();
+        if (map != null) {
+            resourceNodes.addAll(ResourceSpawner.spawnFromMap(map));
+        }
+        p1FootstepCooldown = 0;
+        p2FootstepCooldown = 0;
+    }
+
+    // Plays a footstep when the player is moving and their cooldown has elapsed.
+    // Returns the next cooldown value to store.
+    private int tickFootstep(Player player, int cooldown) {
+        if (!player.isMoving()) {
+            return 0;
+        }
+        if (cooldown <= 0) {
+            SoundManager.play("footstep");
+            return FOOTSTEP_INTERVAL_TICKS;
+        }
+        return cooldown - 1;
+    }
+
+    public void quitGame() {
+        persistSessionIfInProgress();
+        quitRequested = true;
+        if (quitAction != null) {
+            quitAction.run();
+        }
+    }
+
+    private boolean isSessionInProgress() {
+        return gameState == GameState.PLAYING || gameState == GameState.INVENTORY_OPEN;
+    }
+
+    // Closes any open panel (returning cursor / mid-craft items to the
+    // players' inventories) and writes a save snapshot — but only if a
+    // gameplay session is actually in progress. No-op from MAIN_MENU /
+    // MANUAL / GAME_WON / GAME_OVER, so leaving those states never
+    // overwrites the save with a fresh / dead state.
+    private void persistSessionIfInProgress() {
+        if (!isSessionInProgress()) return;
+        if (boatRepairOpen) {
+            closeBoatRepairScreen();
+        } else if (gameState == GameState.INVENTORY_OPEN) {
+            closeCraftingScreen();
+        }
+        if (inventoryScreen != null && inventoryScreen.isOpen()) {
+            inventoryScreen.returnHeldItem();
+            inventoryScreen.setOpen(false);
+        }
+        SaveData data = SaveData.capture(player1, player2, boatWreck, resourceNodes);
+        SaveManager.save(data);
+        refreshLoadMenuAvailability();
+    }
+
+    public void loadGame() {
+        if (!SaveManager.hasSave()) return;
+        SaveData data;
+        try {
+            data = SaveManager.load();
+        } catch (IOException e) {
+            throw new RuntimeException("Failed to load save", e);
+        }
+        SaveData.apply(data, player1, player2, boatWreck, resourceNodes);
+
+        // Close any panels that may have been left open by the previous session.
+        boatRepairOpen = false;
+        if (inventoryScreen != null) {
+            inventoryScreen.setBoatRepairOpen(false);
+            inventoryScreen.setCraftingOpen(false);
+            inventoryScreen.setOpen(false);
+        }
+        gameState = GameState.PLAYING;
+    }
+
+    public void onSaveKey() {
+        SaveData data = SaveData.capture(player1, player2, boatWreck, resourceNodes);
+        SaveManager.save(data);
+        refreshLoadMenuAvailability();
+        farmToastMessage = "Saved";
+        farmToastFrames = 75;
+    }
+
+    public void refreshLoadMenuAvailability() {
+        mainMenu.setLoadEnabled(SaveManager.hasSave());
     }
 
     public void startGameLoop() {
@@ -101,6 +279,47 @@ public class GamePanel extends JPanel {
     private void update() {
         if (keyHandler == null) return;
 
+        // Manual screen is static and exits back to menu via ESC (handled in key handler).
+        if (gameState == GameState.MANUAL) {
+          return;
+        }
+
+        // MAIN_MENU: only menu navigation runs. Drain other edges so they
+        // don't fire on the first frame after transitioning to PLAYING.
+        if (gameState == GameState.MAIN_MENU) {
+            if (keyHandler.consumeMenuUp())      mainMenu.moveUp();
+            if (keyHandler.consumeMenuDown())    mainMenu.moveDown();
+            if (keyHandler.consumeMenuConfirm()) mainMenu.confirm();
+
+            keyHandler.consumeCraftScreenToggle();
+            keyHandler.consumeCraftCommit();
+            keyHandler.consumeBoatRepairToggle();
+            keyHandler.consumeBoardKey();
+            keyHandler.consumeP1Action();
+            keyHandler.consumeP2Action();
+            keyHandler.consumeP1Gather();
+            keyHandler.consumeP2Gather();
+            return;
+        }
+
+        // GAME_WON freezes everything — input, movement, farming.
+        if (gameState == GameState.GAME_WON) {
+            // Drain any stale key edges so they don't fire post-reset.
+            keyHandler.consumeCraftScreenToggle();
+            keyHandler.consumeBoatRepairToggle();
+            keyHandler.consumeBoardKey();
+            keyHandler.consumeP1Gather();
+            keyHandler.consumeP2Gather();
+            keyHandler.consumeP1Action();
+            keyHandler.consumeP2Action();
+            return;
+        }
+
+        if (gameState == GameState.GAME_OVER) {
+            if (farmToastFrames > 0) farmToastFrames--;
+            return;
+        }
+
         if (farmToastFrames > 0) {
             farmToastFrames--;
         }
@@ -109,9 +328,12 @@ public class GamePanel extends JPanel {
             node.tick();
         }
 
-        // Crafting-screen toggle (I key) — single-press consumed once per press
+        // Crafting-screen toggle (I key) — single-press consumed once per press.
+        // Ignored while the boat-repair panel is open.
         if (keyHandler.consumeCraftScreenToggle()) {
-            if (gameState == GameState.INVENTORY_OPEN) {
+            if (boatRepairOpen) {
+                // do nothing — boat repair owns the screen
+            } else if (gameState == GameState.INVENTORY_OPEN) {
                 closeCraftingScreen();
             } else if (isAnyPlayerNearTable()) {
                 gameState = GameState.INVENTORY_OPEN;
@@ -122,12 +344,48 @@ public class GamePanel extends JPanel {
             }
         }
 
+        // Boat-repair toggle (R key). Ignored while crafting is the open panel.
+        if (keyHandler.consumeBoatRepairToggle()) {
+            if (boatRepairOpen) {
+                closeBoatRepairScreen();
+            } else if (gameState == GameState.PLAYING && isAnyPlayerNearBoat()) {
+                openBoatRepairScreen();
+            }
+            // else: crafting is open, or no player is near the boat — ignore.
+        }
+
+        // Boarding (B key): global — whichever players are currently within
+        // range of the fully-repaired boat are boarded.
+        if (keyHandler.consumeBoardKey()) {
+            onBoardKey();
+        }
+
+        // Save hotkey (F5). Edge is only set in PLAYING (gated in GameKeyHandler).
+        if (keyHandler.consumeSaveKey()) {
+            onSaveKey();
+        }
+
         if (gameState == GameState.PLAYING) {
+            // Tick survival stats first. If either player has been starving
+            // long enough, transition to GAME_OVER and bail before movement.
+
+            if (player1 != null) player1.getSurvivalStats().tickDown();
+            if (player2 != null) player2.getSurvivalStats().tickDown();
+
+            boolean p1Dead = player1 != null && player1.getSurvivalStats().isDead();
+            boolean p2Dead = player2 != null && player2.getSurvivalStats().isDead();
+            if (p1Dead || p2Dead) {
+                gameState = GameState.GAME_OVER;
+                return;
+            }
+
             if (player1 != null) {
                 player1.move(keyHandler.getP1Direction());
+                p1FootstepCooldown = tickFootstep(player1, p1FootstepCooldown);
             }
             if (player2 != null) {
                 player2.move(keyHandler.getP2Direction());
+                p2FootstepCooldown = tickFootstep(player2, p2FootstepCooldown);
             }
 
             // Gather keys: G for P1, M for P2.
@@ -137,14 +395,27 @@ public class GamePanel extends JPanel {
             if (keyHandler.consumeP2Gather()) {
                 tryFarmNearestResource(player2);
             }
+
+            // Eat keys: F for P1, . for P2.
+            if (keyHandler.consumeP1Eat()) {
+                tryEatFirstConsumable(player1);
+            }
+            if (keyHandler.consumeP2Eat()) {
+                tryEatFirstConsumable(player2);
+            }
         }
-        // When INVENTORY_OPEN, all crafting interaction is mouse-driven
+        // When INVENTORY_OPEN, all crafting / boat interaction is mouse-driven
         // (handled by InventoryScreen.handleClick)
 
         // Update proximity flags for inventory blocking
         if (gameState == GameState.INVENTORY_OPEN && inventoryScreen != null) {
-            inventoryScreen.setPlayerNearTable(
-                    isPlayerNearTable(player1), isPlayerNearTable(player2));
+            if (boatRepairOpen) {
+                inventoryScreen.setPlayerNearBoat(
+                        isPlayerNearBoat(player1), isPlayerNearBoat(player2));
+            } else {
+                inventoryScreen.setPlayerNearTable(
+                        isPlayerNearTable(player1), isPlayerNearTable(player2));
+            }
         }
     }
 
@@ -178,6 +449,30 @@ public class GamePanel extends JPanel {
         System.out.println("[Farm] player=" + player.getName()
                 + ", resource=" + nearest.getClass().getSimpleName()
                 + ", drops=" + formatDrops(drops));
+    }
+
+    private void tryEatFirstConsumable(Player player) {
+        if (player == null) return;
+
+        ConsumableItem eaten = player.eat();
+        if (eaten == null) {
+            farmToastMessage = "Nothing to eat";
+            farmToastFrames = 50;
+            return;
+        }
+
+        // Build a short, descriptive feedback string. Show the actual deltas
+        // (some food is hunger-only, some thirst-only, coconut is both).
+        StringBuilder sb = new StringBuilder("Ate ");
+        sb.append(eaten.getType().name());
+        if (eaten.getHungerEffect() > 0) {
+            sb.append("  +").append(eaten.getHungerEffect()).append(" hunger");
+        }
+        if (eaten.getThirstEffect() > 0) {
+            sb.append("  +").append(eaten.getThirstEffect()).append(" thirst");
+        }
+        farmToastMessage = sb.toString();
+        farmToastFrames = 75;
     }
 
     private String formatDrops(List<Item> drops) {
@@ -220,9 +515,32 @@ public class GamePanel extends JPanel {
         return isPlayerNearTable(player1) || isPlayerNearTable(player2);
     }
 
+    public void showMainMenu() {
+        persistSessionIfInProgress();
+        if (inventoryScreen != null) {
+            inventoryScreen.returnHeldItem();
+            inventoryScreen.setCraftingOpen(false);
+            inventoryScreen.setOpen(false);
+        }
+        gameState = GameState.MAIN_MENU;
+    }
+
+    public void showManual() {
+        gameState = GameState.MANUAL;
+    }
+
     private boolean isPlayerNearTable(Player p) {
         return craftingTable != null && p != null
                 && craftingTable.isPlayerNearby(p.getX(), p.getY());
+    }
+
+    private boolean isAnyPlayerNearBoat() {
+        return isPlayerNearBoat(player1) || isPlayerNearBoat(player2);
+    }
+
+    private boolean isPlayerNearBoat(Player p) {
+        return boatWreck != null && p != null
+                && boatWreck.isPlayerInRange(p.getX(), p.getY());
     }
 
     public void closeCraftingScreen() {
@@ -235,6 +553,61 @@ public class GamePanel extends JPanel {
             inventoryScreen.setOpen(false);
         }
         gameState = GameState.PLAYING;
+    }
+
+    // Opens the boat-repair panel. Items already deposited on the boat are
+    // preserved — they are stored in boatWreck.getRepairSystem(), never
+    // touched here. Caller is expected to have verified a player is in range.
+    public void openBoatRepairScreen() {
+        if (boatWreck == null) return;
+        gameState = GameState.INVENTORY_OPEN;
+        boatRepairOpen = true;
+        if (inventoryScreen != null) {
+            inventoryScreen.setBoatRepairSystem(boatWreck.getRepairSystem());
+            inventoryScreen.setBoatRepairOpen(true);
+            inventoryScreen.setOpen(true);
+            inventoryScreen.setPlayerNearBoat(
+                    isPlayerNearBoat(player1), isPlayerNearBoat(player2));
+        }
+    }
+
+    // Closes the boat-repair panel. Deposited items STAY on the boat —
+    // only the held cursor item (if any) is returned to a player's inventory.
+    public void closeBoatRepairScreen() {
+        if (inventoryScreen != null) {
+            inventoryScreen.returnHeldItem();
+            inventoryScreen.setBoatRepairOpen(false);
+            inventoryScreen.setOpen(false);
+        }
+        boatRepairOpen = false;
+        gameState = GameState.PLAYING;
+    }
+
+    // Handles a single press of the 'B' key. For each player currently within
+    // boat range, ask the boat to board them; if both end up boarded on a
+    // fully-repaired boat, transition to GAME_WON. Works in both PLAYING and
+    // INVENTORY_OPEN (boat repair) states.
+    public void onBoardKey() {
+        if (boatWreck == null) return;
+        if (!boatWreck.isFullyRepaired()) return;
+
+        // Player ids in Main are 1 and 2; BoatWreck.boardedPlayers uses 0 and 1.
+        if (player1 != null && isPlayerNearBoat(player1)) {
+            boatWreck.board(player1.getId() - 1, player1.getX(), player1.getY());
+        }
+        if (player2 != null && isPlayerNearBoat(player2)) {
+            boatWreck.board(player2.getId() - 1, player2.getX(), player2.getY());
+        }
+
+        if (boatWreck.bothBoarded()) {
+            // Tear down any open panels first so overlays don't linger.
+            boatRepairOpen = false;
+            if (inventoryScreen != null) {
+                inventoryScreen.setBoatRepairOpen(false);
+                inventoryScreen.setOpen(false);
+            }
+            gameState = GameState.GAME_WON;
+        }
     }
 
     public TileMap getMap() {
@@ -271,13 +644,51 @@ public class GamePanel extends JPanel {
     protected void paintComponent(Graphics g) {
         super.paintComponent(g);
         Graphics2D g2 = (Graphics2D) g;
+
+        // Main menu owns the screen
+        if (gameState == GameState.MAIN_MENU) {
+            g.setColor(Color.BLACK);
+            g.fillRect(0, 0, getWidth(), getHeight());
+            mainMenu.render(g2, getWidth(), getHeight());
+            return;
+        }
+
+        // Manual mirrors the main menu background (solid black + dim overlay)
+        // so the world isn't visible behind it.
+        if (gameState == GameState.MANUAL) {
+            g.setColor(Color.BLACK);
+            g.fillRect(0, 0, getWidth(), getHeight());
+            manualScreen.render(g2, getWidth(), getHeight());
+            return;
+        }
+
         g.setColor(new Color(77, 166, 255));
         g.fillRect(0, 0, getWidth(), getHeight());
 
         Set<Point> disabledTiles = ResourceSpawner.disabledTileCoords(resourceNodes);
-        map.renderMapComponent(renderer, g, getWidth(), getHeight(), player1, player2, disabledTiles);
+        boolean boatRepaired = boatWreck != null && boatWreck.isFullyRepaired();
+        map.renderMapComponent(renderer, g, getWidth(), getHeight(), player1, player2, disabledTiles, boatRepaired);
+      
+        if (gameState == GameState.GAME_WON) {
+            winOverlay.render(g2, getWidth(), getHeight());
+            return;
+        }
 
-        if (gameState == GameState.INVENTORY_OPEN && craftingScreen != null) {
+        if (gameState == GameState.INVENTORY_OPEN && boatRepairOpen && boatRepairScreen != null) {
+            // 1. Boat repair panel (dim overlay + brown background + repair slots + progress bar)
+            boatRepairScreen.render(g2, getWidth(), getHeight(),
+                    boatWreck != null ? boatWreck.getRepairSystem() : null);
+
+            // 2. Inventory grids
+            if (inventoryScreen != null) {
+                inventoryScreen.renderInventoryComponent(g, getWidth(), getHeight());
+            }
+
+            // 3. Held item on cursor — always drawn LAST so it's on top
+            if (inventoryScreen != null) {
+                inventoryScreen.drawHeldItem(g2);
+            }
+        } else if (gameState == GameState.INVENTORY_OPEN && craftingScreen != null) {
             // 1. Crafting panel (dim overlay + brown background + crafting grid)
             craftingScreen.render(g2, getWidth(), getHeight(),
                     craftingSystem,
@@ -285,7 +696,7 @@ public class GamePanel extends JPanel {
                     player2 != null ? player2.getInventory() : null,
                     isPlayerNearTable(player1), isPlayerNearTable(player2));
 
-            // 2. Inventory grids (drawn ON TOP of the brown panel)
+            // 2. Inventory grids
             if (inventoryScreen != null) {
                 inventoryScreen.renderInventoryComponent(g, getWidth(), getHeight());
             }
@@ -298,6 +709,12 @@ public class GamePanel extends JPanel {
             // Normal mode — just inventory (hotbar or full grid)
             if (inventoryScreen != null) {
                 inventoryScreen.renderInventoryComponent(g, getWidth(), getHeight());
+
+                // Hunger/thirst HUD above each hotbar. drawStatusBars() is
+                // a no-op when the full inventory is open (E-toggle), so
+                // no extra gating needed here.
+                inventoryScreen.drawStatusBars(g2, getWidth(), getHeight());
+
                 inventoryScreen.drawHeldItem(g2);
             }
         }
@@ -308,6 +725,12 @@ public class GamePanel extends JPanel {
             g2.setFont(new Font("SansSerif", Font.BOLD, 18));
             g2.setColor(new Color(120, 255, 120));
             g2.drawString(farmToastMessage, 30, 44);
+        }
+
+        // GAME_OVER overlay paints LAST so it covers map, inventory, status
+        // bars, held item, and any active farm toast.
+        if (gameState == GameState.GAME_OVER) {
+            GameOverOverlay.render(g2, getWidth(), getHeight(), player1, player2);
         }
     }
 }
