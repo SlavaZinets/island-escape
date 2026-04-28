@@ -10,7 +10,7 @@ public class BoatRepairSystem {
 
     //  required ItemType
     private static final ItemType[] REQUIRED_TYPES = {
-            ItemType.PLANK,
+            ItemType.PADDLE,
             ItemType.MAST,
             ItemType.FRAME,
             ItemType.SAIL,
@@ -20,7 +20,7 @@ public class BoatRepairSystem {
 
     // required quantity
     private static final int[] REQUIRED_QTYS = {
-            3, 1, 1, 1, 1, 2
+            1, 1, 1, 1, 1, 2
     };
 
 

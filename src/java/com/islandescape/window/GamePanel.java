@@ -161,6 +161,7 @@ public class GamePanel extends JPanel {
         if (player1 != null) {
             player1.getInventory().addItem(
                 new Item(ItemType.PICKAXE, ItemCategory.TOOL, "Pickaxe", "Mines stone", 1));
+
         }
         if (player2 != null) {
             player2.getInventory().addItem(

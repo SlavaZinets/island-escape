@@ -124,7 +124,9 @@ public class GameKeyHandler implements KeyListener {
                 gamePanel.showMainMenu();
             } else if (gamePanel.isInventoryScreenOpen()) {
                 gamePanel.toggleInventoryScreen();
-            } else if (gamePanel.getGameState() == GameState.PLAYING) {
+            } else if (gamePanel.getGameState() == GameState.PLAYING
+                    || gamePanel.getGameState() == GameState.GAME_WON
+                    || gamePanel.getGameState() == GameState.GAME_OVER) {
                 gamePanel.showMainMenu();
             }
             return;
