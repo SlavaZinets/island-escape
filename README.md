@@ -115,5 +115,22 @@ IntelliJ IDEA's built-in test runner.
 ## Known limitations
 
 - No packaged/runnable file created.
-- No screenshots or gameplay video yet.
+- No gameplay video yet.
 - Saving supports a single save slot (`save.txt`) via `F5`.
+
+## Gameplay screenshots
+
+<table>
+  <tr>
+    <td align="center"><img src="img.png" width="400" alt="Main menu"><br><sub>Main menu</sub></td>
+    <td align="center"><img src="img_1.png" width="400" alt="Boat repair screen"><br><sub>Boat repair screen</sub></td>
+  </tr>
+  <tr>
+    <td align="center"><img src="img_2.png" width="400" alt="Crafting screen"><br><sub>Crafting screen</sub></td>
+    <td align="center"><img src="img_3.png" width="400" alt="Exploring the island"><br><sub>Exploring the island</sub></td>
+  </tr>
+  <tr>
+    <td align="center"><img src="img_4.png" width="400" alt="Exploring the island"><br><sub>Exploring the island</sub></td>
+    <td></td>
+  </tr>
+</table>
